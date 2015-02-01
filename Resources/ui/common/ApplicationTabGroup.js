@@ -6,7 +6,7 @@ function ApplicationTabGroup(Window) {
 
     //create app tabs
     var win1 = new Window('Heute, morgen …'),
-        win2 = new Window('Datenbanksuche');
+        win2 = new Window('Suche');
 
     var tab1 = Ti.UI.createTab({
         title : 'Was läuft?',

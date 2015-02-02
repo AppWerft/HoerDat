@@ -2,8 +2,24 @@ module.exports = function(window) {
     var self = Ti.UI.createScrollableView({
         scrollingEnabled : false
     });
+    self.circleProgress = require('vendor/circularprogress')({
+        percent : 0,
+        size : 250,
+        margin : 1,
+        backgroundColor : '#fff',
+        progressColor : '#427aa7',
+        topper : {
+            color : '#fff',
+            size : 0
+        },
+        font : {
+            visible : false
+        }
+    });
+    window.add(self.circleProgress);
+    var selectedkey = 'ti';
     self.form = Ti.UI.createView();
-    self.result = Ti.UI.createView();
+    self.result = Ti.UI.createTableView();
     self.setViews([self.form, self.result]);
     window.add(self);
     var keyselector = Ti.UI.createView({
@@ -48,7 +64,7 @@ module.exports = function(window) {
         height : 30,
         right : 30
     }));
-    var kk =Ti.UI.createImageView({
+    var kk = Ti.UI.createImageView({
         image : '/images/kk.png',
         width : 50,
         top : 5,
@@ -59,7 +75,7 @@ module.exports = function(window) {
     self.form.add(kk);
     var Button = Ti.UI.createButton({
         borderStyle : Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
-        title : 'Start der Suche',
+        title : 'Datenbankanfrage',
         bottom : 10,
         left : 10,
         width : '90%',
@@ -81,7 +97,7 @@ module.exports = function(window) {
         height : Ti.UI.SIZE,
         layout : 'horizontal'
     });
-    var stations = ['drk', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'rb', 'ndr', 'swr', 'sr', 'corax'];
+    var stations = ['dlr', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'rb n', 'ndr', 'swr', 'sr', 'corax'];
     stations.forEach(function(s) {
         container.add(Ti.UI.createImageView({
             top : 5,
@@ -116,14 +132,18 @@ module.exports = function(window) {
         dialog.show();
         dialog.addEventListener('click', function(_e) {
             key.setText(_e.source.options[_e.index]);
+            selectedkey = search.keys[_e.index];
         });
     });
     Button.addEventListener('click', function() {
         self.scrollingEnabled = true;
         self.scrollToView(1);
+        self.result.setData([]);
+
+        self.circleProgress.show();
         require('controls/htmlpost.adapter')({
             payload : {
-                col1 : 'ti',
+                col1 : selectedkey,
                 a : textField.getValue() || 'Rauschen',
                 /*  bool1 : 'and',
                  col2 : 'au.an',
@@ -134,10 +154,79 @@ module.exports = function(window) {
                  bool5 : 'and',
                  bool7 : 'and',*/
                 so : 'autor',
-                soo : 'asc'
+                soo : 'asc',
+               
             },
-            onload : function(_e) {
+            onprogress : function(_e) {
                 console.log(_e);
+                self.circleProgress.setValue(_e);
+            },
+            onload : function(_list) {
+                var data = [];
+                self.circleProgress.hide();
+                if (_list.length == 0) {
+                    Ti.UI.createNotification({
+                        message : 'Mehr als 100 Datensätze, formulieren Sie Ihre Anfrage bitte etwas genauer. '
+                    }).show();
+                    self.scrollingEnabled = false;
+                    self.scrollToView(0);
+                    return;
+                }
+                _list.forEach(function(item) {
+                    var row = Ti.UI.createTableViewRow({
+                        height : Ti.UI.SIZE,
+                        hasDetail : true,
+                        layout : 'vertical'
+                    });
+                    if (!item.subtitle)
+                        row.add(Ti.UI.createLabel({
+                            text : item.title,
+                            left : 10,
+                            top : 8,
+                            bottom : 8,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 24,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+                    else {
+                        row.add(Ti.UI.createLabel({
+                            text : item.title,
+                            left : 10,
+                            top : 8,
+                            bottom : 3,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 14,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+                        row.add(Ti.UI.createLabel({
+                            text : item.subtitle,
+                            left : 10,
+                            top : 0,
+                            bottom : 8,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 24,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+
+                    }
+                    data.push(row);
+                });
+                self.result.setData(data);
             }
         });
     });

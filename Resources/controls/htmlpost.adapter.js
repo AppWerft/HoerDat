@@ -1,8 +1,11 @@
 module.exports = function(args) {
     var self = Ti.Network.createHTTPClient({
+        ondatastream : function(_e) {
+            //console.log(_e.progress);
+        },
         onload : function() {
+            clearInterval(self.cron);
             var html = this.responseText.replace(/>\s+</gm, '><');
-            console.log(html);
             var regex = /<th colspan='2'>(.*?)<\/th>/gim;
             var list = [];
             while ( res = regex.exec(html)) {
@@ -27,4 +30,9 @@ module.exports = function(args) {
     self.open('POST', 'http://s507870211.online.de/index.php');
     self.setRequestHeader('Accept', 'application/json');
     self.send(args.payload);
+    self.tick = 0;
+    self.cron = setInterval(function() {
+        self.tick++;
+        args.onprogress(self.tick/100);
+    }, 100);
 };

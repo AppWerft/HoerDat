@@ -1,31 +1,28 @@
-function ApplicationTabGroup(Window) {
+
+
+module.exports = function (Window) {
     //create module instance
     var self = Ti.UI.createTabGroup({
         fullscreen : true
     });
 
-    //create app tabs
-    var win1 = new Window('Heute, morgen …'),
-        win2 = new Window('Suche');
+    var win1 = new Window('Heute, morgen …');
+    require('ui/common/scheduler')(win1);
+
+    var win2 = new Window('Suche');
+    require('ui/common/search')(win2);
 
     var tab1 = Ti.UI.createTab({
-        title : 'Was läuft?',
-       
+        title : 'Im Radio',
         window : win1
     });
-    win1.containingTab = tab1;
-
     var tab2 = Ti.UI.createTab({
-        title :'Datenbanksuche',
-        
+        title : 'Suche',
         window : win2
     });
-    win2.containingTab = tab2;
-
     self.addTab(tab1);
     self.addTab(tab2);
-
+    require('vendor/versionsreminder')();
     return self;
 };
 
-module.exports = ApplicationTabGroup;

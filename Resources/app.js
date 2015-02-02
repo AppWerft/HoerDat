@@ -34,10 +34,10 @@ if (Ti.version < 1.8) {
         var tiAndroid = Ti.Platform.Android;
         return psc === tiAndroid.PHYSICAL_SIZE_CATEGORY_LARGE || psc === tiAndroid.PHYSICAL_SIZE_CATEGORY_XLARGE;
       default:
-        return Math.min(
+        return (Math.min(
           Ti.Platform.displayCaps.platformHeight,
           Ti.Platform.displayCaps.platformWidth
-        ) >= 400
+        ) >= 400) ? true : false;
     }
   }
 
@@ -49,7 +49,9 @@ if (Ti.version < 1.8) {
   } else {
     Window = require('ui/handheld/ApplicationWindow');
   }
-
+  
   var ApplicationTabGroup = require('ui/common/ApplicationTabGroup');
   new ApplicationTabGroup(Window).open();
+  Ti.UI.createNotification({message: 'Diese App ist eine Baustelle …'}).show();
+  
 })();

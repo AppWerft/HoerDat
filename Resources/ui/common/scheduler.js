@@ -1,7 +1,9 @@
 module.exports = function(window) {
     var pages = [];
-    for (var i = -1; i < 8; i++) {
-        pages.push(require('ui/common/daylist')(i));
+    for (var i = -1; i < 10; i++) {
+      
+            pages.push(require('ui/common/daylist')(i));
+       
     }
     var FlipModule = require('de.manumaticx.androidflip');
     window.flipcontainer = FlipModule.createFlipView({

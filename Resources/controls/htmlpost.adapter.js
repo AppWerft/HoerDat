@@ -6,6 +6,18 @@ module.exports = function(args) {
         onload : function() {
             clearInterval(self.cron);
             var html = this.responseText.replace(/>\s+</gm, '><');
+          /*  var htmlparser = require("vendor/htmlparser");
+            var handler = new htmlparser.DefaultHandler(function(error, dom) {
+                if (error) {}
+
+                else {
+                    console.log(dom);
+                }
+
+            });
+            var parser = new htmlparser.Parser(handler);
+            parser.parseComplete(html);
+*/
             var regex = /<th colspan='2'>(.*?)<\/th>/gim;
             var list = [];
             while ( res = regex.exec(html)) {
@@ -33,6 +45,6 @@ module.exports = function(args) {
     self.tick = 0;
     self.cron = setInterval(function() {
         self.tick++;
-        args.onprogress(self.tick/100);
+        args.onprogress(self.tick / 100);
     }, 100);
 };

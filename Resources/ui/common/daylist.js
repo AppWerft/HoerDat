@@ -11,69 +11,105 @@ module.exports = function(i) {
     });
 
     self.add(self.list);
-    require('controls/html.adapter')({
-        date : (require('vendor/moment'))().add(i, 'd').format('YYYY-MM-DD'),
-        onload : function(list) {
-            list.forEach(function(item) {
-                var row = Ti.UI.createTableViewRow({
-                    height : Ti.UI.SIZE,
-                    hasDetail : true,
-                    layout : 'vertical'
-                });
-                if (!item.subtitle)
+    setTimeout(function() {
+        require('controls/html.adapter')({
+            date : (require('vendor/moment'))().add(i, 'd').format('YYYY-MM-DD'),
+            onload : function(list) {
+                list.forEach(function(item) {
+                    var row = Ti.UI.createTableViewRow({
+                        height : Ti.UI.SIZE,
+                        hasDetail : true,
+                        itemId : item
+                    });
+                    var container = Ti.UI.createView({
+                        left : 70,
+                        top : 20,
+                        layout : 'vertical'
+                    });
+                    row.add(container);
+                    if (!item.subtitle)
+                        container.add(Ti.UI.createLabel({
+                            text : item.title,
+                            left : 10,
+                            top : 8,
+                            bottom : 8,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 24,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+                    else {
+                        container.add(Ti.UI.createLabel({
+                            text : item.title,
+                            left : 10,
+                            top : 8,
+                            bottom : 3,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 14,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+                        container.add(Ti.UI.createLabel({
+                            text : item.subtitle,
+                            left : 10,
+                            top : 0,
+                            bottom : 8,
+                            right : 10,
+                            height : Ti.UI.SIZE,
+                            color : '#444',
+                            font : {
+                                fontSize : 24,
+                                fontFamily : 'Rambla-Bold',
+                                fontWeight : 'bold'
+                            }
+                        }));
+
+                    }
                     row.add(Ti.UI.createLabel({
-                        text : item.title,
-                        left : 10,
-                        top : 8,
-                        bottom : 8,
+                        text : item.time,
+                        left : 5,
+                        top : 5,
+                        bottom : 20,
                         right : 10,
                         height : Ti.UI.SIZE,
-                        color : '#444',
+                        color : '#427aa7',
                         font : {
-                            fontSize : 24,
-                            fontFamily : 'Rambla-Bold',
-                            fontWeight : 'bold'
+                            fontSize : 12,
+                            fontFamily : 'DroidSans',
+
                         }
                     }));
-                else {
-                    row.add(Ti.UI.createLabel({
-                        text : item.title,
-                        left : 10,
-                        top : 8,
-                        bottom : 3,
-                        right : 10,
-                        height : Ti.UI.SIZE,
-                        color : '#444',
-                        font : {
-                            fontSize : 14,
-                            fontFamily : 'Rambla-Bold',
-                            fontWeight : 'bold'
-                        }
-                    }));
-                    row.add(Ti.UI.createLabel({
-                        text : item.subtitle,
-                        left : 10,
-                        top : 0,
-                        bottom : 8,
-                        right : 10,
-                        height : Ti.UI.SIZE,
-                        color : '#444',
-                        font : {
-                            fontSize : 24,
-                            fontFamily : 'Rambla-Bold',
-                            fontWeight : 'bold'
-                        }
+                    row.add(Ti.UI.createImageView({
+                        image : item.logo,
+                        top : 25,
+                        left : 5,
+                        width : 60,
+                        height : 60
                     }));
 
-                }
-                data.push(row);
-            });
-            self.list.setData(data);
-        }
+                    data.push(row);
+                });
+                self.list.setData(data);
+            }
+        });
+    }, Math.abs(i) * Math.random() * 1111);
+
+    self.list.addEventListener('click', function(_e) {
+        var item = _e.rowData.itemId;
+        require('ui/common/sendung.window')(item).open();
     });
+
     var tag = '';
     switch (i) {
-        case -1 :
+    case -1 :
         tag = 'Gestern';
         break;
     case 0 :

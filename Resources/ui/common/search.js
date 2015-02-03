@@ -10,7 +10,7 @@ module.exports = function(window) {
         progressColor : '#427aa7',
         topper : {
             color : '#fff',
-            size : 0
+            size : 245
         },
         font : {
             visible : false

@@ -1,5 +1,4 @@
 function getText(foo) {
-
     if ( typeof foo == 'string')
         return foo.replace(/\n/gm, '').trim();
 
@@ -10,6 +9,10 @@ function getText(foo) {
 }
 
 module.exports = function(args) {
+    if (Ti.App.Properties.hasProperty(args.date)) {
+        args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
+        return;
+    }
     Ti.Yahoo.yql('select * from html where url="http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date + '" and xpath="//table"', function(_res) {
         if (_res.success && _res.data && _res.data.table && _res.data.table.length > 2) {
             var tables = _res.data.table;
@@ -48,7 +51,7 @@ module.exports = function(args) {
                                         item.komponisten = getText(tr.td[i + 1].p);
                                         break;
                                     case 'Regisseur(e):':
-                                        console.log(tr.td[i + 1].p);    
+                                        console.log(tr.td[i + 1].p);
                                         item.regisseure = getText(tr.td[i + 1].p);
                                         break;
                                     case 'Übersetzer:':
@@ -65,11 +68,11 @@ module.exports = function(args) {
                     //}
 
                     if (item.title) {
-                        console.log(item);
                         res.push(item);
                     }
                 }
             });
+            Ti.App.Properties.setString(args.date, JSON.stringify(res));
             args.onload(res);
         }
     });

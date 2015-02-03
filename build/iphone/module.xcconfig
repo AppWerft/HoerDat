@@ -1,1 +1,4 @@
 // this is a generated file - DO NOT EDIT
+
+DE_MARCELPOCIOT_CIRCULARSLIDER_OTHER_LDFLAGS=$(inherited) -framework QuartzCore -framework CoreImage
+OTHER_LDFLAGS=$(inherited) $(DE_MARCELPOCIOT_CIRCULARSLIDER_OTHER_LDFLAGS) 

@@ -5,20 +5,20 @@ function getMeta(key, value) {
     });
     self.add(Ti.UI.createLabel({
         left : 0,
-        text : key,top:0,
+        text : key,
+        top : 0,
         width : '35%'
     }));
     self.add(Ti.UI.createLabel({
         left : '36%',
         width : Ti.UI.FILL,
         textAlign : 'left',
-        text : value,top:0,
+        text : value,
+        top : 0,
         color : '#444',
     }));
     return self;
-
 };
-
 module.exports = function(item) {
     var self = Ti.UI.createWindow({
         title : item.title,
@@ -38,7 +38,7 @@ module.exports = function(item) {
     item.komponisten && self.container.add(getMeta('Komponisten', item.komponisten));
     item.uebersetzer && self.container.add(getMeta('Übersetzer', item.uebersetzer));
 
-    self.container.add(Ti.UI.createLabel({
+    item.inhalt && self.container.add(Ti.UI.createLabel({
         text : item.inhalt.replace(/[\s]{3,}/gm, '\n\n'),
         top : 5,
         height : Ti.UI.SIZE,

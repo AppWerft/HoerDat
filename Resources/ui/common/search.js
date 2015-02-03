@@ -97,7 +97,7 @@ module.exports = function(window) {
         height : Ti.UI.SIZE,
         layout : 'horizontal'
     });
-    var stations = ['dlr', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'rb n', 'ndr', 'swr', 'sr', 'corax'];
+    var stations = ['dlr', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'wdr', 'rb n', 'ndr', 'swr', 'sr','dw', 'corax'];
     stations.forEach(function(s) {
         container.add(Ti.UI.createImageView({
             top : 5,
@@ -136,6 +136,12 @@ module.exports = function(window) {
         });
     });
     Button.addEventListener('click', function() {
+        if (textField.getValue().length<4) {
+            Ti.UI.createNotification({
+                    message : 'Das Suchwort sollte mindestens drei Zeichen lang sein. '
+                }).show();
+            return;
+        }
         self.scrollingEnabled = true;
         self.scrollToView(1);
         self.result.setData([]);
@@ -145,21 +151,21 @@ module.exports = function(window) {
             payload : {
                 col1 : selectedkey,
                 a : textField.getValue() || 'Rauschen',
-                /*  bool1 : 'and',
-                 col2 : 'au.an',
-                 bool2 : 'and',
-                 col3 : 'au.av',
-                 bool8 : 'and',
-                 bool4 : 'and',
-                 bool5 : 'and',
-                 bool7 : 'and',*/
                 so : 'autor',
                 soo : 'asc',
-               
+
             },
             onprogress : function(_e) {
-                console.log(_e);
                 self.circleProgress.setValue(_e);
+            },
+            onerror : function() {
+                Ti.UI.createNotification({
+                    message : 'Datenbankserver antwortet zu langsam …\n Einfach nochmals losschicken! '
+                }).show();
+                self.scrollingEnabled = false;
+                self.scrollToView(0);
+                self.circleProgress.hide();
+                return;
             },
             onload : function(_list) {
                 var data = [];
@@ -173,62 +179,15 @@ module.exports = function(window) {
                     return;
                 }
                 _list.forEach(function(item) {
-                    var row = Ti.UI.createTableViewRow({
-                        height : Ti.UI.SIZE,
-                        hasDetail : true,
-                        layout : 'vertical'
-                    });
-                    if (!item.subtitle)
-                        row.add(Ti.UI.createLabel({
-                            text : item.title,
-                            left : 10,
-                            top : 8,
-                            bottom : 8,
-                            right : 10,
-                            height : Ti.UI.SIZE,
-                            color : '#444',
-                            font : {
-                                fontSize : 24,
-                                fontFamily : 'Rambla-Bold',
-                                fontWeight : 'bold'
-                            }
-                        }));
-                    else {
-                        row.add(Ti.UI.createLabel({
-                            text : item.title,
-                            left : 10,
-                            top : 8,
-                            bottom : 3,
-                            right : 10,
-                            height : Ti.UI.SIZE,
-                            color : '#444',
-                            font : {
-                                fontSize : 14,
-                                fontFamily : 'Rambla-Bold',
-                                fontWeight : 'bold'
-                            }
-                        }));
-                        row.add(Ti.UI.createLabel({
-                            text : item.subtitle,
-                            left : 10,
-                            top : 0,
-                            bottom : 8,
-                            right : 10,
-                            height : Ti.UI.SIZE,
-                            color : '#444',
-                            font : {
-                                fontSize : 24,
-                                fontFamily : 'Rambla-Bold',
-                                fontWeight : 'bold'
-                            }
-                        }));
-
-                    }
-                    data.push(row);
+                    data.push(require('ui/common/row.widget')(item));
                 });
                 self.result.setData(data);
             }
         });
+    });
+    self.result.addEventListener('click', function(_e) {
+        var item = _e.rowData.itemId;
+        require('ui/common/sendung.window')(item).open();
     });
 
 };

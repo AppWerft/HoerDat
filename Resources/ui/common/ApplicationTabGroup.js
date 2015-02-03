@@ -9,8 +9,8 @@ module.exports = function(Window) {
 
     var win2 = new Window('Suche');
     require('ui/common/search')(win2);
-    var win3 = new Window('Radio');
-    require('ui/common/radio.window')(win3);
+
+    var win3 = require('ui/common/radio.window')();
 
     var tab1 = Ti.UI.createTab({
         title : 'Hörplan',
@@ -27,7 +27,9 @@ module.exports = function(Window) {
     self.addTab(tab1);
     self.addTab(tab2);
     self.addTab(tab3);
+
     require('vendor/versionsreminder')();
+    self.addEventListener('open', require('ui/common/main.menu'));
     return self;
 };
 

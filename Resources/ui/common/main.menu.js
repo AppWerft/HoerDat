@@ -1,17 +1,21 @@
 var abx = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_e) {
+    console.log('Info: tabgroup opened');
     var cron;
     var tabgroup = _e.source;
     var data = tabgroup.data;
     abx.title = 'HörDat';
     abx.titleFont = "Rambla-Bold";
     abx.subtitleColor = "#ccc";
+    
     var activity = _e.source.getActivity();
     if (activity) {
+        console.log('Info: activity found');
         activity.onCreateOptionsMenu = function(e) {
+            console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
-            e.menu.clear();
+            //e.menu.clear();
             e.menu.add({
                 title : 'Über uns',
                 icon : Ti.App.Android.R.drawable.ic_action_about,
@@ -34,7 +38,6 @@ module.exports = function(_e) {
     }
     tabgroup.addEventListener('focus', function() {
         console.log('Tabgroup focused');
-        require('vendor/versionsreminder')();
         cron = setInterval(function() {
             abx.subtitle = require('vendor/moment')().format('HH:mm:ss');
         }, 1000);
@@ -42,6 +45,9 @@ module.exports = function(_e) {
     tabgroup.addEventListener('blur', function() {
         console.log('Tabgroup blured');
         cron && clearInterval(cron);
-        cron = null;
     });
+    cron = setInterval(function() {
+        abx.subtitle = require('vendor/moment')().format('HH:mm:ss');
+    }, 1000);
+    require('vendor/versionsreminder')();
 };

@@ -4,6 +4,7 @@ module.exports = function() {
     var reStoreFunc = function() {
         Ti.Media.vibrate();
         console.log('reStoreFunc');
+        return;
         model.lastactivestation = Ti.App.Properties.getInt('LAST', 0);
         console.log('readLAST: ' + model.lastactivestation);
         stationviews.forEach(function(view, ndx) {
@@ -17,7 +18,6 @@ module.exports = function() {
 
         });
     };
-
     var ui = Ti.UI.createWindow({
         backgroundColor : 'white'
     });
@@ -29,7 +29,9 @@ module.exports = function() {
         stations : require('model/stations'),
         activestationindex : 0,
         φ : 0
+
     };
+    var segment = 360 / model.stations.length;
     var statuslog = Ti.UI.createLabel({
         bottom : 0,
         height : 20,
@@ -61,6 +63,7 @@ module.exports = function() {
         x : 0.5,
         y : 3.2
     };
+    model.lastactivestation = Ti.App.Properties.getInt('LAST', 0);
     for (var i = 0; i < model.stations.length; i++) {
         stationviews[i] = Ti.UI.createImageView({
             image : '/images/' + model.stations[i].logo.toLowerCase() + '.png',
@@ -68,7 +71,7 @@ module.exports = function() {
             height : 200,
 
             transform : Ti.UI.create2DMatrix({
-                rotate : 360 / model.stations.length * i,
+                rotate : segment * (model.lastactivestation + i),
                 anchorPoint : anchorPoint
             })
         });
@@ -80,14 +83,32 @@ module.exports = function() {
         height : 100,
         backgroundImage : '/images/play.png'
     });
+    ui.circleProgress = require('vendor/circularprogress')({
+        percent : 0,
+        size : 100,
+        margin : 1,
+        zIndex : 901,
+        progressColor : '#427aa7',
+        topper : {
+            color : '#fff',
+            size : 225
+        },
+        font : {
+            visible : false
+        }
+    });
     ui.add(control);
+    ui.add(ui.circleProgress);
+
     ui.add(statuslog);
     /* Events */
-   // ui.addEventListener('focus', reStoreFunc);
-   // ui.addEventListener('open', reStoreFunc);
+    // ui.addEventListener('focus', reStoreFunc);
+    // ui.addEventListener('open', reStoreFunc);
     ui.getActivity().onResume = reStoreFunc;
     ui.getActivity().onRestart = reStoreFunc;
     ui.addEventListener('swipe', function(_e) {
+        if (_e.direction == 'down' || _e.direction == 'up')
+            return;
         control.backgroundImage = '/images/leer.png';
         player.stop();
         player.release();
@@ -100,14 +121,12 @@ module.exports = function() {
         var name = model.stations[model.activestationindex].logo;
         statuslog.setText('Könnte jetzt ' + name + ' zuschalten.');
 
-        model.φ = (_e.direction == 'left')//
-        ? model.φ - 360 / model.stations.length//
-        : model.φ + 360 / model.stations.length;
+        model.φ = (_e.direction == 'left') ? model.φ - segment : model.φ + segment;
         stationviews.forEach(function(view, ndx) {
             view.animate({
                 duration : 400,
                 transform : Ti.UI.create2DMatrix({
-                    rotate : model.φ + 360 / model.stations.length * ndx,
+                    rotate : model.φ + segment * ndx,
                     anchorPoint : anchorPoint
                 })
             });
@@ -163,6 +182,7 @@ module.exports = function() {
             control.backgroundImage = '/images/stop.png';
             break;
         case Ti.Media.AudioPlayer.STATE_STARTING:
+        case 4:
             // 3
             statuslog.setText('Radio ' + name + ' wird gestartet.');
             control.backgroundImage = '/images/stop.png';

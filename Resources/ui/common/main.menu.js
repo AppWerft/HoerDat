@@ -1,14 +1,12 @@
 var abx = require('com.alcoapps.actionbarextras');
 
+/* this module will called from _e.source on open event */
 module.exports = function(_e) {
     console.log('Info: tabgroup opened');
     var cron;
-    var tabgroup = _e.source;
-    var data = tabgroup.data;
     abx.title = 'HörDat';
     abx.titleFont = "Rambla-Bold";
     abx.subtitleColor = "#ccc";
-    
     var activity = _e.source.getActivity();
     if (activity) {
         console.log('Info: activity found');
@@ -33,17 +31,17 @@ module.exports = function(_e) {
         // activity.actionBar.logo = data.logo;
         activity.actionBar.homeButtonEnabled = true;
         activity.actionBar.onHomeIconItemSelected = function() {
-            tabgroup.close();
+            _e.source.close();
         };
     }
-    tabgroup.addEventListener('focus', function() {
-        console.log('Tabgroup focused');
+    _e.source.addEventListener('focus', function() {
+        console.log('tabgroup focused');
         cron = setInterval(function() {
             abx.subtitle = require('vendor/moment')().format('HH:mm:ss');
         }, 1000);
     });
-    tabgroup.addEventListener('blur', function() {
-        console.log('Tabgroup blured');
+    _e.source.addEventListener('blur', function() {
+        console.log('tabgroup blured');
         cron && clearInterval(cron);
     });
     cron = setInterval(function() {

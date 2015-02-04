@@ -10,6 +10,7 @@ module.exports = function(_e) {
     var activity = _e.source.getActivity();
     if (activity) {
         activity.onCreateOptionsMenu = function(e) {
+            activity.actionBar.displayHomeAsUp = true;
             e.menu.clear();
         };
         activity.actionBar.homeButtonEnabled = true;

@@ -1,21 +1,46 @@
 module.exports = function(args) {
-    var uri_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
-    var xhr = Ti.Network.createHTTPClient({
-        onload : function() {
-            var foo = this.responseText.split('\n');
-            var bar = [];
-            for (var i = 0; i < foo.length; i++) {
-                if (foo[i][0] == '#')
-                    continue;
-                var uri = foo[i].match(uri_pattern);
-                if (uri)
-                    bar.push(uri);
+    console.log(args);
+    if (args.stream) {
+        args.onload(args.stream);
+    } else {
+        var uri_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
+        var xhr = Ti.Network.createHTTPClient({
+            timeout : 6000,
+            onload : function() {
+                console.log(this.status);
+                console.log(this.getAllResponseHeaders());
+
+                if (this.status == 200) {
+
+                    var ct = this.getResponseHeader('Content-Type');
+                    console.log('CT=' + ct);
+                    if (/url/.test(ct)) {
+                        var foo = this.responseText.split('\n');
+                        var bar = [];
+                        for (var i = 0; i < foo.length; i++) {
+                            if (foo[i][0] == '#')
+                                continue;
+                            var uri = foo[i].match(uri_pattern);
+                            if (uri)
+                                bar.push(uri);
+                        }
+                        args.onload(bar[0][0]);
+                    } else {
+                        xhr.abort();
+                        console.log('no header');
+                        args.onload(args.playlist);
+                    }
+                } else {
+                    args.onerror();
+                }
+            },
+            onerror : function() {
+                args.onerror();
             }
-            _args.onload(bar[0][0]);
-        }
-    });
-    xhr.open('GET', _args.playlist);
-    xhr.send();
-    Ti.App.addEventListener('app:exit', xhr.abort);
+        });
+        xhr.open('GET', args.playlist);
+        xhr.send();
+        console.log(args.playlist);
+    }
 };
 

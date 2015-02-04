@@ -3,15 +3,12 @@ module.exports = function(Window) {
     var self = Ti.UI.createTabGroup({
         fullscreen : true
     });
-
+    self.addEventListener('open', require('ui/common/main.menu'));
     var win1 = new Window('Heute, morgen …');
     require('ui/common/scheduler')(win1);
-
     var win2 = new Window('Suche');
     require('ui/common/search')(win2);
-
     var win3 = require('ui/common/radio.window')();
-
     var tab1 = Ti.UI.createTab({
         title : 'Hörplan',
         window : win1
@@ -27,9 +24,6 @@ module.exports = function(Window) {
     self.addTab(tab1);
     self.addTab(tab2);
     self.addTab(tab3);
-    require('vendor/versionsreminder')();
-    self.addEventListener('open', require('ui/common/main.menu'));
-
     return self;
 };
 

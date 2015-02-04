@@ -52,6 +52,5 @@ if (Ti.version < 1.8) {
   
   var ApplicationTabGroup = require('ui/common/ApplicationTabGroup');
   new ApplicationTabGroup(Window).open();
-  Ti.UI.createNotification({message: 'Diese App ist eine Baustelle …'}).show();
   
 })();

@@ -4,8 +4,11 @@ module.exports = function() {
     var window = Ti.UI.createWindow({
         backgroundColor : 'white'
     });
+    var stations = require('model/stations');
     var phi = 0;
-    var container = Ti.UI.createView();
+    var container = Ti.UI.createView({
+        bottom : '20%'
+    });
     window.add(container);
     var sliderView = TiCircularSlider.createView({
         height : 300,
@@ -18,19 +21,18 @@ module.exports = function() {
         Ti.API.info("Value is: ", e.value);
     });
 
-    var stations = ['dlr', 'sr', 'wdr', 'ndr', 'mdr', 'br', 'dlf', 'rbb', 'rb'];
+    
     var stationviews = [];
     var anchorPoint = {
         x : 0.5,
-        y : 2
+        y : 3
     };
     for (var i = 0; i < stations.length; i++) {
         stationviews[i] = Ti.UI.createImageView({
-            image : '/images/' + stations[i] + '.png',
+            image : '/images/' + stations[i].logo.toLowerCase() + '.png',
             width : 200,
             height : 200,
-            borderWith : 1,
-            borderColor : 'silver',
+
             transform : Ti.UI.create2DMatrix({
                 rotate : 360 / stations.length * i,
                 anchorPoint : anchorPoint
@@ -39,22 +41,8 @@ module.exports = function() {
         container.add(stationviews[i]);
     }
     window.addEventListener('open', function() {
-        //window.add(sliderView);
-    });
-    var dummyviews = [];
-    for (var i = 0; i < stations.length * 10; i++) {
-        dummyviews.push(Ti.UI.createView({
-            width : '50%',
-            borderColor : 'red',
-            borderWidth : 1
-        }));
-    }
-    var dummyscroller = Ti.UI.createScrollableView({
-        views : dummyviews,
-        currenPage : Math.round(stations.length / 2 * 10)
     });
 
-    //window.add(dummyscroller);
     window.addEventListener('swipe', function(_e) {
         if (_e.direction == 'left') {
             phi -= 360 / stations.length;
@@ -62,7 +50,7 @@ module.exports = function() {
         if (_e.direction == 'right') {
             phi += 360 / stations.length;
         }
-    //    phi = 360 - _e.currentPage * 360 / stations.length;
+        //    phi = 360 - _e.currentPage * 360 / stations.length;
         stationviews.forEach(function(view, ndx) {
             view.animate({
                 duration : 100,
@@ -75,6 +63,18 @@ module.exports = function() {
         });
 
     });
-
+    var slider = Ti.UI.createSlider({
+        bottom : 0,
+        height : 50,
+        min : 0,
+        max : 360
+    });
+    var control = Ti.UI.createButton({
+        bottom : 20,
+        width : 100,
+        height : 100,
+        backgroundImage : '/images/play.png'
+    });
+    window.add(control);
     return window;
 };

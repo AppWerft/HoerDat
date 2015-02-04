@@ -27,9 +27,9 @@ module.exports = function(Window) {
     self.addTab(tab1);
     self.addTab(tab2);
     self.addTab(tab3);
-
     require('vendor/versionsreminder')();
     self.addEventListener('open', require('ui/common/main.menu'));
+
     return self;
 };
 

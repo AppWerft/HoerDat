@@ -1,29 +1,98 @@
 module.exports = function(window) {
-    var self = Ti.UI.createScrollableView({
-        scrollingEnabled : false
-    });
+    function onClickFunc() {
+        if (textField.getValue().length < 3) {
+            Ti.UI.createNotification({
+                message : 'Das Suchwort sollte mindestens drei Zeichen lang sein. '
+            }).show();
+            return;
+        }
+        self.darker.show();
+        self.circleProgress.show();
+        var payload = {
+            col1 : selectedkey,
+            a : textField.getValue() || 'Rauschen',
+            so : 'autor',
+            soo : 'asc',
+
+        };
+        require('controls/htmlpost.adapter')({
+            payload : payload,
+            onprogress : function(_e) {
+                self.circleProgress.setValue(_e);
+            },
+            onerror : function() {
+                Ti.UI.createNotification({
+                    message : 'Datenbankserver antwortet zu langsam …\n Einfach nochmals losschicken! '
+                }).show();
+                self.darker.hide();
+                self.circleProgress.hide();
+                return;
+            },
+            onload : function(_list) {
+                var data = [];
+                self.darker.hide();
+                self.circleProgress.hide();
+                if (_list.length == 0) {
+                    Ti.UI.createNotification({
+                        message : 'Mehr als 100 Datensätze, formulieren Sie Ihre Anfrage bitte etwas genauer. '
+                    }).show();
+                    return;
+                }
+                var win = Ti.UI.createWindow({
+                    fullscreen : true,
+                    data : _list,
+                    searchItem : payload,
+                    backgroundColor : 'white'
+                });
+                win.open();
+                win.list = Ti.UI.createTableView();
+                win.add(win.list);
+                win.data.forEach(function(item) {
+                    data.push(require('ui/common/row.widget')(item));
+                });
+                win.list.setData(data);
+                win.list.addEventListener('click', function(_e) {
+                    require('ui/common/sendung.window')(_e.rowData.itemId).open();
+                });
+                win.addEventListener('open', require('ui/common/search.menu'));
+
+                /*
+                 _list.forEach(function(item) {
+                 data.push(require('ui/common/row.widget')(item));
+                 });
+                 self.result.setData(data);*/
+            }
+        });
+    }
+    var self = Ti.UI.createView();
     self.circleProgress = require('vendor/circularprogress')({
         percent : 0,
         size : 250,
-        margin : 1,
-        backgroundColor : '#fff',
+        margin : 10,
+        zIndex : 901,
         progressColor : '#427aa7',
         topper : {
             color : '#fff',
-            size : 245
+            size : 225
         },
         font : {
             visible : false
         }
     });
-    window.add(self.circleProgress);
-    var selectedkey = 'ti';
-    self.form = Ti.UI.createView();
-    self.result = Ti.UI.createTableView();
-    self.setViews([self.form, self.result]);
+    self.darker = Ti.UI.createView({
+        backgroundColor : 'black',
+        opacity : 0.5,
+        visible : false,
+        zIndex : 900
+    });
     window.add(self);
+   
+    window.add(self.darker);
+     window.add(self.circleProgress);
+
+    var selectedkey = 'ti';
     var keyselector = Ti.UI.createView({
-        top : 20,
+        top : 30,
         left : 15,
         height : 20,
         width : 200,
@@ -45,25 +114,27 @@ module.exports = function(window) {
         textAlign : 'left'
     });
     keyselector.add(key);
-    self.form.add(keyselector);
+    self.add(keyselector);
     var textField = Ti.UI.createTextField({
         borderWidth : 1,
         borderColor : 'silver',
         borderRadius : 5,
         color : '#336699',
-        top : 50,
+        top : 60,
         left : 10,
         hintText : 'Suchbegriff',
         width : '90%',
-        height : 50
+        height : 40
     });
-    self.form.add(Ti.UI.createImageView({
+    self.lupe = Ti.UI.createImageView({
         image : '/images/lupe.png',
-        width : 35,
-        top : 60,
-        height : 30,
-        right : 30
-    }));
+        width : 80,
+        top : 45,
+        bubbleParent : false,
+        height : 70,
+        right : 5
+    });
+    self.add(self.lupe);
     var kk = Ti.UI.createImageView({
         image : '/images/kk.png',
         width : 50,
@@ -72,8 +143,8 @@ module.exports = function(window) {
         right : 15,
         opacity : 0.3
     });
-    self.form.add(kk);
-    var Button = Ti.UI.createButton({
+    self.add(kk);
+    var StartButton4Search = Ti.UI.createButton({
         borderStyle : Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
         title : 'Datenbankanfrage',
         bottom : 10,
@@ -82,14 +153,14 @@ module.exports = function(window) {
         bubbleParent : false,
         height : 60
     });
-    self.form.add(textField);
-    self.form.add(Button);
+    self.add(textField);
+    self.add(StartButton4Search);
 
     var search = {
-        titles : ['Hörspieltitel', 'Autor Vorname', 'Autor Nachname', 'Produktion', 'Jahr', 'Regie', 'Bearbeitung', 'Komposition', 'Übersetzung', 'Beschreibung (Volltext)', 'Mitwirkende'],
-        keys : ['ti', 'au.an', 'au.av', 'pr', 'yr', 're.an', 'be.an', 'ko.an', 'ua.an', 'ko.an', 'ua.an', 'inhv', 'mit']
+        titles : ['Hörspieltitel', 'Autor Vorname', 'Autor Nachname', 'Produktion', 'Regie', 'Komposition', 'Übersetzung', 'Beschreibung (Volltext)', 'Mitwirkende'],
+        keys : ['ti', 'au.an', 'au.av', 'pr', 're.an', 'ko.an', 'ua.an', 'ko.an', 'ua.an', 'inhv', 'mit']
     };
-    var container = Ti.UI.createView({
+    Container4Radiostationen = Ti.UI.createView({
         top : 150,
         bubbleParent : false,
         left : 10,
@@ -97,9 +168,9 @@ module.exports = function(window) {
         height : Ti.UI.SIZE,
         layout : 'horizontal'
     });
-    var stations = ['dlr', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'wdr', 'rb n', 'ndr', 'swr', 'sr','dw', 'corax'];
+    var stations = ['dlr', 'dlf', 'br', 'orf', 'srf', 'hr', 'mdr', 'rbb', 'wdr', 'rb n', 'ndr', 'swr', 'sr', 'dw', 'corax'];
     stations.forEach(function(s) {
-        container.add(Ti.UI.createImageView({
+        Container4Radiostationen.add(Ti.UI.createImageView({
             top : 5,
             left : 5,
             borderWidth : 1,
@@ -111,12 +182,9 @@ module.exports = function(window) {
             image : '/images/' + s + '.png'
         }));
     });
-    self.form.add(container);
+    self.add(Container4Radiostationen);
 
-    window.addEventListener('open', function() {
-        textField.focus();
-    });
-    container.addEventListener('click', function(_e) {
+    Container4Radiostationen.addEventListener('click', function(_e) {
         _e.source.opacity = (_e.source.opacity == 1) ? 0.15 : 1;
 
     });
@@ -135,59 +203,7 @@ module.exports = function(window) {
             selectedkey = search.keys[_e.index];
         });
     });
-    Button.addEventListener('click', function() {
-        if (textField.getValue().length<4) {
-            Ti.UI.createNotification({
-                    message : 'Das Suchwort sollte mindestens drei Zeichen lang sein. '
-                }).show();
-            return;
-        }
-        self.scrollingEnabled = true;
-        self.scrollToView(1);
-        self.result.setData([]);
-
-        self.circleProgress.show();
-        require('controls/htmlpost.adapter')({
-            payload : {
-                col1 : selectedkey,
-                a : textField.getValue() || 'Rauschen',
-                so : 'autor',
-                soo : 'asc',
-
-            },
-            onprogress : function(_e) {
-                self.circleProgress.setValue(_e);
-            },
-            onerror : function() {
-                Ti.UI.createNotification({
-                    message : 'Datenbankserver antwortet zu langsam …\n Einfach nochmals losschicken! '
-                }).show();
-                self.scrollingEnabled = false;
-                self.scrollToView(0);
-                self.circleProgress.hide();
-                return;
-            },
-            onload : function(_list) {
-                var data = [];
-                self.circleProgress.hide();
-                if (_list.length == 0) {
-                    Ti.UI.createNotification({
-                        message : 'Mehr als 100 Datensätze, formulieren Sie Ihre Anfrage bitte etwas genauer. '
-                    }).show();
-                    self.scrollingEnabled = false;
-                    self.scrollToView(0);
-                    return;
-                }
-                _list.forEach(function(item) {
-                    data.push(require('ui/common/row.widget')(item));
-                });
-                self.result.setData(data);
-            }
-        });
-    });
-    self.result.addEventListener('click', function(_e) {
-        var item = _e.rowData.itemId;
-        require('ui/common/sendung.window')(item).open();
-    });
+    StartButton4Search.addEventListener('click', onClickFunc);
+    self.lupe.addEventListener('click', onClickFunc);
 
 };

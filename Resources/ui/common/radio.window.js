@@ -1,22 +1,7 @@
-const anchorPoint = {
-    x : 0.5,
-    y : 3.2
-};
-
 module.exports = function() {
     var reStoreFunc = function() {
         setTimeout(function() {
-           // Ti.Media.vibrate();
-            ui.stationviews.forEach(function(view, ndx) {
-                var rotate = model.currentstation + ndx;
-                view.animate({
-                    duration : 100,
-                    transform : Ti.UI.create2DMatrix({
-                        rotate : 360 -rotate * segment,
-                        anchorPoint : anchorPoint
-                    })
-                });
-            });
+            RadioWheel && RadioWheel.goToSegment(model.currentstation);
             ui.StatusLog.setText(model.currentstation);
         }, 500);
         return;
@@ -28,13 +13,11 @@ module.exports = function() {
         allowBackground : true,
         volume : 1
     });
-
     var model = {
         radiostations : require('model/radiostations'),
         currentstation : Ti.App.Properties.getInt('CURRENT_STATION_INDEX', 0),
         φ : 0
     };
-    //  console.log('restore= ' + model.currentstation);
 
     var segment = 360 / model.radiostations.length;
     ui.StatusLog = Ti.UI.createLabel({
@@ -47,24 +30,24 @@ module.exports = function() {
         textAlign : 'center',
         text : ''
     });
-
     var container = Ti.UI.createView({
-        bottom : '25%'
+        bottom : '20%'
     });
     ui.add(container);
     ui.stationviews = [];
+    var images = [];
     for (var i = 0; i < model.radiostations.length; i++) {
-        ui.stationviews[i] = Ti.UI.createImageView({
-            image : '/images/' + model.radiostations[i].logo.toLowerCase() + '.png',
-            width : 200,
-            height : 200,
-            transform : Ti.UI.create2DMatrix({
-                rotate : segment * i,
-                anchorPoint : anchorPoint
-            })
-        });
-        container.add(ui.stationviews[i]);
+        images[i] = '/images/' + model.radiostations[i].logo.toLowerCase() + '.png';
     }
+    var RadioWheel = new (require('ui/common/radiowheel.widget'))();
+    container.add(RadioWheel.createView({
+        images : images,
+        width : 200,
+        anchorPoint : {
+            x : 0.5,
+            y : 3.2
+        }
+    }));
     model.φ = model.currentstation * segment;
     ui.PlayStopButton = Ti.UI.createView({
         bottom : 40,
@@ -72,62 +55,22 @@ module.exports = function() {
         height : 100,
         backgroundImage : '/images/play.png'
     });
-    ui.circleProgress = require('vendor/circularprogress')({
-        percent : 0,
-        size : 100,
-        margin : 1,
-        zIndex : 901,
-        progressColor : '#427aa7',
-        topper : {
-            color : '#fff',
-            size : 225
-        },
-        font : {
-            visible : false
-        }
-    });
     ui.add(ui.PlayStopButton);
-    ui.add(ui.circleProgress);
-
     ui.add(ui.StatusLog);
-    /* Events */
-    ui.addEventListener('focus', function() {
-        console.log('player focus ' + model.currentstation);
-        reStoreFunc();
-    });
-    // ui.addEventListener('open', reStoreFunc);
     // ui.getActivity().onResume = reStoreFunc;
     // ui.getActivity().onRestart = reStoreFunc;
-
     ui.addEventListener('swipe', function(_e) {
-        if (_e.direction == 'down' || _e.direction == 'up')
-            return;
-        ui.PlayStopButton.backgroundImage = '/images/leer.png';
-        player.stop();
-        player.release();
-        ui.StatusLog.setText('Radio angehalten.');
-         console.log('currentStation ' + model.currentstation);
-        model.currentstation = (_e.direction == 'left')//
-        ? (model.currentstation + model.radiostations.length + 1) % model.radiostations.length//
-        : (model.currentstation + model.radiostations.length - 1) % model.radiostations.length;
-        var name = model.radiostations[model.currentstation].logo;
-        ui.StatusLog.setText('Könnte jetzt ' + name + ' zuschalten.');
-        model.φ = (_e.direction == 'left') ? model.φ - segment : model.φ + segment;
-        ui.stationviews.forEach(function(view, ndx) {
-            view.animate({
-                duration : 70,
-                transform : Ti.UI.create2DMatrix({
-                    rotate : model.φ + segment * ndx,
-                    anchorPoint : anchorPoint
-                })
-            });
-
-        });
-        ui.PlayStopButton.backgroundImage = '/images/play.png';
-        console.log('write= ' + model.currentstation);
-
-        Ti.App.Properties.setInt('CURRENT_STATION_INDEX', model.currentstation);
-
+        if (_e.direction == 'left' || _e.direction == 'right') {
+            ui.PlayStopButton.backgroundImage = '/images/leer.png';
+            player.stop();
+            player.release();
+            ui.StatusLog.setText('Radio angehalten.');
+            model.currentstation = RadioWheel.rotateStep(_e.direction);
+            Ti.App.Properties.setInt('CURRENT_STATION_INDEX', model.currentstation);
+            var name = model.radiostations[model.currentstation].logo;
+            ui.StatusLog.setText('Könnte jetzt ' + name + ' zuschalten.');
+            ui.PlayStopButton.backgroundImage = '/images/play.png';
+        }
     });
     ui.PlayStopButton.addEventListener('click', function() {
         ui.PlayStopButton.backgroundImage = '/images/leer.png';
@@ -157,7 +100,6 @@ module.exports = function() {
     });
     player.addEventListener('change', function(_e) {
         var name = model.radiostations[model.currentstation].name || model.radiostations[model.currentstation].logo;
-        console.log(_e.description + '  ' + _e.state);
         switch (_e.state) {
         case Ti.Media.AudioPlayer.STATE_BUFFERING:
             //1
@@ -177,28 +119,19 @@ module.exports = function() {
             break;
         case Ti.Media.AudioPlayer.STATE_STARTING:
         case 4:
-            // 3
             ui.StatusLog.setText('Radio ' + name + ' wird gestartet.');
             ui.PlayStopButton.backgroundImage = '/images/stop.png';
             break;
         case 5:
-            //5
-            // ui.StatusLog.setText('Radio ' + name + ' ist verstummt');
             ui.PlayStopButton.backgroundImage = '/images/play.png';
             break;
         case Ti.Media.AudioPlayer.STATE_STOPPING:
-            //6
             ui.StatusLog.setText('Radio ist am Verstummen.');
             ui.PlayStopButton.backgroundImage = '/images/play.png';
             break;
-        case Ti.Media.AudioPlayer.STATE_WAITING_FOR_DATA:
-            ui.StatusLog.setText('Radio wartet auf Daten.');
-            break;
-        case Ti.Media.AudioPlayer.STATE_WAITING_FOR_QUEUE:
-            ui.StatusLog.setText('Radio wartet aufs Warten');
-            break;
+
         }
     });
-   
+
     return ui;
 };

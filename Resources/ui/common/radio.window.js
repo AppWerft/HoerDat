@@ -18,19 +18,12 @@ module.exports = function() {
         volume : 1
     });
 
-    if (Ti.App.Properties.getString('LASTRADIO', null)) {
-        var model = JSON.parse(Ti.App.Properties.getString('LASTRADIO', null));
-
-    } else {
-        console.log('Info: initialization auf radioModel');
-        var model = {
-            stations : require('model/stations'),
-            activestationindex : 0,
-            φ : 0
-        };
-    }
+    var model = {
+        stations : require('model/stations'),
+        activestationindex : Ti.App.Properties.getInt('STATIONINDEX', 0),
+        φ : 0
+    };
     var segment = 360 / model.stations.length;
-
     var statuslog = Ti.UI.createLabel({
         bottom : 0,
         height : 20,
@@ -104,8 +97,7 @@ module.exports = function() {
         : (model.activestationindex + model.stations.length - 1) % model.stations.length;
         var name = model.stations[model.activestationindex].logo;
         statuslog.setText('Könnte jetzt ' + name + ' zuschalten.');
-
-        model.φ = (_e.direction == 'left') ? model.φ - segment - 360 : model.φ + segment + 360;
+        model.φ = (_e.direction == 'left') ? model.φ - segment : model.φ + segment;
         console.log(model.φ / model.stations.length);
         stationviews.forEach(function(view, ndx) {
             view.animate({
@@ -118,7 +110,7 @@ module.exports = function() {
 
         });
         PlayStopButton.backgroundImage = '/images/play.png';
-        Ti.App.Properties.setString('LASTRADIO', JSON.stringify(model));
+        Ti.App.Properties.setInt('STATIONINDEX', model.activestationindex);
 
     });
     PlayStopButton.addEventListener('click', function() {

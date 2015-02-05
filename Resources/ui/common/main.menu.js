@@ -1,16 +1,14 @@
-var Актйонбар = require('com.alcoapps.actionbarextras');
+var АктйонБар = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
 module.exports = function(_e) {
     console.log('Info: tabgroup opened');
     var cron;
-    Актйонбар.title = 'HörDat';
-    Актйонбар.titleFont = "Rambla-Bold";
-    Актйонбар.subtitleColor = "#ccc";
+    АктйонБар.title = 'HörDat';
+    АктйонБар.titleFont = "Rambla-Bold";
+    АктйонБар.subtitleColor = "#ccc";
     var activity = _e.source.getActivity();
     if (activity) {
-        console.log('Info: activity found');
-        console.log(activity);
         activity.invalidateOptionsMenu();
         activity.onPrepareOptionsMenu = function(e) {
             console.log('Info: onCreateOptionsMenu triggered');
@@ -38,7 +36,7 @@ module.exports = function(_e) {
     _e.source.addEventListener('focus', function() {
         console.log('tabgroup focused');
         cron = setInterval(function() {
-            Актйонбар.subtitle = require('vendor/moment')().format('HH:mm:ss');
+            АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
         }, 1000);
     });
     _e.source.addEventListener('blur', function() {
@@ -46,7 +44,7 @@ module.exports = function(_e) {
         cron && clearInterval(cron);
     });
     cron = setInterval(function() {
-        Актйонбар.subtitle = require('vendor/moment')().format('HH:mm');
+        АктйонБар.subtitle = require('vendor/moment')().format('HH:mm');
     }, 60000);
     require('vendor/versionsreminder')();
 };

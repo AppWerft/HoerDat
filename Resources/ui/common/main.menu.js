@@ -9,7 +9,6 @@ module.exports = function(_e) {
     АктйонБар.subtitleColor = "#ccc";
     var activity = _e.source.getActivity();
     if (activity) {
-        activity.invalidateOptionsMenu();
         activity.onCreateOptionsMenu = function(e) {
             console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
@@ -28,6 +27,7 @@ module.exports = function(_e) {
             });
 
         };
+        activity.invalidateOptionsMenu();
         activity.actionBar.homeButtonEnabled = true;
         activity.actionBar.onHomeIconItemSelected = function() {
             _e.source.close();

@@ -16,7 +16,7 @@ module.exports = function(_e) {
             e.menu.clear();
             activity.actionBar.displayHomeAsUp = true;    
         };
-        
+         activity.actionBar.homeButtonEnabled = true;            
         activity.actionBar.logo = data.logo;
         activity.actionBar.homeButtonEnabled = true;
         activity.actionBar.onHomeIconItemSelected = function() {

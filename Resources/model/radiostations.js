@@ -25,14 +25,16 @@ module.exports = [{
 
 }, {
     logo : 'radio fip',
-    stream : 'http://mp3lg.tdf-cdn.com/fip/all/fiphautdebit.mp3'
+    stream : 'http://mp3lg.tdf-cdn.com/fip/all/fiphautdebit.mp3',
+    json : 'http://www.fipradio.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json'
 }, {
     logo : 'france culture',
-    stream : 'http://mp3.live.tv-radio.com/franceculture/all/franceculturehautdebit.mp3'
+    feed : 'http://mp3.live.tv-radio.com/franceculture/all/franceculturehautdebit.mp3'
 }, {
     logo : 'DLR',
     playlist : 'http://www.dradio.de/streaming/dkultur.m3u',
-    name : 'DeutschlandRadio Kultur'
+    name : 'DeutschlandRadio Kultur',
+    feed : 'http://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=1'
 }, {
     logo : 'DLF',
     playlist : 'http://www.dradio.de/streaming/dlf.m3u',

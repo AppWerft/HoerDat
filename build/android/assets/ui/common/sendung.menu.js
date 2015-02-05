@@ -1,1 +1,1 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/ui/common/sendung.menu.js
+var abx=require("com.alcoapps.actionbarextras"),crons=[];module.exports=function(e){var t=e.source,a=t.data;abx.title=a.title,abx.subtitle=a.autor,abx.titleFont="Rambla-Bold",abx.subtitleColor="#ccc";var o=e.source.getActivity();o&&(console.log("Info: activity found"),o.onCreateOptionsMenu=function(e){e.menu.clear(),o.actionBar.displayHomeAsUp=!0},o.actionBar.logo=a.logo,o.actionBar.homeButtonEnabled=!0,o.actionBar.onHomeIconItemSelected=function(){t.close()})};

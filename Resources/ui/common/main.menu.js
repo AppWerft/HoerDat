@@ -1,20 +1,20 @@
-var abx = require('com.alcoapps.actionbarextras');
+var Актйонбар = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
 module.exports = function(_e) {
     console.log('Info: tabgroup opened');
     var cron;
-    abx.title = 'HörDat';
-    abx.titleFont = "Rambla-Bold";
-    abx.subtitleColor = "#ccc";
+    Актйонбар.title = 'HörDat';
+    Актйонбар.titleFont = "Rambla-Bold";
+    Актйонбар.subtitleColor = "#ccc";
     var activity = _e.source.getActivity();
     if (activity) {
         console.log('Info: activity found');
         console.log(activity);
-        activity.onCreateOptionsMenu = function(e) {
+        activity.invalidateOptionsMenu();
+        activity.onPrepareOptionsMenu = function(e) {
             console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
-            //e.menu.clear();
             e.menu.add({
                 title : 'Über uns',
                 icon : Ti.App.Android.R.drawable.ic_action_about,
@@ -30,7 +30,6 @@ module.exports = function(_e) {
             });
 
         };
-        // activity.actionBar.logo = data.logo;
         activity.actionBar.homeButtonEnabled = true;
         activity.actionBar.onHomeIconItemSelected = function() {
             _e.source.close();
@@ -39,7 +38,7 @@ module.exports = function(_e) {
     _e.source.addEventListener('focus', function() {
         console.log('tabgroup focused');
         cron = setInterval(function() {
-            abx.subtitle = require('vendor/moment')().format('HH:mm:ss');
+            Актйонбар.subtitle = require('vendor/moment')().format('HH:mm:ss');
         }, 1000);
     });
     _e.source.addEventListener('blur', function() {
@@ -47,7 +46,7 @@ module.exports = function(_e) {
         cron && clearInterval(cron);
     });
     cron = setInterval(function() {
-        abx.subtitle = require('vendor/moment')().format('HH:mm');
+        Актйонбар.subtitle = require('vendor/moment')().format('HH:mm');
     }, 60000);
     require('vendor/versionsreminder')();
 };

@@ -11,15 +11,18 @@ module.exports = function(Window) {
     var win3 = require('ui/common/radio.window')();
     var tab1 = Ti.UI.createTab({
         title : 'Hörplan',
-        window : win1
+        window : win1,
+        bubbleParent:false
     });
     var tab2 = Ti.UI.createTab({
         title : 'Suche',
-        window : win2
+        window : win2,        bubbleParent:false
+
     });
     var tab3 = Ti.UI.createTab({
         title : 'Radio',
-        window : win3
+        window : win3,        bubbleParent:false
+
     });
     self.addTab(tab1);
     self.addTab(tab2);

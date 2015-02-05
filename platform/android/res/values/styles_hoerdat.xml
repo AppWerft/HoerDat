@@ -18,7 +18,10 @@
 -->
 
 <resources>
-
+		<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat">
+            <item name="windowActionBar">false</item>
+            <item name="android:windowNoTitle">true</item>
+    </style>
     <style name="Theme.Hoerdat" parent="@style/Theme.AppCompat">
         <item name="actionBarItemBackground">@drawable/selectable_background_hoerdat</item>
         <item name="popupMenuStyle">@style/PopupMenu.Hoerdat</item>

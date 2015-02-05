@@ -10,6 +10,7 @@ module.exports = function(_e) {
     var activity = _e.source.getActivity();
     if (activity) {
         console.log('Info: activity found');
+        console.log(activity);
         activity.onCreateOptionsMenu = function(e) {
             console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
@@ -17,13 +18,14 @@ module.exports = function(_e) {
             e.menu.add({
                 title : 'Über uns',
                 icon : Ti.App.Android.R.drawable.ic_action_about,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
+                require('ui/common/about.window')().open();
             });
             e.menu.add({
                 title : 'Einstellungen',
                 icon : Ti.App.Android.R.drawable.ic_action_settings,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
             });
 
@@ -45,7 +47,7 @@ module.exports = function(_e) {
         cron && clearInterval(cron);
     });
     cron = setInterval(function() {
-        abx.subtitle = require('vendor/moment')().format('HH:mm:ss');
-    }, 1000);
+        abx.subtitle = require('vendor/moment')().format('HH:mm');
+    }, 60000);
     require('vendor/versionsreminder')();
 };

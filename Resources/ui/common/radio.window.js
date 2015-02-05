@@ -1,22 +1,14 @@
-var TiCircularSlider = require('de.marcelpociot.circularslider');
+const anchorPoint = {
+    x : 0.5,
+    y : 3.2
+};
 
 module.exports = function() {
     var reStoreFunc = function() {
         Ti.Media.vibrate();
         console.log('reStoreFunc');
         return;
-        model.lastactivestation = Ti.App.Properties.getInt('LAST', 0);
-        console.log('readLAST: ' + model.lastactivestation);
-        stationviews.forEach(function(view, ndx) {
-            view.animate({
-                duration : 400,
-                transform : Ti.UI.create2DMatrix({
-                    rotate : model.lastactivestation * 360 / model.stations.length + 360 / model.stations.length * ndx + 360,
-                    anchorPoint : anchorPoint
-                })
-            });
 
-        });
     };
     var ui = Ti.UI.createWindow({
         backgroundColor : 'white'
@@ -25,13 +17,20 @@ module.exports = function() {
         allowBackground : true,
         volume : 1
     });
-    var model = {
-        stations : require('model/stations'),
-        activestationindex : 0,
-        φ : 0
 
-    };
+    if (Ti.App.Properties.getString('LASTRADIO', null)) {
+        var model = JSON.parse(Ti.App.Properties.getString('LASTRADIO', null));
+
+    } else {
+        console.log('Info: initialization auf radioModel');
+        var model = {
+            stations : require('model/stations'),
+            activestationindex : 0,
+            φ : 0
+        };
+    }
     var segment = 360 / model.stations.length;
+
     var statuslog = Ti.UI.createLabel({
         bottom : 0,
         height : 20,
@@ -47,37 +46,23 @@ module.exports = function() {
         bottom : '25%'
     });
     ui.add(container);
-    var sliderView = TiCircularSlider.createView({
-        height : 300,
-        width : 300,
-        lineWidth : 1,
-        filledColor : 'transparent',
-        unfilledColor : 'grey'
-    });
-    sliderView.addEventListener('change', function(e) {
-        Ti.API.info("Value is: ", e.value);
-    });
 
     var stationviews = [];
-    var anchorPoint = {
-        x : 0.5,
-        y : 3.2
-    };
-    model.lastactivestation = Ti.App.Properties.getInt('LAST', 0);
     for (var i = 0; i < model.stations.length; i++) {
+
         stationviews[i] = Ti.UI.createImageView({
             image : '/images/' + model.stations[i].logo.toLowerCase() + '.png',
             width : 200,
             height : 200,
-
             transform : Ti.UI.create2DMatrix({
-                rotate : segment * (model.lastactivestation + i),
+                rotate : segment * (model.activestationindex + i),
                 anchorPoint : anchorPoint
             })
         });
         container.add(stationviews[i]);
     }
-    var control = Ti.UI.createView({
+    model.φ = model.activestationindex * segment;
+    var PlayStopButton = Ti.UI.createView({
         bottom : 40,
         width : 100,
         height : 100,
@@ -97,7 +82,7 @@ module.exports = function() {
             visible : false
         }
     });
-    ui.add(control);
+    ui.add(PlayStopButton);
     ui.add(ui.circleProgress);
 
     ui.add(statuslog);
@@ -106,25 +91,25 @@ module.exports = function() {
     // ui.addEventListener('open', reStoreFunc);
     ui.getActivity().onResume = reStoreFunc;
     ui.getActivity().onRestart = reStoreFunc;
+
     ui.addEventListener('swipe', function(_e) {
         if (_e.direction == 'down' || _e.direction == 'up')
             return;
-        control.backgroundImage = '/images/leer.png';
+        PlayStopButton.backgroundImage = '/images/leer.png';
         player.stop();
         player.release();
         statuslog.setText('Radio angehalten.');
         model.activestationindex = (_e.direction == 'left')//
         ? (model.activestationindex + model.stations.length + 1) % model.stations.length//
         : (model.activestationindex + model.stations.length - 1) % model.stations.length;
-        Ti.App.Properties.setInt('LAST', model.activestationindex);
-
         var name = model.stations[model.activestationindex].logo;
         statuslog.setText('Könnte jetzt ' + name + ' zuschalten.');
 
-        model.φ = (_e.direction == 'left') ? model.φ - segment : model.φ + segment;
+        model.φ = (_e.direction == 'left') ? model.φ - segment - 360 : model.φ + segment + 360;
+        console.log(model.φ / model.stations.length);
         stationviews.forEach(function(view, ndx) {
             view.animate({
-                duration : 400,
+                duration : 70,
                 transform : Ti.UI.create2DMatrix({
                     rotate : model.φ + segment * ndx,
                     anchorPoint : anchorPoint
@@ -132,17 +117,19 @@ module.exports = function() {
             });
 
         });
-        control.backgroundImage = '/images/play.png';
+        PlayStopButton.backgroundImage = '/images/play.png';
+        Ti.App.Properties.setString('LASTRADIO', JSON.stringify(model));
+
     });
-    control.addEventListener('click', function() {
-        control.backgroundImage = '/images/leer.png';
+    PlayStopButton.addEventListener('click', function() {
+        PlayStopButton.backgroundImage = '/images/leer.png';
         var name = model.stations[model.activestationindex].logo;
         if (player.isPlaying()) {
             player.stop();
             statuslog.setText('Radio ' + name + ' gestoppt');
             return;
         }
-        control.opacity = 0.4;
+        PlayStopButton.opacity = 0.4;
         statuslog.setText('Besorge Radio-Adresse für ' + name);
         player.release();
         require('controls/resolveplaylist')({
@@ -150,13 +137,13 @@ module.exports = function() {
             stream : model.stations[model.activestationindex].stream,
             onload : function(_url) {
                 statuslog.setText('Radio-Adresse erkannt, starte jetzt Radio');
-                control.opacity = 1;
+                PlayStopButton.opacity = 1;
                 player.setUrl(_url);
                 player.play();
             },
             onerror : function() {
                 statuslog.setText('FEHLER: Radio-Adresse nicht erkannt.');
-                control.opacity = 1;
+                PlayStopButton.opacity = 1;
             }
         });
     });
@@ -179,23 +166,23 @@ module.exports = function() {
         case 3:
             //3
             statuslog.setText('Radio spielt ' + name + ' .');
-            control.backgroundImage = '/images/stop.png';
+            PlayStopButton.backgroundImage = '/images/stop.png';
             break;
         case Ti.Media.AudioPlayer.STATE_STARTING:
         case 4:
             // 3
             statuslog.setText('Radio ' + name + ' wird gestartet.');
-            control.backgroundImage = '/images/stop.png';
+            PlayStopButton.backgroundImage = '/images/stop.png';
             break;
         case 5:
             //5
             // statuslog.setText('Radio ' + name + ' ist verstummt');
-            control.backgroundImage = '/images/play.png';
+            PlayStopButton.backgroundImage = '/images/play.png';
             break;
         case Ti.Media.AudioPlayer.STATE_STOPPING:
             //6
             statuslog.setText('Radio ist am Verstummen.');
-            control.backgroundImage = '/images/play.png';
+            PlayStopButton.backgroundImage = '/images/play.png';
             break;
         case Ti.Media.AudioPlayer.STATE_WAITING_FOR_DATA:
             statuslog.setText('Radio wartet auf Daten.');

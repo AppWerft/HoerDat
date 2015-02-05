@@ -7,14 +7,8 @@ module.exports = function(args) {
         var xhr = Ti.Network.createHTTPClient({
             timeout : 6000,
             onload : function() {
-                console.log(this.status);
-                console.log(this.getAllResponseHeaders());
-
                 if (this.status == 200) {
-
-                    var ct = this.getResponseHeader('Content-Type');
-                    console.log('CT=' + ct);
-                    if (/url/.test(ct)) {
+                    if (/url/.test(this.getResponseHeader('Content-Type'))) {
                         var foo = this.responseText.split('\n');
                         var bar = [];
                         for (var i = 0; i < foo.length; i++) {

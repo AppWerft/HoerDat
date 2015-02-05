@@ -10,7 +10,7 @@ module.exports = function(_e) {
     var activity = _e.source.getActivity();
     if (activity) {
         activity.invalidateOptionsMenu();
-        activity.onPrepareOptionsMenu = function(e) {
+        activity.onCreateOptionsMenu = function(e) {
             console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
             e.menu.add({
@@ -44,7 +44,7 @@ module.exports = function(_e) {
         cron && clearInterval(cron);
     });
     cron = setInterval(function() {
-        АктйонБар.subtitle = require('vendor/moment')().format('HH:mm');
-    }, 60000);
+        АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
+    }, 1000);
     require('vendor/versionsreminder')();
 };

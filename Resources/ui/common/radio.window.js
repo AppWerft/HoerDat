@@ -1,9 +1,12 @@
 module.exports = function() {
+    var restored = false;
     var reStoreFunc = function() {
-        setTimeout(function() {
-            RadioWheel && RadioWheel.goToSegment(model.currentstation);
-            ui.StatusLog.setText(model.currentstation);
-        }, 500);
+        if (!restored)
+            setTimeout(function() {
+                RadioWheel && RadioWheel.goToSegment(model.currentstation);
+                ui.StatusLog.setText(model.currentstation);
+                restored = true;
+            }, 500);
         return;
     };
     var ui = Ti.UI.createWindow({
@@ -57,6 +60,10 @@ module.exports = function() {
     });
     ui.add(ui.PlayStopButton);
     ui.add(ui.StatusLog);
+    ui.addEventListener('focus', function() {
+        reStoreFunc();
+
+    });
     // ui.getActivity().onResume = reStoreFunc;
     // ui.getActivity().onRestart = reStoreFunc;
     ui.addEventListener('swipe', function(_e) {
@@ -132,6 +139,5 @@ module.exports = function() {
 
         }
     });
-
     return ui;
 };

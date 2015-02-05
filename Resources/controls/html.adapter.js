@@ -8,6 +8,9 @@ function getText(foo) {
         return foo[0].content.replace(/[\s]{3,}/gm, '\n').trim();
 }
 
+var Moment = require('vendor/moment');
+Moment.locale('de');
+
 module.exports = function(args) {
     if (Ti.App.Properties.hasProperty(args.date)) {
         args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
@@ -36,7 +39,25 @@ module.exports = function(args) {
                                         var res = /^(.*?)\s/.exec(item.meta);
                                         if (res) {
                                             item.logo = '/images/' + res[1].toLowerCase() + '.png';
-                                        }//    console.log(getText(tr.td[i + 1].p));
+                                        }
+                                        // Startzeit:
+                                        res = /Länge: (.*?)\)/.exec(item.meta);
+                                        if (res) {
+                                            var duration = res[1];
+                                            var parts = duration.split(':');
+                                            if (parts) {
+                                                item.duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                                            }
+                                            res = /\s(\d\d:\d\d),/.exec(item.meta);
+                                            if (res) {
+                                                parts = item.meta.split(', ');
+                                                if (parts) {
+                                                    item.start = Moment(parts[1] + parts[2], 'D. MMM YYYY HH:mm');
+                                                    item.end = Moment(item.start).add(item.duration, 'seconds');
+
+                                                }
+                                            }
+                                        }
                                         break;
                                     case 'Autor(en):':
                                         item.autor = getText(tr.td[i + 1].p);
@@ -51,7 +72,6 @@ module.exports = function(args) {
                                         item.komponisten = getText(tr.td[i + 1].p);
                                         break;
                                     case 'Regisseur(e):':
-                                        console.log(tr.td[i + 1].p);
                                         item.regisseure = getText(tr.td[i + 1].p);
                                         break;
                                     case 'Übersetzer:':

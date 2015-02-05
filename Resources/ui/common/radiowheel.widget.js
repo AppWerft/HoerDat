@@ -35,7 +35,7 @@ Module.prototype = {
         var that = this;
         this._view.children.forEach(function(child, i) {
             child.animate({
-                duration : Math.random()*100,
+                duration : 100 + Math.random() * 70,
                 transform : Ti.UI.create2DMatrix({
                     rotate : (that.index + i) * that.segment,
                     anchorPoint : that.anchorpoint
@@ -49,9 +49,9 @@ Module.prototype = {
         var that = this;
         this._view.children.forEach(function(child, i) {
             child.animate({
-                duration :Math.random()*500,
+                duration : 100 + Math.random() * 500,
                 transform : Ti.UI.create2DMatrix({
-                    rotate : (that.index + i) * that.segment+ 360,
+                    rotate : (that.index + i) * that.segment + 360,
                     anchorPoint : that.anchorpoint
                 })
             });

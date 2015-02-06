@@ -10,7 +10,7 @@ var Module = function() {
 };
 
 Module.prototype = {
-    /* parameters is array of images */
+    /* parameters is array of images and the anchorPoint*/
     createView : function(args) {
         var views = [];
         var that = this;

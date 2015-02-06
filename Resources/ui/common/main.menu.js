@@ -40,7 +40,7 @@ module.exports = function(_e) {
         };
         activity.onPause = function() {
             console.log('tabgroup blured');
-            cron && clearInterval(cron);
+            clearInterval(cron);
         };
         cron = setInterval(function() {
             АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');

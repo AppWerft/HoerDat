@@ -1,14 +1,12 @@
-var abx = require('com.alcoapps.actionbarextras');
-
-var crons = [];
+var АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_e) {
     var win = _e.source;
     var data = win.data;
-    abx.title = data.title;
-    abx.subtitle = data.autor;
-    abx.titleFont = "Rambla-Bold";
-    abx.subtitleColor = "#ccc";
+    АктйонБар.title = data.title;
+    АктйонБар.subtitle = data.autor;
+    АктйонБар.titleFont = "Rambla-Bold";
+    АктйонБар.subtitleColor = "#ccc";
     var activity = _e.source.getActivity();
     if (activity) {
         console.log('Info: activity found');

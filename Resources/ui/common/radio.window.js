@@ -67,7 +67,7 @@ module.exports = function() {
             ui.PlayStopControl.backgroundImage = '/images/play.png';
         }
     });
-    ui.PlayStopControl = new (require('ui/common/radio.control'))(model);
+    ui.PlayStopControl = new (require('controls/radio.control'))(model);
     ui.PlayStopControl.addEventListener('change', function(_e) {
         ui.StatusLog.setText(_e.message);
     });    

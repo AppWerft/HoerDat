@@ -10,26 +10,30 @@ var Module = function() {
 };
 
 Module.prototype = {
+    /* parameters is array of images */
     createView : function(args) {
         var views = [];
         var that = this;
-        args.images.forEach(function(image, i) {
+        args.images && args.images.forEach(function(image, i) {
             that._view.add(Ti.UI.createImageView({
                 image : image,
                 touchEnabled : false,
-                width : args.width,
-                height : args.width,
+                width : args.width || 200,
+                height : args.width || 200,
                 transform : Ti.UI.create2DMatrix({
                     rotate : 360 / args.images.length * i,
                     anchorPoint : args.anchorPoint
                 })
             }));
         });
-        this.images = args.images;
-        this.segment = 360 / args.images.length;
+        if (args.images) {
+            this.images = args.images;
+            this.segment = 360 / args.images.length;
+        }
         this.anchorpoint = args.anchorPoint;
         return this._view;
     },
+    /* rotate one step to left or right */
     rotateStep : function(direction) {
         this.index = (direction == 'left') ? (this.index - 1) : (this.index + 1);
         var that = this;
@@ -44,6 +48,7 @@ Module.prototype = {
         });
         return (this.images.length - this.index + this.images.length) % this.images.length;
     },
+    /* jump to one segment*/
     goToSegment : function(index) {
         this.index = (this.images.length - index + this.images.length) % this.images.length;
         var that = this;

@@ -11,24 +11,24 @@ var Module = function(model) {
 };
 Module.prototype = {
     createView : function() {
+        var that = this;
         this._view = Ti.UI.createView({
             bottom : 40,
             width : 100,
             height : 100,
             backgroundImage : '/images/play.png'
         });
-        var that = this;
         this._view.addEventListener('click', function() {
             that._view.backgroundImage = '/images/leer.png';
             var name = that.model.radiostations[that.model.currentstation].logo;
             if (player.isPlaying()) {
-                player.stop();
+                that.stopPlayer();
                 that.fireEvent('change', {
                     message : 'Radio ' + name + ' gestoppt'
                 });
                 return;
             }
-            that._view.opacity = 0.4;
+            that._view.opacity = 0.2;
             that.fireEvent('change', {
                 message : 'Besorge Radio-Adresse für ' + name
             });

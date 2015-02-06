@@ -2,7 +2,7 @@
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>de.appwerft.hoerdat</id>
     <name>HörDat</name>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <publisher>fuerst</publisher>
     <url>http://</url>
     <description>undefined</description>
@@ -39,7 +39,7 @@
         </plist>
     </ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="22" android:versionName="1.2.0">
+        <manifest android:versionCode="23" android:versionName="1.2.1">
             <application android:theme="@style/Theme.Hoerdat"/>
             <uses-sdk android:maxSdkVersion="21"
                 android:minSdkVersion="10" android:targetSdkVersion="14"/>

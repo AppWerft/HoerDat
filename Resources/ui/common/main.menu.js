@@ -2,8 +2,7 @@ var АктйонБар = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
 module.exports = function(_e) {
-    console.log('Info: tabgroup opened');
-    var cron;
+    
     АктйонБар.title = 'HörDat';
     АктйонБар.titleFont = "Rambla-Bold";
     АктйонБар.subtitleColor = "#ccc";
@@ -33,18 +32,15 @@ module.exports = function(_e) {
             _e.source.close();
         };
         activity.onResume = function() {
-            console.log('tabgroup focused');
-            cron = setInterval(function() {
+            console.log('activity resumed');
+            АктйонБар.cronjob = setInterval(function() {
                 АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
             }, 1000);
         };
         activity.onPause = function() {
-            console.log('tabgroup blured');
-            clearInterval(cron);
+            console.log('activity paused');
+            clearInterval(АктйонБар.cronjob);
         };
-        cron = setInterval(function() {
-            АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
-        }, 1000);
     }
     require('vendor/versionsreminder')();
 };

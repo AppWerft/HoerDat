@@ -28,23 +28,23 @@ module.exports = function(_e) {
 
         };
         activity.invalidateOptionsMenu();
-        activity.actionBar.homeButtonEnabled = true;
+
         activity.actionBar.onHomeIconItemSelected = function() {
             _e.source.close();
         };
-    }
-    _e.source.addEventListener('focus', function() {
-        console.log('tabgroup focused');
+        activity.onResume = function() {
+            console.log('tabgroup focused');
+            cron = setInterval(function() {
+                АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
+            }, 1000);
+        };
+        activity.onPause = function() {
+            console.log('tabgroup blured');
+            cron && clearInterval(cron);
+        };
         cron = setInterval(function() {
             АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
         }, 1000);
-    });
-    _e.source.addEventListener('blur', function() {
-        console.log('tabgroup blured');
-        cron && clearInterval(cron);
-    });
-    cron = setInterval(function() {
-        АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
-    }, 1000);
+    }
     require('vendor/versionsreminder')();
 };

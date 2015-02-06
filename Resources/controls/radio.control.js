@@ -4,11 +4,10 @@ var player = Ti.Media.createAudioPlayer({
 });
 
 var Module = function(model) {
-    this.model = model;
-    this.eventhandlers = {};
-
+    this.model = model, this.eventhandlers = {}, this.cron, this.tick = 0;
     return this;
 };
+
 Module.prototype = {
     createView : function() {
         var that = this;
@@ -18,11 +17,25 @@ Module.prototype = {
             height : 100,
             backgroundImage : '/images/play.png'
         });
+        this._spinner = require('vendor/circularprogress')({
+            percent : 0,
+            size : 100,
+            margin : 0,
+            touchEnabled : false,
+            zIndex : 901,
+            progressColor : '#427aa7',
+            
+            font : {
+                visible : false
+            }
+        });
+        this._view.add(this._spinner);
         this._view.addEventListener('click', function() {
             that._view.backgroundImage = '/images/leer.png';
             var name = that.model.radiostations[that.model.currentstation].logo;
             if (player.isPlaying()) {
                 that.stopPlayer();
+                that._view.backgroundImage = '/images/play.png';
                 that.fireEvent('change', {
                     message : 'Radio ' + name + ' gestoppt'
                 });
@@ -37,12 +50,26 @@ Module.prototype = {
                 playlist : that.model.radiostations[that.model.currentstation].playlist,
                 stream : that.model.radiostations[that.model.currentstation].stream,
                 onload : function(_url) {
+                    that.model.radiostations[that.model.currentstation].stream = _url;
                     that._view.opacity = 1;
                     player.setUrl(_url);
                     player.play();
                     that.fireEvent('change', {
-                        message : 'Radioadresse gefunden'
+                        message : 'Radioadresse bekannt, Verbindung wird aufgebaut …'
                     });
+                    that._spinner.show();
+                    that.tick = 0;
+                    that.cron = setInterval(function() {
+                        that.tick++;
+                        console.log(that.tick);
+                        if (that.tick == 100) {
+                            clearInterval(that.cron);
+                            player.stop();
+                            this._view.backgroundImage = '/images/play.png';
+                            that._spinner.hide();
+                        }
+                        that._spinner.setValue(that.tick / 100);
+                    }, 100);
                 },
                 onerror : function() {
                     //ui.StatusLog.setText('FEHLER: Radio-Adresse nicht erkannt.');
@@ -66,8 +93,11 @@ Module.prototype = {
             case Ti.Media.AudioPlayer.STATE_PLAYING:
             case 3:
                 //3
+                that._spinner.hide();
+                clearInterval(that.cron);
                 that.fireEvent('change', {
-                message :'Radio spielt ' + name + ' .'});
+                    message : 'Radio spielt ' + name + ' .'
+                });
                 that._view.backgroundImage = '/images/stop.png';
                 break;
             case Ti.Media.AudioPlayer.STATE_STARTING:
@@ -91,6 +121,36 @@ Module.prototype = {
     stopPlayer : function() {
         player.stop();
         player.release();
+    },
+    hide : function() {
+        var that = this;
+        this._view.animate({
+            duration : 100,
+            opacity : 0,
+            transform : Ti.UI.create2DMatrix({
+                scale : 0.3
+            })
+        }, function() {
+            that._view.backgroundImage = '/images/play.png';
+        });
+    },
+    show : function() {
+        var that = this;
+        this._view.animate({
+            duration : 50,
+            opacity : 1,
+            transform : Ti.UI.create2DMatrix({
+                scale : 1.2
+            })
+        }, function() {
+            that._view.animate({
+                duration : 50,
+                transform : Ti.UI.create2DMatrix({
+                    scale : 1
+
+                })
+            });
+        });
     },
 
     fireEvent : function(_event, _payload) {

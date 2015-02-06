@@ -29,7 +29,7 @@ module.exports = [{
     json : 'http://www.fipradio.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json'
 }, {
     logo : 'france culture',
-    feed : 'http://mp3.live.tv-radio.com/franceculture/all/franceculturehautdebit.mp3'
+    stream : 'http://mp3.live.tv-radio.com/franceculture/all/franceculturehautdebit.mp3'
 }, {
     logo : 'DLR',
     playlist : 'http://www.dradio.de/streaming/dkultur.m3u',

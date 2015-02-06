@@ -1,1 +1,1 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/controls/htmlpost.adapter.js
+module.exports=function(t){var e={},a=!1,r=0,o="http://s507870211.online.de/index.php?col1=ti&a="+encodeURI(t.payload.a)+"&so=autor&soo=asc";[0,6e3,12e3].forEach(function(n){setTimeout(function(){require("controls/getyahoo")(o,function(r){0==a&&(t.onload(r),clearInterval(e.cron),a=!0)},function(){r++,3==r&&(clearInterval(e.cron),t.onerror())})},n)}),e.tick=0,e.cron=setInterval(function(){e.tick++,t.onprogress(e.tick/100)},200)};

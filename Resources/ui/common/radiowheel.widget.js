@@ -1,4 +1,5 @@
 var Module = function() {
+    this.eventhandlers = {};
     this._view = Ti.UI.createView({
         bubbleParent : false,
         touchEnabled : false,
@@ -42,8 +43,13 @@ Module.prototype = {
                     rotate : (that.index + i) * that.segmentlänge,
                     anchorPoint : that.anchorpoint
                 })
+            }, function() {
+
             });
         });
+        setTimeout(function() {
+            that.fireEvent('ready');
+        }, 500);
         var index = (this.images.length - this.index) % this.images.length;
         return (index >= 0) ? index : index + this.images.length;
     },
@@ -60,6 +66,27 @@ Module.prototype = {
                 })
             });
         });
+    },
+
+    fireEvent : function(_event, _payload) {
+        if (this.eventhandlers[_event]) {
+            for (var i = 0; i < this.eventhandlers[_event].length; i++) {
+                this.eventhandlers[_event][i].call(this, _payload);
+            }
+        }
+    },
+    addEventListener : function(_event, _callback) {
+        if (!this.eventhandlers[_event])
+            this.eventhandlers[_event] = [];
+        this.eventhandlers[_event].push(_callback);
+    },
+    removeEventListener : function(_event, _callback) {
+        if (!this.eventhandlers[_event])
+            return;
+        var newArray = this.eventhandlers[_event].filter(function(element) {
+            return element != _callback;
+        });
+        this.eventhandlers[_event] = newArray;
     }
 };
 

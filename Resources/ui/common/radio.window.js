@@ -47,17 +47,13 @@ module.exports = function() {
         }
     }));
     model.φ = model.currentstation * segment;
-    
     ui.add(ui.StatusLog);
     ui.addEventListener('focus', function() {
         reStoreFunc();
-
     });
-    // ui.getActivity().onResume = reStoreFunc;
-    // ui.getActivity().onRestart = reStoreFunc;
     ui.addEventListener('swipe', function(_e) {
         if (_e.direction == 'left' || _e.direction == 'right') {
-            ui.PlayStopControl.backgroundImage = '/images/leer.png';
+            ui.PlayStopControl.hide();
             ui.PlayStopControl.stopPlayer();
             ui.StatusLog.setText('Radio angehalten.');
             model.currentstation = RadioWheel.rotateStep(_e.direction);
@@ -68,6 +64,9 @@ module.exports = function() {
             ui.StatusLog.setText('Könnte jetzt ' + name + ' zuschalten.');
             ui.PlayStopControl.backgroundImage = '/images/play.png';
         }
+    });
+    RadioWheel.addEventListener('ready',function(){
+        ui.PlayStopControl.show();
     });
     ui.PlayStopControl = new (require('controls/radio.control'))(model);
     ui.PlayStopControl.addEventListener('change', function(_e) {

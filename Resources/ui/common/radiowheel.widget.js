@@ -2,10 +2,8 @@ var Module = function() {
     this._view = Ti.UI.createView({
         bubbleParent : false,
         touchEnabled : false,
-    });
-    this.segment = 0;
-    this.index = 0;
-    this.images = [];
+    }),
+    this.segment = 0, this.index = 0, this.images = [];
     return this;
 };
 

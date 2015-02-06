@@ -1,2 +1,5 @@
-build/
-tiapp.xml
+build.log
+build
+tmp
+._*
+.DS_Store

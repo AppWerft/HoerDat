@@ -37,9 +37,10 @@ Module.prototype = {
     rotateStep : function(direction) {
         this.index = (direction == 'left') ? (this.index - 1) : (this.index + 1);
         var that = this;
+        // rotate all children: */
         this._view.children.forEach(function(child, i) {
             child.animate({
-                duration : 100 + Math.random() * 70,
+                duration : 100 + Math.random() * 70, // alive!
                 transform : Ti.UI.create2DMatrix({
                     rotate : (that.index + i) * that.segment,
                     anchorPoint : that.anchorpoint

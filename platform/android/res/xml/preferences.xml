@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Einstellungen für HörDat">
+  
+  <PreferenceCategory android:title="Netzwerk">
+    <SwitchPreference
+      android:title="Mobile Warnung"
+      android:defaultValue="false"
+      android:summary="Wenn draußen kein WLAN ist, dann gibt es vor dem Radiohören eine Nachfrage."
+      android:key="mobilewarning" />
+    <CheckBoxPreference
+      android:title="Download nur im WLAN"
+      android:defaultValue="false"
+      android:summary="Du kannst Hörstücke mitnehmen. Das Abspeichern passiert normalerweise im WLAN. Das kannst Du darauf beschränken"
+      android:key="downloadonlywifi" />
+  </PreferenceCategory>
+  
+</PreferenceScreen>

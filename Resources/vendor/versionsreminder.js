@@ -8,8 +8,10 @@ module.exports = function() {
         t = Ti.Network.createHTTPClient({
         onload : function() {
             var t = /itemprop="softwareVersion">(.*?)</m.exec(this.responseText);
-            
-            if (t && str2int(( version = t[1].replace(/\s+/g, ""))) > str2int(Ti.App.getVersion())) {
+            if (!t) return;
+            var storeversion = str2int(( version = t[1].replace(/\s+/g, "")));
+            var thisversion = str2int(Ti.App.getVersion());
+            if (storeversion > thisversion) {
                 var r = Ti.UI.createAlertDialog({
                     cancel : 1,
                     buttonNames : ["Zum Store", "Abbruch"],
@@ -19,7 +21,11 @@ module.exports = function() {
                 r.addEventListener("click", function(t) {
                     t.index != t.source.cancel && Ti.Platform.openURL(e);
                 }), r.show();
-            } else
+            } else if (storeversion > thisversion) {
+                Ti.Android && Ti.UI.createNotification({
+                    message : Ti.App.getName() + " ist neuer als neu … (" + Ti.App.getVersion() + ")"
+                }).show();
+            } else if (storeversion == thisversion)
                 Ti.Android && Ti.UI.createNotification({
                     message : Ti.App.getName() + " ist in neuester Version (" + Ti.App.getVersion() + ")"
                 }).show();

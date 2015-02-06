@@ -3,7 +3,7 @@ module.exports = function() {
     var reStoreFunc = function() {
         if (!restored)
             setTimeout(function() {
-                RadioWheel && RadioWheel.goToSegment(model.currentstation);
+                RadioWheel && RadioWheel.go2Segment(model.currentstation);
                 ui.StatusLog.setText(model.currentstation);
                 restored = true;
             }, 500);
@@ -61,6 +61,8 @@ module.exports = function() {
             ui.PlayStopControl.stopPlayer();
             ui.StatusLog.setText('Radio angehalten.');
             model.currentstation = RadioWheel.rotateStep(_e.direction);
+            console.log(model.currentstation);
+            console.log(model.radiostations[model.currentstation]);
             Ti.App.Properties.setInt('CURRENT_STATION_INDEX', model.currentstation);
             var name = model.radiostations[model.currentstation].logo;
             ui.StatusLog.setText('Könnte jetzt ' + name + ' zuschalten.');

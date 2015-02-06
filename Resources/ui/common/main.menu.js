@@ -1,28 +1,30 @@
 var АктйонБар = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
-module.exports = function(_e) {
-    
+module.exports = function(_tabgroup) {
+
     АктйонБар.title = 'HörDat';
     АктйонБар.titleFont = "Rambla-Bold";
     АктйонБар.subtitleColor = "#ccc";
-    var activity = _e.source.getActivity();
+    var activity = _tabgroup.source.getActivity();
     if (activity) {
-        activity.onCreateOptionsMenu = function(e) {
+        activity.onCreateOptionsMenu = function(_menu) {
             console.log('Info: onCreateOptionsMenu triggered');
             activity.actionBar.displayHomeAsUp = false;
-            e.menu.add({
+            _menu.menu.add({
                 title : 'Über uns',
                 icon : Ti.App.Android.R.drawable.ic_action_about,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
                 require('ui/common/about.window')().open();
             });
-            e.menu.add({
+            _menu.menu.add({
                 title : 'Einstellungen',
                 icon : Ti.App.Android.R.drawable.ic_action_settings,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
+                Ti.UI.Android.openPreferences();
+                
             });
 
         };

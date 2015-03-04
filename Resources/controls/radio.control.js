@@ -3,6 +3,10 @@ var player = Ti.Media.createAudioPlayer({
     volume : 1
 });
 
+const PLAY = '/images/play.png',
+    LEER = '/images/leer.png',
+    STOP = '/images/stop.png';
+
 var Module = function(model) {
     this.model = model, this.eventhandlers = {}, this.cron, this.tick = 0;
     return this;
@@ -15,27 +19,33 @@ Module.prototype = {
             bottom : 40,
             width : 100,
             height : 100,
-            backgroundImage : '/images/play.png'
+             zIndex : 913,
+            backgroundImage : PLAY
         });
         this._spinner = require('vendor/circularprogress')({
             percent : 0,
-            size : 100,
+            size : 32,
             margin : 0,
             touchEnabled : false,
-            zIndex : 901,
+            zIndex : 91,
             progressColor : '#427aa7',
-            
+            topper : {
+                color : 'transparent',
+                size : 32
+            },
             font : {
                 visible : false
             }
         });
         this._view.add(this._spinner);
         this._view.addEventListener('click', function() {
-            that._view.backgroundImage = '/images/leer.png';
+            that._view.backgroundImage = LEER;
+            clearInterval(that.cron);
+            that.tick = 0;
             var name = that.model.radiostations[that.model.currentstation].logo;
             if (player.isPlaying()) {
                 that.stopPlayer();
-                that._view.backgroundImage = '/images/play.png';
+                that._view.backgroundImage = PLAY;
                 that.fireEvent('change', {
                     message : 'Radio ' + name + ' gestoppt'
                 });
@@ -61,11 +71,10 @@ Module.prototype = {
                     that.tick = 0;
                     that.cron = setInterval(function() {
                         that.tick++;
-                        console.log(that.tick);
                         if (that.tick == 100) {
                             clearInterval(that.cron);
                             player.stop();
-                            this._view.backgroundImage = '/images/play.png';
+                            that._view.backgroundImage = PLAY;
                             that._spinner.hide();
                         }
                         that._spinner.setValue(that.tick / 100);
@@ -98,7 +107,7 @@ Module.prototype = {
                 that.fireEvent('change', {
                     message : 'Radio spielt ' + name + ' .'
                 });
-                that._view.backgroundImage = '/images/stop.png';
+                that._view.backgroundImage = STOP;
                 break;
             case Ti.Media.AudioPlayer.STATE_STARTING:
             case 4:
@@ -131,7 +140,7 @@ Module.prototype = {
                 scale : 0.3
             })
         }, function() {
-            that._view.backgroundImage = '/images/play.png';
+            that._view.backgroundImage = PLAY;
         });
     },
     show : function() {

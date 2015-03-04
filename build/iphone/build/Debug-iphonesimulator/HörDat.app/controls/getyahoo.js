@@ -1,1 +1,0 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/controls/getyahoo.js

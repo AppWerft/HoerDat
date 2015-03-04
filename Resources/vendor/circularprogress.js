@@ -101,7 +101,7 @@ module.exports = function (options) {
 
 	var self = Ti.UI.createView({
 		visible : false,
-		opacity : 0.7,
+		opacity : 0.4,
 		left : options.left,
 		right : options.right,
 		top : options.top,

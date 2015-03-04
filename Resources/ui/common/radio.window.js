@@ -28,10 +28,20 @@ module.exports = function() {
         textAlign : 'center',
         text : ''
     });
+    ui.Equalizer = Ti.UI.createView({
+        bottom : 0,
+        height : 20,
+        width : 200
+    });
+    
     var container = Ti.UI.createView({
         bottom : '20%'
     });
     ui.add(container);
+     ui.add(ui.Equalizer);
+   //  setInterval(function(){
+    //     ui.Equalizer.backgroundImage='/equalizer/e-'+Math.floor(Math.random()*20) +'.png';
+    // },20);
     ui.stationviews = [];
     var images = [];
     for (var i = 0; i < model.radiostations.length; i++) {
@@ -65,13 +75,13 @@ module.exports = function() {
             ui.PlayStopControl.backgroundImage = '/images/play.png';
         }
     });
-    RadioWheel.addEventListener('ready',function(){
+    RadioWheel.addEventListener('ready', function() {
         ui.PlayStopControl.show();
     });
     ui.PlayStopControl = new (require('controls/radio.control'))(model);
     ui.PlayStopControl.addEventListener('change', function(_e) {
         ui.StatusLog.setText(_e.message);
-    });    
+    });
     ui.add(ui.PlayStopControl.createView());
     return ui;
 };

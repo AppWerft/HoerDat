@@ -1,4 +1,6 @@
 function getText(foo) {
+    if (!foo)
+        return '';
     if ( typeof foo == 'string')
         return foo.replace(/\n/gm, '').trim();
 
@@ -14,28 +16,36 @@ Moment.locale('de');
 module.exports = function(args) {
     if (Ti.App.Properties.hasProperty(args.date)) {
         args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
-        return;
+        //return;
     }
-    Ti.Yahoo.yql('select * from html where url="http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date + '" and xpath="//table"', function(_res) {
-        if (_res.success && _res.data && _res.data.table && _res.data.table.length > 2) {
+    var yql = 'select * from html where url="http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date + '" and xpath="//table"';
+    Ti.Yahoo.yql(yql, function(_res) {
+        if (_res.success && _res.data && _res.data.table && _res.data.table instanceof Array) {
             var tables = _res.data.table;
             var res = [];
             tables.forEach(function(table) {
                 if (table.class != 'form') {
                     var item = {};
-                    table.tr.forEach(function(tr) {
+                    table.tbody.tr && table.tbody.tr instanceof Array && table.tbody.tr.forEach(function(tr) {
                         if (tr.th) {
                             item.title = tr.th.h1;
                             item.subtitle = tr.th.h2;
                         }
                         if (tr.td && tr.td.class != 'navi') {
                             for (var i = 0; i < tr.td.length; i++) {
-                                if (tr.td[i].class == 'right') {
-                                    switch (tr.td[i].p) {
+                                if (tr.td[i].class == 'right') {// metas
+                                    switch (tr.td[i].content) {
                                     case 'Sendetermine:':
-                                        item.meta = getText(tr.td[i + 1].p);
+                                        item.meta = getText(tr.td[i + 1].content).replace('angekündigte Länge:    ', 'ca. Länge:');
                                         item.station = item.meta.split(' - ')[0];
-                                        item.time = item.meta.split(' - ')[1];
+                                        item.time = item.meta.split(' - ')[1]//
+                                        .replace(/\,/g, '')//
+                                        .replace('Mär', 'März')//
+                                        .replace(/ \(.*/, '')//
+
+                                        .replace(/ WDR.*/, '')//
+                                        .replace(/ Teil.*/, '');
+                                        item.time = Moment(item.time, 'dddd, D. MMM YYYY HH:mm');
                                         var res = /^(.*?)\s/.exec(item.meta);
                                         if (res) {
                                             item.logo = '/images/' + res[1].toLowerCase() + '.png';
@@ -54,31 +64,29 @@ module.exports = function(args) {
                                                 if (parts) {
                                                     item.start = Moment(parts[1] + parts[2], 'D. MMM YYYY HH:mm');
                                                     item.end = Moment(item.start).add(item.duration, 'seconds');
-
                                                 }
                                             }
                                         }
                                         break;
                                     case 'Autor(en):':
-                                        item.autor = getText(tr.td[i + 1].p);
+                                        item.autor = tr.td[i + 1].content;
                                         break;
                                     case 'Inhaltsangabe:':
-                                        item.inhalt = getText(tr.td[i + 1].p);
+                                        item.inhalt = tr.td[i + 1].content;
                                         break;
                                     case 'Produktion:':
-                                        item.produktion = getText(tr.td[i + 1].p);
+                                        item.produktion = tr.td[i + 1].content;
                                         break;
                                     case 'Komponist(en):':
-                                        item.komponisten = getText(tr.td[i + 1].p);
+                                        item.komponisten = tr.td[i + 1].content;
                                         break;
                                     case 'Regisseur(e):':
-                                        item.regisseure = getText(tr.td[i + 1].p);
+                                        item.regisseure = tr.td[i + 1].content;
                                         break;
                                     case 'Übersetzer:':
-                                        item.uebersetzer = getText(tr.td[i + 1].p);
+                                        item.uebersetzer = tr.td[i + 1].content;
                                         break;
                                     }
-
                                 }
                             };
                         }
@@ -86,10 +94,12 @@ module.exports = function(args) {
                     // if (table.tr[2].td) {
                     //  item.meta = table.tr[2].td[1].p.content;
                     //}
-
                     if (item.title) {
                         res.push(item);
                     }
+                    res.sort(function(a,b){
+                        return a.time.unix()-b.time.unix();
+                    });
                 }
             });
             Ti.App.Properties.setString(args.date, JSON.stringify(res));

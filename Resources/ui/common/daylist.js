@@ -1,7 +1,6 @@
 module.exports = function(i) {
     var data = [];
     var self = Ti.UI.createView({
-
         backgroundColor : '#427aa7'
     });
     self.list = Ti.UI.createTableView({
@@ -15,6 +14,7 @@ module.exports = function(i) {
         require('controls/html.adapter')({
             date : (require('vendor/moment'))().add(i, 'd').format('YYYY-MM-DD'),
             onload : function(list) {
+                data = [];
                 list.forEach(function(item) {
                     data.push(require('ui/common/row.widget')(item));
                 });

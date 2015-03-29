@@ -18,20 +18,10 @@ module.exports = function(_tabgroup) {
             }).addEventListener("click", function(_e) {
                 require('ui/common/about.window')().open();
             });
-            _menu.menu.add({
-                title : 'Einstellungen',
-                icon : Ti.App.Android.R.drawable.ic_action_settings,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-            }).addEventListener("click", function(_e) {
-                Ti.UI.Android.openPreferences();
-                
-            });
-
-        };
+            };
         activity.invalidateOptionsMenu();
-
         activity.actionBar.onHomeIconItemSelected = function() {
-            _e.source.close();
+            _tabgroup.close();
         };
         activity.onResume = function() {
             console.log('activity resumed');

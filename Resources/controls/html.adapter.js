@@ -34,6 +34,7 @@ module.exports = function(args) {
                         if (tr.td && tr.td.class != 'navi') {
                             for (var i = 0; i < tr.td.length; i++) {
                                 if (tr.td[i].class == 'right') {// metas
+                                    //  console.log("|"+tr.td[i].content+'|');
                                     switch (tr.td[i].content) {
                                     case 'Sendetermine:':
                                         item.meta = getText(tr.td[i + 1].content).replace('angekündigte Länge:    ', 'ca. Länge:');
@@ -46,6 +47,7 @@ module.exports = function(args) {
                                         .replace(/ WDR.*/, '')//
                                         .replace(/ Teil.*/, '');
                                         item.time = Moment(item.time, 'dddd, D. MMM YYYY HH:mm');
+                                        item.time_isostring = item.time.toISOString();
                                         var res = /^(.*?)\s/.exec(item.meta);
                                         if (res) {
                                             item.logo = '/images/' + res[1].toLowerCase() + '.png';
@@ -67,15 +69,27 @@ module.exports = function(args) {
                                                 }
                                             }
                                         }
+                                        if (tr.td[1] && tr.td[1].div && tr.td[1].div.a) {
+                                            tr.td[1].div.a.forEach(function(link) {
+                                                if (/^mp3/i.test(link.content)) {
+                                                    if (/\.m3u$/.test(link.href))
+                                                        item.playlist = link.href;
+                                                    else
+                                                        item.stream = link.href;
+                                                }
+                                            });
+                                        } else {
+                                        }
+
                                         break;
                                     case 'Autor(en):':
                                         item.autor = tr.td[i + 1].content;
                                         break;
                                     case 'Inhaltsangabe:':
-                                        item.inhalt = tr.td[i + 1].content;
+                                        item.inhalt = getText(tr.td[i + 1]);
                                         break;
                                     case 'Produktion:':
-                                        item.produktion = tr.td[i + 1].content;
+                                        item.produktion = tr.td[i + 1];
                                         break;
                                     case 'Komponist(en):':
                                         item.komponisten = tr.td[i + 1].content;
@@ -85,6 +99,9 @@ module.exports = function(args) {
                                         break;
                                     case 'Übersetzer:':
                                         item.uebersetzer = tr.td[i + 1].content;
+                                        break;
+                                    case 'Mitwirkende:':
+                                        item.mitwirkende = require('controls/staff')(tr.td[i + 1]);
                                         break;
                                     }
                                 }
@@ -97,8 +114,8 @@ module.exports = function(args) {
                     if (item.title) {
                         res.push(item);
                     }
-                    res.sort(function(a,b){
-                        return a.time.unix()-b.time.unix();
+                    res.sort(function(a, b) {
+                        return a.time.unix() - b.time.unix();
                     });
                 }
             });
@@ -135,4 +152,34 @@ module.exports = function(args) {
     self.setRequestHeader('Accept', 'application/json');
     self.send();
 
+};
+var _ = {
+    "td" : [{
+        "class" : "right",
+        "content" : "Sendetermine:"
+    }, {
+        "br" : null,
+        "div" : {
+            "class" : "streams",
+            "a" : [{
+                "href" : "http://www.dradio.de/streaming/dkultur.asx",
+                "title" : "DLR-Windows Mediaplayer-Stream",
+                "content" : "winmedia-Stream"
+            }, {
+                "href" : "http://www.dradio.de/streaming/dkultur.m3u",
+                "title" : "DLR-MP3-Stream",
+                "content" : "mp3-Stream"
+            }, {
+                "href" : "http://www.dradio.de/streaming/dkultur_mq_ogg.m3u",
+                "title" : "DLR-Ogg Vorbis-Stream (mittlere Qualität)",
+                "content" : "ogg-Stream"
+            }, {
+                "href" : "http://www.dradio.de/streaming/dkultur_hq_ogg.m3u",
+                "title" : "DLR-Ogg Vorbis-Stream (hohe Qualität)",
+                "content" : "ogg-Stream"
+            }],
+            "content" : " [] \n [] \n [] \n [] \n"
+        },
+        "content" : " DLR - Montag,  6. Apr 2015 00:05, (angekündigte Länge:    55:00)\n\n"
+    }]
 };

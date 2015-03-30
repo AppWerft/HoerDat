@@ -16,7 +16,7 @@ module.exports = function(item) {
         height : 60
     }));
     var container = Ti.UI.createView({
-        left : 90,
+        left : 80,
         top : 10,
         layout : 'vertical'
     });
@@ -66,7 +66,7 @@ module.exports = function(item) {
         }));
 
     }
-    container.add(Ti.UI.createLabel({
+    item.time && container.add(Ti.UI.createLabel({
         text : Moment(item.time).format('dddd  HH:mm') + ' Uhr',
         left : 0,
         top : 0,

@@ -1,7 +1,8 @@
 function getText(foo) {
+    if (!foo)
+        return '';
     if ( typeof foo == 'string')
         return foo.replace(/\n/gm, '').trim();
-
     if (foo.content) {
         return foo.content.replace(/[\s]{3,}/gm, '\n').trim();
     } else
@@ -16,7 +17,7 @@ module.exports = function(url, onload, onerror) {
             tables.forEach(function(table) {
                 if (table.class != 'form') {
                     var item = {};
-                    table.tr.forEach(function(tr) {
+                    table.tbody.tr && table.tbody.tr instanceof Array && table.tbody.tr.forEach(function(tr) {
                         if (tr.th) {
                             item.title = tr.th.h1;
                             item.subtitle = tr.th.h2;
@@ -24,39 +25,40 @@ module.exports = function(url, onload, onerror) {
                         if (tr.td && tr.td.class != 'navi') {
                             for (var i = 0; i < tr.td.length; i++) {
                                 if (tr.td[i].class == 'right') {
-                                    switch (tr.td[i].p) {
+                                    switch (tr.td[i].content) {
                                     case 'Autor(en):':
-                                        item.autor = getText(tr.td[i + 1].p);
+                                        item.autor = getText(tr.td[i + 1].content);
                                         break;
                                     case 'Inhaltsangabe:':
-                                        item.inhalt = getText(tr.td[i + 1].p);
+                                        item.inhalt = getText(tr.td[i + 1]);
                                         break;
                                     case 'Produktion:':
-                                        item.produktion = getText(tr.td[i + 1].p);
-                                        if (item.produktion) {
-                                            var res = /^(.*?)\s/.exec(item.produktion.replace('/', ' '));
-                                            if (res) {
-                                                item.logo = '/images/' + res[1].toLowerCase() + '.png';
-                                            }//    console.log(getText(tr.td[i + 1].p));
-                                        }
+                                        item.produktion = tr.td[i + 1];
+                                        var res = /^[A-Za-z]+/.exec(item.produktion);
+                                        console.log(res);
+                                        if (res && res instanceof Array)
+                                            item.logo = '/images/' + res[res.length - 1].toLowerCase() + '.png';
+
                                         break;
                                     case 'Komponist(en):':
-                                        item.komponisten = getText(tr.td[i + 1].p);
+                                        item.komponisten = getText(tr.td[i + 1].content);
                                         break;
                                     case 'Regisseur(e):':
-                                        item.regisseure = getText(tr.td[i + 1].p);
+                                        item.regisseure = getText(tr.td[i + 1].content);
                                         break;
                                     case 'Übersetzer:':
-                                        item.uebersetzer = getText(tr.td[i + 1].p);
+                                        item.uebersetzer = getText(tr.td[i + 1].content);
+                                        break;
+                                    case 'Mitwirkende:':
+                                        item.mitwirkende = require('controls/staff')(tr.td[i + 1]);
                                         break;
                                     }
-
                                 }
                             };
                         }
                     });
                     // if (table.tr[2].td) {
-                    //  item.meta = table.tr[2].td[1].p.content;
+                    //  item.meta = table.tr[2].td[1].content.content;
                     //}
 
                     if (item.title) {

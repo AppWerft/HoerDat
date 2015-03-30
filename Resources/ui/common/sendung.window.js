@@ -1,3 +1,6 @@
+var Moment = require('vendor/moment');
+Moment.locale('de');
+
 function getMeta(key, value) {
     var self = Ti.UI.createView({
         height : Ti.UI.SIZE,
@@ -6,22 +9,31 @@ function getMeta(key, value) {
     self.add(Ti.UI.createLabel({
         left : 0,
         text : key,
-        top : 0,
-        width : '35%'
+        color : '#333',
+
+        font : {
+            fontSize : 9
+        },
+        width : 80
     }));
     self.add(Ti.UI.createLabel({
-        left : '36%',
+        left : 80,
         width : Ti.UI.FILL,
         textAlign : 'left',
+        font : {
+            fontSize : 20,
+            fontFamily : 'Rambla-Bold'
+        },
         text : value,
         top : 0,
         color : '#444',
     }));
     return self;
 };
+
 module.exports = function(item) {
     var self = Ti.UI.createWindow({
-        title : item.title,
+        title : item.title.trim(),
         backgroundColor : 'white',
         fullscreen : true,
         data : item
@@ -32,17 +44,23 @@ module.exports = function(item) {
         left : 10,
         right : 10,
     });
-    self.container.add(getMeta('Autoren', item.autor));
-    self.container.add(getMeta('Regisseure', item.regisseure));
+
+    item.time && self.container.add(getMeta('Beginn', Moment(item.time_isostring).format('dddd  HH:mm') + ' Uhr'));
+    item.station && self.container.add(getMeta('Station', item.station));
+
+    self.container.add(getMeta('Autor(en)', item.autor));
+    self.container.add(getMeta('Regisseur(e)', item.regisseure));
     self.container.add(getMeta('Produktion', item.produktion));
-    item.komponisten && self.container.add(getMeta('Komponisten', item.komponisten));
+    item.komponisten && self.container.add(getMeta('Komponist(en)', item.komponisten));
     item.uebersetzer && self.container.add(getMeta('Übersetzer', item.uebersetzer));
 
     item.inhalt && self.container.add(Ti.UI.createLabel({
         text : item.inhalt.replace(/[\s]{3,}/gm, '\n\n'),
-        top : 5,
+        top : 10,
         height : Ti.UI.SIZE,
         color : '#427aa7',
+        width : Ti.UI.FILL,
+        textAlign : 'left',
         font : {
             fontSize : 16,
             fontFamily : 'DroidSans',

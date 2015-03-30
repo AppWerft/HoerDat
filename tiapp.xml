@@ -37,13 +37,16 @@
             </dict>
         </plist>
     </ios>
-    <version>1.3.3</version>
+    <version>1.5.0</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="133" android:versionName="1.3.3">
+        <manifest android:versionCode="150" android:versionName="1.5.0">
             <application android:theme="@style/Theme.Hoerdat"/>
             <uses-sdk android:maxSdkVersion="21"
                 android:minSdkVersion="10" android:targetSdkVersion="14"/>
         </manifest>
+        <services>
+            <service type="interval" url="radiowecker.js"/>
+        </services>
     </android>
     <modules>
         <module platform="android">de.manumaticx.androidflip</module>
@@ -51,6 +54,8 @@
         <module platform="android">de.marcelpociot.circularslider</module>
         <module platform="iphone">de.marcelpociot.circularslider</module>
         <module platform="android">bencoding.alarmmanager</module>
+        <module platform="android">com.mcongrove.pebble</module>
+        <module platform="iphone">com.mcongrove.pebble</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

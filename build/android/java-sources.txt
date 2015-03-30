@@ -5,4 +5,5 @@
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/HRdatAppInfo.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/HRdatApplication.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/R.java"
+"/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/RadioweckerService.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/ti/modules/titanium/ui/R.java"

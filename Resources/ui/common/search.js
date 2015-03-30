@@ -135,15 +135,7 @@ module.exports = function(window) {
         right : 5
     });
     self.add(self.lupe);
-    var kk = Ti.UI.createImageView({
-        image : '/images/kk.png',
-        width : 50,
-        top : 5,
-        height : 40,
-        right : 15,
-        opacity : 0.3
-    });
-    self.add(kk);
+   
     var StartButton4Search = Ti.UI.createButton({
         borderStyle : Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
         title : 'Datenbankanfrage',
@@ -188,10 +180,7 @@ module.exports = function(window) {
         _e.source.opacity = (_e.source.opacity == 1) ? 0.15 : 1;
 
     });
-    kk.addEventListener('click', function(_e) {
-        _e.source.opacity = (_e.source.opacity == 1) ? 0.15 : 1;
-
-    });
+   
     keyselector.addEventListener('click', function() {
         var dialog = Ti.UI.createOptionDialog({
             selectedIndex : 0,

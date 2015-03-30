@@ -1,8 +1,10 @@
 module.exports = function(args) {
-    console.log(args);
+    console.log('Stream' + args.stream);
+    console.log('play' + args.playlist);
+
     if (args.stream) {
         args.onload(args.stream);
-    } else {
+    } else if (args.playlist) {
         var uri_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
         var xhr = Ti.Network.createHTTPClient({
             timeout : 6000,

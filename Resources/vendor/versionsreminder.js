@@ -18,7 +18,6 @@ module.exports = function() {
                 return;
             }
             var storeversion = str2int(( version = t[1].replace(/\s+/g, "")));
-            console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nStore=' + storeversion + '  eigene Version=' + thisversion);
             if (storeversion > thisversion) {
                 var dialog = Ti.UI.createAlertDialog({
                     cancel : 1,

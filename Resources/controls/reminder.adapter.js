@@ -4,6 +4,12 @@ var Pebble = require('com.mcongrove.pebble'),
 alarmManagerModule.enableLogging();
 
 var Модул = function(_args) {
+    this.init(_args);
+    
+
+};
+
+Модул.prototype = {init:function(_args){
     Pebble.setAppUUID("226834ae-786e-4302-a52f-6e7efc9f990b");
     var seconds = Moment(_args.time_isostring).unix() - Moment().unix();
     this.alarmManager = alarmManagerModule.createAlarmManager();
@@ -39,10 +45,7 @@ var Модул = function(_args) {
             console.log("Cannot Connect to Pebble");
         }
     });
-
-};
-
-Модул.prototype = {};
+}};
 
 exports.createReminder = function(_args) {
     return new Модул(_args);

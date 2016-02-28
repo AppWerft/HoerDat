@@ -1,5 +1,5 @@
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/android/support/v7/appcompat/R.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/ApplicationStylesheet.java"
+"/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/android/support/v7/cardview/R.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/AssetCryptImpl.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/HRdatActivity.java"
 "/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/build/android/gen/de/appwerft/hoerdat/HRdatAppInfo.java"

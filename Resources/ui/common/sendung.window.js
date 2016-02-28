@@ -35,7 +35,8 @@ module.exports = function(item) {
     var self = Ti.UI.createWindow({
         title : item.title.trim(),
         backgroundColor : 'white',
-        fullscreen : true,
+        fullscreen : false,
+       
         data : item
     });
     self.container = Ti.UI.createScrollView({

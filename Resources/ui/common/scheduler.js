@@ -11,7 +11,7 @@ module.exports = function(window) {
         currentPage : 1,
         height : Ti.UI.FILL
     });
-    window.flipcontainer.flipToView(1);
+//    window.flipcontainer.flipToView();
     window.addEventListener('focus', function() {
         window.flipcontainer.peakNext(true);
     });

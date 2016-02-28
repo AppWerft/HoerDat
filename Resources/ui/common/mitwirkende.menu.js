@@ -7,6 +7,7 @@ module.exports = function(_e) {
     АктйонБар.title = data.title.trim();
     АктйонБар.subtitle = 'Mitwirkende';
     АктйонБар.titleFont = "Rambla-Bold";
+    АктйонБар.backgroundColor = "#225588";
     АктйонБар.subtitleColor = "#ccc";
     var activity = _e.source.getActivity();
     if (activity) {

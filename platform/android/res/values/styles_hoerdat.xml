@@ -18,66 +18,20 @@
 -->
 
 <resources>
-		<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat">
+	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat">
+		
             <item name="windowActionBar">false</item>
             <item name="android:windowNoTitle">true</item>
     </style>
     <style name="Theme.Hoerdat" parent="@style/Theme.AppCompat">
-        <item name="actionBarItemBackground">@drawable/selectable_background_hoerdat</item>
-        <item name="popupMenuStyle">@style/PopupMenu.Hoerdat</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Hoerdat</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Hoerdat</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Hoerdat</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.Hoerdat</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_hoerdat</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_hoerdat</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Hoerdat</item>
-
+    	<item name="android:statusBarColor">#0B3E71</item>
+    	<item name="android:colorPrimary">#326598</item>
+    	<item name="android:colorPrimaryDark">#326598</item>
+    	<item name="android:navigationBarColor">#326598</item>
+    	
+        
         
     </style>
 
-    <style name="ActionBar.Solid.Hoerdat" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="background">@drawable/ab_solid_hoerdat</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_hoerdat</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_hoerdat</item>
-        <item name="progressBarStyle">@style/ProgressBar.Hoerdat</item>
-    </style>
-
-    <style name="ActionBar.Transparent.Hoerdat" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="background">@drawable/ab_transparent_hoerdat</item>
-        <item name="progressBarStyle">@style/ProgressBar.Hoerdat</item>
-    </style>
-	
-    <style name="PopupMenu.Hoerdat" parent="@style/Widget.AppCompat.PopupMenu">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_hoerdat</item>	
-    </style>
-	
-    <style name="DropDownListView.Hoerdat" parent="@style/Widget.AppCompat.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_hoerdat</item>
-    </style>
-
-    <style name="ActionBarTabStyle.Hoerdat" parent="@style/Widget.AppCompat.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_hoerdat</item>
-    </style>
-	
-    <style name="DropDownNav.Hoerdat" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="android:background">@drawable/spinner_background_ab_hoerdat</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_hoerdat</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_hoerdat</item>
-    </style>
-    
-    <style name="ProgressBar.Hoerdat" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_hoerdat</item>
-    </style>
-    
-    <style name="ActionButton.CloseMode.Hoerdat" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_hoerdat</item>
-    </style>
-    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Hoerdat.Widget" parent="@style/Theme.AppCompat">
-        <item name="popupMenuStyle">@style/PopupMenu.Hoerdat</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Hoerdat</item>
-    </style>
 
 </resources>

@@ -34,15 +34,6 @@ var Модул = function(_args) {
 		Ti.UI.createNotification({
 			message : _args.station + ' :: ' + Moment(_args.time_isostring).format('dddd  HH:mm') + ' Uhr\nvorgemerkt'
 		}).show();
-		Pebble.connect({
-			success : function() {
-				Ti.Media.vibrate([0, 10]);
-				console.log("Connected to Pebble");
-			},
-			error : function(_event) {
-				console.log("Cannot Connect to Pebble");
-			}
-		});
 	}
 };
 

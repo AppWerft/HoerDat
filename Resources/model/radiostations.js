@@ -13,7 +13,8 @@ module.exports = [{
 	"latin1" : true
 }, {
 	logo : 'SRF2',
-	playlist : 'http://stream.srg-ssr.ch/drs2/mp3_128.m3u'
+	playlist : 'http://stream.srg-ssr.ch/drs2/mp3_128.m3u',
+	latin:true
 }, {
 	logo : 'BR2',
 	stream : 'http://br-mp3-bayern2sued-m.akacast.akamaistream.net/7/731/256282/v1/gnl.akacast.akamaistream.net/br_mp3_bayern2sued_m'
@@ -27,7 +28,8 @@ module.exports = [{
 }, {
 	logo : 'radio fip',
 	stream : 'http://audio.scdn.arkena.com/11016/fip-midfi128.mp3',
-	json : 'http://www.fipradio.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json'
+	json : 'http://www.fipradio.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json',
+	module : 'tools/fip'
 }, {
 	logo : 'france culture',
 	stream : 'http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'
@@ -50,5 +52,6 @@ module.exports = [{
 }, {
 	logo : 'drs2',
 	name : 'Schweizer Radio Fernsehen 2',
+	latin :true,
 	playlist : 'http://stream.srg-ssr.ch/drs2/mp3_128.m3u'
 }];

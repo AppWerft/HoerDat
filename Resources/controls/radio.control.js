@@ -1,6 +1,16 @@
 var AudioStreamer = require('vendor/audiostreamer.adapter');
 
+//
+
 function LOG() {
+}
+
+function convertToHex(str) {
+	var hex = '';
+	for (var i = 0; i < str.length; i++) {
+		hex += '' + str.charCodeAt(i).toString(16);
+	}
+	return hex;
 }
 
 const PLAY = '/images/play.png',
@@ -100,10 +110,20 @@ $.prototype = {
 				singleton.cron = null;
 			}
 			if (_payload.message && singleton.messageView) {
-				var message = _payload.message.replace('�', 'ä').replace('�', 'ö').replace('�', 'Ö').replace('...', '…').replace('�', 'ö');
+				if (singleton.model.radiostations[singleton.model.currentstation].latin1) {
+					message = encodeURI(_payload.message)//
+					.replace(/%20/gm, ' ')//
+					.replace(/%EF%BF%BD/gm, 'Ö')//
+					.replace('Öchste', 'ächste')//
+					.replace('fÖr','für')//
+					.replace('Öume','äume')//
+					.replace('esprÖch','espräch')//
+					.replace('Önster', 'ünster');
+					console.log(message);
+				} else
+					var message = _payload.message;
 				// if latin1 we convert:
 
-				console.log(_payload.message);
 				singleton.messageView.setText(message);
 			}
 			singleton.buttonView.backgroundImage = STOP;

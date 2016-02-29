@@ -23,6 +23,13 @@ module.exports = function(_openevent) {
 			}).addEventListener("click", function(_e) {
 				require('ui/common/about.window')().open();
 			});
+			_menu.menu.add({
+				title : 'Über uns',
+				icon : Ti.App.Android.R.drawable.ic_action_search,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+			}).addEventListener("click", function(_e) {
+				require('ui/common/search.window')().open();
+			});
 		};
 		activity.invalidateOptionsMenu();
 		Ti.Gesture.addEventListener('orientationchange', function() {

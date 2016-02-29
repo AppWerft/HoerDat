@@ -39,7 +39,6 @@ module.exports = function(window) {
                     return;
                 }
                 var win = Ti.UI.createWindow({
-                    fullscreen : true,
                     data : _list,
                     searchItem : payload,
                     backgroundColor : 'white'

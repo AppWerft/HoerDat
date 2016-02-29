@@ -1,4 +1,8 @@
 /* Init */
+
+
+//https://github.com/vbartacek/aacdecoder-android/blob/master/decoder/src/com/spoledge/aacdecoder/IcyInputStream.java#L98-L112
+
 Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
 
 const TICK = 3000;

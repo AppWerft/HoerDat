@@ -16,11 +16,7 @@ module.exports = function(Window) {
 		window : win1,
 		ndx : 0
 	}));
-	self.addTab(Ti.UI.createTab({
-		title : 'Suche',
-		window : win2,
-		ndx : 1
-	}));
+	
 	self.addTab(Ti.UI.createTab({
 		title : 'LiveRadio',
 		window : require('ui/common/radio.window')(),

@@ -1,1 +1,1 @@
-module.exports=function(e){for(var t=[],i=-1;8>i;i++)t.push(require("ui/common/daylist")(i));var a=require("de.manumaticx.androidflip");e.flipcontainer=a.createFlipView({orientation:a.ORIENTATION_HORIZONTAL,overFlipMode:a.OVERFLIPMODE_GLOW,views:t,currentPage:1,height:Ti.UI.FILL}),e.addEventListener("focus",function(){e.flipcontainer.peakNext(!0)}),e.add(e.flipcontainer)};
+/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/ui/common/scheduler.js

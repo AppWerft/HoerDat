@@ -1,11 +1,9 @@
 var АктйонБар = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
-module.exports = function(_tabgroup) {
-
+module.exports = function(_openevent) {
 	АктйонБар.title = 'HörDat';
 	АктйонБар.subtitle = 'Dein Hörspielkalender';
-
 	АктйонБар.titleFont = "Rambla-Bold";
 	АктйонБар.subtitleColor = "#ccc";
 	АктйонБар.backgroundColor = "#225588";
@@ -13,8 +11,7 @@ module.exports = function(_tabgroup) {
 		console.log(_e);
 		АктйонБар.subtitle = _e.subTitle;
 	});
-
-	var activity = _tabgroup.source.getActivity();
+	var activity = _openevent.source.getActivity();
 	if (activity) {
 		activity.onCreateOptionsMenu = function(_menu) {
 			console.log('Info: onCreateOptionsMenu triggered');
@@ -28,17 +25,12 @@ module.exports = function(_tabgroup) {
 			});
 		};
 		activity.invalidateOptionsMenu();
-		activity.actionBar.onHomeIconItemSelected = function() {
-			_tabgroup.close();
-		};
-		activity.onResume = function() {
-			//  АктйонБар.subtitle = require('vendor/moment')().format('HH:mm:ss');
-			//  }, 1000);
-		};
-		activity.onPause = function() {
-			console.log('activity paused');
-			clearInterval(АктйонБар.cronjob);
-		};
+		Ti.Gesture.addEventListener('orientationchange', function() {
+			if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
+				activity.actionBar.show();
+			} else activity.actionBar.hide();
+		});
+
 	}
 	require('vendor/versionsreminder')();
 };

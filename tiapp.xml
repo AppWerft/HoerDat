@@ -3,7 +3,7 @@
     <id>de.appwerft.hoerdat</id>
     <name>HörDat</name>
     <publisher>fuerst</publisher>
-    <url>http://</url>
+    <url>http://hoerdat.de</url>
     <description>undefined</description>
     <copyright>2015 by fuerst</copyright>
     <icon>appicon.png</icon>
@@ -37,12 +37,8 @@
             </dict>
         </plist>
     </ios>
-    <version>2.0.0</version>
+    <version>2.0.5</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="201" android:versionName="2.0.1">
-            <application android:theme="@style/Theme.Hoerdat"/>
-            <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="23"/>
-        </manifest>
         <services>
             <service type="interval" url="radiowecker.js"/>
         </services>
@@ -53,6 +49,8 @@
         <module platform="android">de.marcelpociot.circularslider</module>
         <module platform="iphone">de.marcelpociot.circularslider</module>
         <module platform="android" version="0.123RAI">bencoding.alarmmanager</module>
+        <module platform="android" version="1.7.4">com.woohoo.androidaudiostreamer</module>
+        <module platform="android">ti.permissions</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

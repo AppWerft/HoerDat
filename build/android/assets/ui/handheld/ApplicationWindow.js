@@ -1,1 +1,1 @@
-module.exports=function(e){var t=Ti.UI.createWindow({title:e,width:Ti.UI.FILL,height:Ti.UI.FILL,backgroundColor:"white"});return t};
+/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/ui/handheld/ApplicationWindow.js

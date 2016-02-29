@@ -1,3 +1,5 @@
+
+
 function getText(foo) {
 	if (!foo)
 		return '';

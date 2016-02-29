@@ -14,12 +14,13 @@ module.exports = function() {
 		wordWrap : false,
 		textAlign:'center',
 		color : '#888',
-		//ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
+		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
 		font : {
 			fontSize : 36,
 			fontFamily : 'Rambla-Bold'
 		}
 	}));
+	// left and right blurring 
 	$.add(Ti.UI.createImageView({
 		left : 0,
 		height : 50,
@@ -32,7 +33,7 @@ module.exports = function() {
 		width : Ti.UI.SIZE,
 		image : '/images/rightblur.png'
 	}));
-	
+	// method to overwrite marquee
 	$.setText = function(_t) {
 		$.children[0].setText(_t);
 	};

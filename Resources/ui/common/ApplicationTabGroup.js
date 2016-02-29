@@ -21,33 +21,14 @@ module.exports = function(Window) {
 		window : win2,
 		ndx : 1
 	}));
-	
-	console.log('Permissions ======================================');
-	require('ti.permissions').requestPermissions(['android.permission.READ_PHONE_STATE'], function(e) {
-		console.log('Permissions -----');
-		console.log(e);
-		
-		self.open();
-		if (e.success) {
-			console.log('Permissions  >>>>>>>>>>>>>>>>>>>>');
-			self.addTab(Ti.UI.createTab({
-				title : 'LiveRadio',
-				window : require('ui/common/radio.window')(),
-				ndx : 2
-			}));
-			var tabindex = Ti.App.Properties.getInt('LASTTAB', 2);
-			if (tabindex < self.tabs.length)
-				self.setActiveTab(tabindex);
-		} else {
-			console.log('Permissions A<<<<<<<<<<<<<<<<<<');
-			Ti.UI.createNotification({
-				duration : 5000,
-				message : 'Die LiveRadio-Funktion braucht Zugriff auf den Telefonstatus um das Radio bei ankommenden Telefonat stummzuschalten.'
-			}).show();
-			}
-			
-	}, 0);
-
+	self.addTab(Ti.UI.createTab({
+		title : 'LiveRadio',
+		window : require('ui/common/radio.window')(),
+		ndx : 2
+	}));
+	var tabindex = Ti.App.Properties.getInt('LASTTAB', 2);
+	if (tabindex < self.tabs.length)
+		self.setActiveTab(tabindex);
 	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
@@ -63,7 +44,7 @@ module.exports = function(Window) {
 			Ti.App.Properties.setInt('LASTTAB', self.getActiveTab().ndx);
 		});
 	});
-	
+
 	return self;
 };
 

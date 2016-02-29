@@ -1,4 +1,8 @@
 
+if (Ti.version < 1.8) {
+  alert('Sorry - this application template requires Titanium Mobile SDK 1.8 or later');
+}
+
 (function() {
   var osname = Ti.Platform.osname,
     version = Ti.Platform.version,
@@ -30,6 +34,7 @@
     Window = require('ui/handheld/ApplicationWindow');
   }
   
-  require('ui/common/ApplicationTabGroup')(Window);
+  var ApplicationTabGroup = require('ui/common/ApplicationTabGroup');
+  new ApplicationTabGroup(Window).open();
   
 })();

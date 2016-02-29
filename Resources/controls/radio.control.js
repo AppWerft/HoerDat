@@ -1,23 +1,5 @@
 var AudioStreamer = require('vendor/audiostreamer.adapter');
 
-var UTF8 = {
-	encode : function(s) {
-		for (var c,
-		    i = -1,
-		    l = ( s = s.split("")).length,
-		    o = String.fromCharCode; ++i < l; s[i] = ( c = s[i].charCodeAt(0)) >= 127 ? o(0xc0 | (c >>> 6)) + o(0x80 | (c & 0x3f)) : s[i]);
-		return s.join("");
-	},
-	decode : function(s) {
-		for (var a,
-		    b,
-		    i = -1,
-		    l = ( s = s.split("")).length,
-		    o = String.fromCharCode,
-		    c = "charCodeAt"; ++i < l; (( a = s[i][c](0)) & 0x80) && (s[i] = (a & 0xfc) == 0xc0 && (( b = s[i + 1][c](0)) & 0xc0) == 0x80 ? o(((a & 0x03) << 6) + (b & 0x3f)) : o(128), s[++i] = ""));
-		return s.join("");
-	}
-};
 function LOG() {
 }
 
@@ -30,27 +12,16 @@ var singleton = {
 	messageView : null,
 	tick : 0,
 	onair : false,
-	messageView : Ti.UI.createLabel({
-		top : 5,
-		left : 10,
-		right : 10,
-		height : 50,
-		wordWrap : false,
-		color : '#999',
-		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
-		font : {
-			fontSize : 30,
-			fontFamily : 'Rambla-Bold'
-		}
-	}),
-	buttonView : null
+	messageView : require('ui/marquee.widget')(),
+	buttonView : null,
+	model : null
 };
 
 var $ = function(model) {
-	this.model = model, this.eventhandlers = {};
+	singleton.model = model, this.eventhandlers = {};
 	singleton.onair = false;
 	singleton.buttonView = this._buttonView = Ti.UI.createView({
-		bottom : 40,
+		bottom : 10,
 		width : 100,
 		height : 100,
 		zIndex : 913,
@@ -83,13 +54,13 @@ var $ = function(model) {
 		that._buttonView.backgroundImage = LEER;
 		clearInterval(singleton.cron);
 		singleton.tick = 0;
-		var name = that.model.radiostations[that.model.currentstation].logo;
+		var name = singleton.model.radiostations[singleton.model.currentstation].logo;
 		that._buttonView.opacity = 0.2;
 		require('controls/resolveplaylist')({
-			playlist : that.model.radiostations[that.model.currentstation].playlist,
-			stream : that.model.radiostations[that.model.currentstation].stream,
+			playlist : singleton.model.radiostations[singleton.model.currentstation].playlist,
+			stream : singleton.model.radiostations[singleton.model.currentstation].stream,
 			onload : function(_url) {
-				that.model.radiostations[that.model.currentstation].stream = _url;
+				singleton.model.radiostations[singleton.model.currentstation].stream = _url;
 				that._buttonView.opacity = 1;
 				AudioStreamer.play(_url, that.callbackFn);
 
@@ -129,7 +100,11 @@ $.prototype = {
 				singleton.cron = null;
 			}
 			if (_payload.message && singleton.messageView) {
-				singleton.messageView.setText(_payload.message);
+				var message = _payload.message.replace('�', 'ä').replace('�', 'ö').replace('�', 'Ö').replace('...', '…').replace('�', 'ö');
+				// if latin1 we convert:
+
+				console.log(_payload.message);
+				singleton.messageView.setText(message);
 			}
 			singleton.buttonView.backgroundImage = STOP;
 			singleton.buttonView.spinner.hide({

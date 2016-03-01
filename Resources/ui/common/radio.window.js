@@ -19,12 +19,13 @@ module.exports = function() {
 		φ : 0
 	};
 	var segment = 360 / model.radiostations.length;
+	
 
 	var container = Ti.UI.createView({
-		bottom : 0
+		bottom : 0	
 	});
 	ui.add(container);
-
+	
 	//  setInterval(function(){
 	//     ui.Equalizer.backgroundImage='/equalizer/e-'+Math.floor(Math.random()*20) +'.png';
 	// },20);
@@ -34,36 +35,16 @@ module.exports = function() {
 		images[i] = '/images/' + model.radiostations[i].logo.toLowerCase() + '.png';
 	}
 	var RadioWheel = new (require('vendor/radiowheel.widget'))();
-
-	/*var RadioWheelView = RadioWheel.createViewWithSegments({
-	 totalwidth : 666,
-	 images : images,
-	 width : 200,
-	 anchorPoint : {
-	 x : 0.5,
-	 y : 3.2
-	 }
-	 });*/
-	RadioWheel.createBigWheel({
-		totalwidth : 666,
+	container.add(RadioWheel.createView({
 		images : images,
 		width : 200,
 		anchorPoint : {
 			x : 0.5,
-			y : 3.2
+			y : 3.2  
 		}
-	});
-	container.add(Ti.UI.createImageView({
-		image : RadioWheel.getBigWheel(),
-		width : 300,
-		borderWidth : 2,
-		borderColor : 'darkgreen',
-		height : 300
 	}));
-	//container.add(RadioWheelView);
-
 	model.φ = model.currentstation * segment;
-
+	
 	ui.addEventListener('focus', function() {
 		reStoreFunc();
 	});

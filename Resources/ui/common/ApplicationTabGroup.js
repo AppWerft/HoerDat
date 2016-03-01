@@ -19,12 +19,12 @@ module.exports = function(Window) {
 	
 	self.addTab(Ti.UI.createTab({
 		title : 'LiveRadio',
-		window : require('ui/common/radio.window')(),
+		window : require('ui/common/radiowheel.window')(),
 		ndx : 2
 	}));
 	var tabindex = Ti.App.Properties.getInt('LASTTAB', 2);
 	if (tabindex < self.tabs.length)
-		self.setActiveTab(tabindex);
+		self.setActiveTab(1);
 	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({

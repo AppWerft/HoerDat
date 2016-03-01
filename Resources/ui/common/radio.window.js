@@ -19,13 +19,12 @@ module.exports = function() {
 		φ : 0
 	};
 	var segment = 360 / model.radiostations.length;
-	
 
 	var container = Ti.UI.createView({
-		bottom : 0	
+		bottom : 0
 	});
 	ui.add(container);
-	
+
 	//  setInterval(function(){
 	//     ui.Equalizer.backgroundImage='/equalizer/e-'+Math.floor(Math.random()*20) +'.png';
 	// },20);
@@ -35,16 +34,21 @@ module.exports = function() {
 		images[i] = '/images/' + model.radiostations[i].logo.toLowerCase() + '.png';
 	}
 	var RadioWheel = new (require('vendor/radiowheel.widget'))();
-	container.add(RadioWheel.createView({
+	
+	var RadioWheelView = RadioWheel.createViewWithSegments({
+		totalwidth : 1500,
 		images : images,
 		width : 200,
 		anchorPoint : {
 			x : 0.5,
 			y : 3.2
 		}
-	}));
-	model.φ = model.currentstation * segment;
+	});
+	container.add(RadioWheelView);
 	
+
+	model.φ = model.currentstation * segment;
+
 	ui.addEventListener('focus', function() {
 		reStoreFunc();
 	});

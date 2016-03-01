@@ -2,8 +2,8 @@ var Module = function() {
     this.eventhandlers = {};
     this._view = Ti.UI.createView({
         bubbleParent : false,
-        touchEnabled : false,borderWidth:1,
-       
+        touchEnabled : false,
+        borderWidth:1,
     }), this.segmentlänge = 0, this.index = 0, this.images = [];
     return this;
 };
@@ -30,6 +30,14 @@ Module.prototype = {
             this.segmentlänge = 360 / args.images.length;
         }
         this.anchorpoint = args.anchorPoint;
+        
+		
+		var blob = this._view.toImage();
+		var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'wheel.png');
+		file.write(blob);
+		console.log(blob); 
+
+
         return this._view;
     },
     /* rotate one step to left or right */

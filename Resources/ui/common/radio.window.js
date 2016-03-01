@@ -34,7 +34,7 @@ module.exports = function() {
 	for (var i = 0; i < model.radiostations.length; i++) {
 		images[i] = '/images/' + model.radiostations[i].logo.toLowerCase() + '.png';
 	}
-	var RadioWheel = new (require('ui/common/radiowheel.widget'))();
+	var RadioWheel = new (require('vendor/radiowheel.widget'))();
 	container.add(RadioWheel.createView({
 		images : images,
 		width : 200,

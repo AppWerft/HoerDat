@@ -34,14 +34,39 @@ $.prototype = {
 			this.segmentlänge = 360 / args.images.length;
 		}
 		this.anchorpoint = args.anchorPoint;
-		var blob = this._view.toBlob();
-		var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'wheel.png');
-		file.write(blob);
+		var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'bigwheel.png');
+		file.write(this._view.toImage());
+		blob = file.read();
 		console.log(blob);
 		return this._view;
 	},
-	getWheel : function() {
-		return Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'wheel.png').nativePath;
+	createBigWheel : function(args) {
+		this._view = Ti.UI.createView({
+			width : args.width*5,
+			height : args.width*5
+		});
+		var views = [],
+		    that = this;
+		if (args.images) {
+			args.images.forEach(function(imageurl, i) {
+				that._view.add(Ti.UI.createImageView({
+					image : imageurl,
+					width : args.width || 200,
+					borderWidth : 3,
+					borderColor : 'red',
+					height : args.width || 200,
+					transform : Ti.UI.create2DMatrix({
+						rotate : 360 / args.images.length * i,
+						translate : [Math.random() * 100 - 50, Math.random() * 200 - 100]
+					})
+				}));
+			});
+		}
+		var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'bigwheel.png');
+		file.write(this._view.toImage());
+	},
+	getBigWheel : function() {
+		return Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'bigwheel.png').read();
 	},
 	/* rotate one step to left or right */
 	rotateStep : function(direction) {

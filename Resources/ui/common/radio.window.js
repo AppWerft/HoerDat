@@ -34,9 +34,18 @@ module.exports = function() {
 		images[i] = '/images/' + model.radiostations[i].logo.toLowerCase() + '.png';
 	}
 	var RadioWheel = new (require('vendor/radiowheel.widget'))();
-	
-	var RadioWheelView = RadioWheel.createViewWithSegments({
-		totalwidth : 1500,
+
+	/*var RadioWheelView = RadioWheel.createViewWithSegments({
+	 totalwidth : 666,
+	 images : images,
+	 width : 200,
+	 anchorPoint : {
+	 x : 0.5,
+	 y : 3.2
+	 }
+	 });*/
+	RadioWheel.createBigWheel({
+		totalwidth : 666,
 		images : images,
 		width : 200,
 		anchorPoint : {
@@ -44,8 +53,14 @@ module.exports = function() {
 			y : 3.2
 		}
 	});
-	container.add(RadioWheelView);
-	
+	container.add(Ti.UI.createImageView({
+		image : RadioWheel.getBigWheel(),
+		width : 300,
+		borderWidth : 2,
+		borderColor : 'darkgreen',
+		height : 300
+	}));
+	//container.add(RadioWheelView);
 
 	model.φ = model.currentstation * segment;
 

@@ -40,12 +40,18 @@ module.exports = function() {
 			})
 		}));
 		wheelView.toImage(function(blob) {// making screenshot to save the CPU
-			var file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'bigwheel.png');
-			file.write(blob);
-			var image = file.read();
-			wheelView.removeAllChildren();
-			wheelView.backgroundImage = image.nativePath;
-		}); // without this block we see the wheel, with we don't see
+			require('ti.permissions').requestPermissions(['android.permission.WRITE_EXTERNAL_STORAGE'], function(_e) {
+				if (_e.success) {
+					var file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'bigwheel.png');
+					file.write(blob);
+					var image = file.read();
+					wheelView.removeAllChildren();
+					wheelView.backgroundImage = image.nativePath;
+				}
+			});
+
+		});
+		// without this block we see the wheel, with we don't see
 
 	});
 	var handler = Ti.UI.createScrollView({

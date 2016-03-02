@@ -19,7 +19,7 @@ module.exports = function() {
 	});
 
 	/* Generating of wheel */
-	var wheel = Ti.UI.createView({
+	var wheelView = Ti.UI.createView({
 		top : OFFSET,
 		width : WHEELSIZE,
 		height : WHEELSIZE,
@@ -27,9 +27,8 @@ module.exports = function() {
 	});
 	model.radiostations.forEach(function(station, ndx) {// adding of station logos
 		var α = 360 / model.radiostations.length * ndx * (Math.PI / 180);
-		wheel.add(Ti.UI.createView({
+		wheelView.add(Ti.UI.createView({
 			backgroundImage : '/images/' + station.logo.toLowerCase() + '.png',
-			touchEnabled : false,
 			width : TILESIZE,
 			height : TILESIZE,
 			center : {
@@ -40,12 +39,12 @@ module.exports = function() {
 				rotate : 360 / model.radiostations.length * ndx + 90
 			})
 		}));
-		wheel.toImage(function(blob) {// making screenshot to save the CPU
-			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
+		wheelView.toImage(function(blob) {// making screenshot to save the CPU
+			var file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'bigwheel.png');
 			file.write(blob);
 			var image = file.read();
-			wheel.removeAllChildren();
-			wheel.backgroundImage = image.nativePath;
+			wheelView.removeAllChildren();
+			wheelView.backgroundImage = image.nativePath;
 		}); // without this block we see the wheel, with we don't see
 
 	});
@@ -66,7 +65,7 @@ module.exports = function() {
 		lastφ = φ;
 		var time = new Date().getTime();
 		if (time - lasttime > 0)
-			wheel.setTransform(matrix.rotate(φ));
+			wheelView.setTransform(matrix.rotate(φ));
 		lasttime = time;
 	}
 
@@ -79,7 +78,7 @@ module.exports = function() {
 			var φ = Math.round(lastφ / degrees_of_pie) * degrees_of_pie;
 			//+ degrees_of_pie / 4;
 			//console.log(φ);
-			wheel.animate({
+			wheelView.animate({
 				transform : Ti.UI.create2DMatrix({
 					rotate : φ,
 					duration : 50
@@ -88,7 +87,7 @@ module.exports = function() {
 		}, 2000);
 
 	});
-	ui.add(wheel);
+	ui.add(wheelView);
 	ui.add(handler);
 	handler.setContentOffset({
 		x : BIG / 2,

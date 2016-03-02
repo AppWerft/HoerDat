@@ -42,14 +42,15 @@ module.exports = function() {
 				rotate : angle_in_degrees
 			})
 		}));
-		/*
-		 var blob = wheel.toImage();
-		 var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
-		 file.write(blob);
-		 var image = file.read();
-		 wheel.removeAllChildren();
-		 wheel.backgroundImage = image.nativePath;
-		 */
+
+		var blob = wheel.toImage(function(blobs) {
+			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
+			file.write(blob);
+			var image = file.read();
+			wheel.removeAllChildren();
+			wheel.backgroundImage = image.nativePath;
+		});
+
 	});
 	var handler = Ti.UI.createScrollView({
 		scrollType : 'horizontal',
@@ -69,7 +70,6 @@ module.exports = function() {
 		var time = new Date().getTime();
 		if (time - lasttime > 0)
 			wheel.setTransform(matrix.rotate(φ));
-
 		lasttime = time;
 	}
 

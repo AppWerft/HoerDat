@@ -17,6 +17,8 @@ module.exports = function() {
 	});
 	model.radiostations.forEach(function(station) {
 	});
+	
+	/* Generating of wheel */
 	var wheel = Ti.UI.createView({
 		top : OFFSET,
 		width : WHEELSIZE,
@@ -24,25 +26,20 @@ module.exports = function() {
 		bottom : -OFFSET
 	});
 	model.radiostations.forEach(function(station, ndx) {
-		var image = '/images/' + station.logo.toLowerCase() + '.png';
-		var angle_in_degrees = 360 / model.radiostations.length * ndx + 90;
 		var α = 360 / model.radiostations.length * ndx * (Math.PI / 180);
-		var xpos = WHEELSIZE / 2 + Math.cos(α) * RADIUS;
-		var ypos = WHEELSIZE / 2 + Math.sin(α) * RADIUS;
 		wheel.add(Ti.UI.createView({
-			backgroundImage : image,
+			backgroundImage :  '/images/' + station.logo.toLowerCase() + '.png',
 			touchEnabled : false,
 			width : TILESIZE,
 			height : TILESIZE,
 			center : {
-				x : xpos,
-				y : ypos
+				x : WHEELSIZE / 2 + Math.cos(α) * RADIUS,
+				y : WHEELSIZE / 2 + Math.sin(α) * RADIUS
 			},
 			transform : Ti.UI.create2DMatrix({
-				rotate : angle_in_degrees
+				rotate : 360 / model.radiostations.length * ndx + 90
 			})
 		}));
-
 		var blob = wheel.toImage(function(blobs) {
 			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
 			file.write(blob);

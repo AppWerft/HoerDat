@@ -18,7 +18,7 @@ Moment.locale('de');
 module.exports = function(args) {
 	if (Ti.App.Properties.hasProperty(args.date)) {
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
-		//return;
+		return;
 	}
 	var yql = 'select * from html where url="http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date + '" and xpath="//table"';
 	Ti.Yahoo.yql(yql, function(_res) {

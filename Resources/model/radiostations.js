@@ -1,22 +1,31 @@
 module.exports = [{
 	logo : 'SWR2',
-	playlist : 'http://mp3-live.swr.de/swr2_m.m3u'
+	playlist : 'http://mp3-live.swr.de/swr2_m.m3u',name:"SWR 2"
 }, {
 	logo : 'WDR3',
-	playlist : 'http://www.wdr.de/wdrlive/media/wdr3_hq.m3u'
+	playlist : 'http://www.wdr.de/wdrlive/media/wdr3_hq.m3u',
+	name : "WDR 3"
 }, {
-	logo : 'WDR5',
+	logo : 'WDR5',name:"WDR 5",
 	playlist : 'http://www.wdr.de/wdrlive/media/wdr5.m3u'
 }, {
 	logo : 'ORF OE1',
+	name : "Ö1",
 	stream : 'http://mp3stream3.apasf.apa.at:8000',
 	"latin1" : true
 }, {
 	logo : 'SRF2',
+	name:'SRF 2',
 	playlist : 'http://stream.srg-ssr.ch/drs2/mp3_128.m3u',
 	latin:true
-}, {
+},{
+	logo : 'SR2',
+	name:'SR 2',
+	playlist : 'http://stream.srg-ssr.ch/m/drs2/mp3_128',
+	latin:true
+},  {
 	logo : 'BR2',
+	name :"BR 2",
 	stream : 'http://br-mp3-bayern2sued-m.akacast.akamaistream.net/7/731/256282/v1/gnl.akacast.akamaistream.net/br_mp3_bayern2sued_m'
 }, {
 	logo : 'NDRKULTUR',

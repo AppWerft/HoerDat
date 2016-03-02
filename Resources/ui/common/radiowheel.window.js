@@ -1,46 +1,55 @@
-const BIG = 32000,
-    SEGMENTS = 360 / 12,
-    GEAR = 0.2;
+const OFFSET = 100,
+    TILESIZE = 210,
+    RADIUS = 540,
+    WHEELSIZE = 2 * RADIUS + TILESIZE * 1.3;
 
 module.exports = function() {
-	var ui = Ti.UI.createWindow({
-		backgroundColor : 'white'
-	});
-
 	var model = {
 		radiostations : require('model/radiostations'),
 		currentstation : Ti.App.Properties.getInt('CURRENT_STATION_INDEX', 0),
 		φ : 0
 	};
+	var degrees_of_pie = 360 / model.radiostations.length;
+	var gear = 0.1;
+	BIG = 3600 / gear;
+	var ui = Ti.UI.createWindow({
+		backgroundColor : 'white'
+	});
 	model.radiostations.forEach(function(station) {
-
 	});
 	var wheel = Ti.UI.createView({
-		top:300,
-		/*		width : 1100,
-		 height : 1100,*/
-		bottom : -300
+		top : OFFSET,
+		width : WHEELSIZE,
+		height : WHEELSIZE,
+		bottom : -OFFSET
 	});
 	model.radiostations.forEach(function(station, ndx) {
 		var image = '/images/' + station.logo.toLowerCase() + '.png';
-		var angle = 360 / model.radiostations.length * ndx;
-		var xpos = Math.cos(angle * (Math.PI / 180));
-		var ypos = Math.sin(angle * (Math.PI / 180));
+		var angle_in_degrees = 360 / model.radiostations.length * ndx + 90;
+		var α = 360 / model.radiostations.length * ndx * (Math.PI / 180);
+		var xpos = WHEELSIZE / 2 + Math.cos(α) * RADIUS;
+		var ypos = WHEELSIZE / 2 + Math.sin(α) * RADIUS;
 		wheel.add(Ti.UI.createView({
 			backgroundImage : image,
 			touchEnabled : false,
-			width : 200,
-			height : 200,
+			width : TILESIZE,
+			height : TILESIZE,
 			center : {
-				x : xpos * 300,
-				y : ypos * 300
+				x : xpos,
+				y : ypos
 			},
 			transform : Ti.UI.create2DMatrix({
-				rotate : angle,
-				translate : [xpos*300,ypos*300]
+				rotate : angle_in_degrees
 			})
-
 		}));
+		/*
+		 var blob = wheel.toImage();
+		 var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
+		 file.write(blob);
+		 var image = file.read();
+		 wheel.removeAllChildren();
+		 wheel.backgroundImage = image.nativePath;
+		 */
 	});
 	var handler = Ti.UI.createScrollView({
 		scrollType : 'horizontal',
@@ -51,17 +60,37 @@ module.exports = function() {
 		width : BIG
 	}));
 
-	var lastx = 0;
-	handler.addEventListener('scroll', function(_e) {
-		var φ = _e.x * GEAR;
-		//φ = (φ - φ % SEGMENTS);
-		wheel.setTransform(Ti.UI.create2DMatrix({
-			rotate : φ,
-		}));
-		lastx = _e.x;
+	var lastφ = 0;
+	var lasttime = new Date().getTime();
+	var matrix = Ti.UI.create2DMatrix();
+	function onScrollFn(_e) {
+		var φ = -_e.x * gear;
+		lastφ = φ;
+		var time = new Date().getTime();
+		if (time - lasttime > 0)
+			wheel.setTransform(matrix.rotate(φ));
+
+		lasttime = time;
+	}
+
+
+	handler.addEventListener('scroll', onScrollFn);
+
+	handler.addEventListener('touchend', function(_e) {
+		return;
+		setTimeout(function() {
+			var φ = Math.round(lastφ / degrees_of_pie) * degrees_of_pie;
+			//+ degrees_of_pie / 4;
+			//console.log(φ);
+			wheel.animate({
+				transform : Ti.UI.create2DMatrix({
+					rotate : φ,
+					duration : 50
+				})
+			});
+		}, 2000);
 
 	});
-
 	ui.add(wheel);
 	ui.add(handler);
 	handler.setContentOffset({
@@ -70,3 +99,4 @@ module.exports = function() {
 	});
 	return ui;
 };
+//https://github.com/kgividen/TiCircularSliderBtnWidget

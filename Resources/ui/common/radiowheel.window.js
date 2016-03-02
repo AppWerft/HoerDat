@@ -25,7 +25,7 @@ module.exports = function() {
 		height : WHEELSIZE,
 		bottom : -OFFSET
 	});
-	model.radiostations.forEach(function(station, ndx) {
+	model.radiostations.forEach(function(station, ndx) { // adding of station logos
 		var α = 360 / model.radiostations.length * ndx * (Math.PI / 180);
 		wheel.add(Ti.UI.createView({
 			backgroundImage :  '/images/' + station.logo.toLowerCase() + '.png',
@@ -40,7 +40,7 @@ module.exports = function() {
 				rotate : 360 / model.radiostations.length * ndx + 90
 			})
 		}));
-		var blob = wheel.toImage(function(blobs) {
+		wheel.toImage(function(blob) {// making screenshot to save the CPU 
 			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, 'bigwheel.png');
 			file.write(blob);
 			var image = file.read();

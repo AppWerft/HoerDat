@@ -19,17 +19,24 @@ module.exports = function() {
 		}),
 		iconSize : 200,
 		radius : 500,
-		verticalOffset : 100,
+		verticalOffset : 75,
 		activeSegment : model.currentstation
 	});
 	wheelView.onChange = function(ndx) {
 		messageView.setText(model.radiostations[ndx].name);
+		Ti.App.Properties.setInt('CURRENT_STATION_INDEX', ndx);
+		Ti.App.Properties.setObject('CURRENT_STATION', model.radiostations[ndx]);
+
 	};
+	var playStopControl = require('vendor/radio.control');
 	var $ = Ti.UI.createWindow({
 		backgroundColor : 'white'
 	});
 	$.add(wheelView);
 	$.add(messageView);
+	$.add(playStopControl.getView({
+		
+	}));
 	return $;
 };
 //https://github.com/kgividen/TiCircularSliderBtnWidget

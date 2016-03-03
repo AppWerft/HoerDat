@@ -1,6 +1,6 @@
 module.exports = function(args) {
-    console.log('Stream' + args.stream);
-    console.log('play' + args.playlist);
+    console.log('Stream=' + args.stream);
+    console.log('playlist=' + args.playlist);
 
     if (args.stream) {
         args.onload(args.stream);

@@ -94,12 +94,10 @@ module.exports = function(_args) {
 			}
 		}
 	}
-
-
 	handler.addEventListener('scroll', onScrollFn);
 	wheelView.addEventListener('postlayout', onPostlayoutFn);
 	$.getActiveSegment = function() {
-		return activesegment;
+		return parseInt(activesegment);
 	};
 	$.add(wheelView);
 	$.add(handler);

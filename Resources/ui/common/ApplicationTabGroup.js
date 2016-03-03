@@ -22,7 +22,7 @@ module.exports = function(Window) {
 		window : require('ui/common/radiowheel.window')(),
 		ndx : 2
 	}));
-	var tabindex = Ti.App.Properties.getInt('LASTTAB', 2);
+	var tabindex = Ti.App.Properties.getInt('LASTTAB', 1);
 	if (tabindex < self.tabs.length)
 		self.setActiveTab(1);
 	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event

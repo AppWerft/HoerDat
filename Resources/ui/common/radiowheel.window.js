@@ -11,7 +11,8 @@ module.exports = function() {
 	};
 	/* display of station name on top */
 	var messageView = require('ui/marquee.widget')();
-	messageView.top = 0;
+	
+	messageView.top = 30;
 	/* display of tuning wheel */
 	var wheelView = require('vendor/wheel.widget')({
 		segmentIcons : model.radiostations.map(function(s) {
@@ -19,23 +20,23 @@ module.exports = function() {
 		}),
 		iconSize : 200,
 		radius : 500,
-		verticalOffset : 75,
+		verticalOffset : 120,
 		activeSegment : model.currentstation
 	});
 	wheelView.onChange = function(ndx) {
-		messageView.setText(model.radiostations[ndx].name);
 		Ti.App.Properties.setInt('CURRENT_STATION_INDEX', ndx);
 		Ti.App.Properties.setObject('CURRENT_STATION', model.radiostations[ndx]);
-
 	};
 	var playStopControl = require('vendor/radio.control');
+	playStopControl.onSelect = wheelView.onSelect;
+	
 	var $ = Ti.UI.createWindow({
 		backgroundColor : 'white'
 	});
 	$.add(wheelView);
 	$.add(messageView);
 	$.add(playStopControl.getView({
-		
+		messageView : 	messageView
 	}));
 	return $;
 };

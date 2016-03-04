@@ -1,6 +1,4 @@
 /* Init */
-
-
 //https://github.com/vbartacek/aacdecoder-android/blob/master/decoder/src/com/spoledge/aacdecoder/IcyInputStream.java#L98-L112
 
 Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
@@ -53,9 +51,6 @@ const TIMEOUTVALUE = 10000;
 var callbackFn;
 
 function onPlayerChange(_e) {
-	pingNet(function(_e) {
-		console.log(_e);
-	});
 	var status = _e.status;
 	if (timeoutTimer) {
 		LOG('stopping watchdog timer by player event	');
@@ -110,6 +105,7 @@ function onMetaData(_e) {
 }
 
 function onTimeout() {
+	console.log('Error: get timeout!!');
 	callbackFn({
 		status : 'TIMEOUT'
 	});
@@ -133,6 +129,7 @@ exports.play = function(_icyurl, _callbackFn) {
 		} else {
 			LOG('timeout watcher started, statsu was ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
+			console.log('timeouttimer started');
 			Ti.App.AudioStreamer.play(_icyurl);
 			LOG('PLAY STARTED');
 		}

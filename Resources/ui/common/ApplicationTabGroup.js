@@ -8,7 +8,7 @@ module.exports = function(Window) {
 	});
 	self.addEventListener('open', require('ui/common/main.menu'));
 	var win1 = new Window('Heute, morgen …');
-	require('ui/common/scheduler')(win1);
+	require('ui/common/scheduler.window')(win1);
 	var win2 = new Window('Suche');
 	require('ui/common/search')(win2);
 	self.addTab(Ti.UI.createTab({

@@ -1,4 +1,5 @@
 var AudioStreamer = require('vendor/audiostreamer.adapter');
+var radiostationsList = require('model/radiostations');
 
 var Crouton = require('de.manumaticx.crouton');
 var croutonView;
@@ -79,7 +80,7 @@ exports.getView = function() {
 			break;
 		case 'TIMEOUT':
 			console.log('AAS: audioStreamer TIMEOUT');
-			Crouton.hide();
+			croutonView && Crouton.hide(croutonView);
 			$.backgroundImage = PLAY;
 			if (options.messageView) {
 				options.messageView.setText('');
@@ -96,8 +97,8 @@ exports.getView = function() {
 			onair = false;
 			return;
 		}
-		currentStation = Ti.App.Properties.getObject('CURRENT_STATION', require('model/radiostations')[0]);
-		if (currentStation.module) {
+		currentStation = radiostationsList[Ti.App.Properties.getInt('CURRENT_STATION_INDEX')];
+		if (currentStation.module != undefined) {
 			var win = require(currentStation.module)();
 			win.open();
 			win.addEventListener('close', function() {
@@ -115,8 +116,6 @@ exports.getView = function() {
 			playlist : currentStation.playlist,
 			stream : currentStation.stream,
 			onload : function(_icyurl) {
-				Ti.App.Properties.setString('CURRENT_STATION_STREAM', _icyurl);
-
 				$.show({
 					animated : true
 				});

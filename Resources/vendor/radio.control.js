@@ -10,23 +10,24 @@ var onair = false;
 var currentStation;
 var lastmessage = '';
 
-exports.getView = function() {
+exports.createView = function() {
 	var options = arguments[0] || {};
 	var $ = Ti.UI.createView({
 		bottom : 10,
-		width : 100,
-		height : 100,
-		zIndex : 913,
+		width : 110,
+		height : 110,
+		zIndex : 999,
 		backgroundImage : PLAY
 	});
 	$.spinner = Ti.UI.createActivityIndicator({
 		style : Ti.UI.ActivityIndicatorStyle.BIG,
 		transform : Ti.UI.create2DMatrix({
-			scale : 1.2
+			scale : 1.85
 		})
 	});
 	$.add($.spinner);
 	var callbackFn = function(_payload) {
+		$.spinner.hide();
 		switch(_payload.status) {
 		case 'PLAYING':
 			onair = true;
@@ -65,9 +66,6 @@ exports.getView = function() {
 				 }).show(message);*/
 			}
 			$.backgroundImage = STOP;
-			$.spinner.hide({
-				animated : true
-			});
 			break;
 		case 'STOPPED':
 			onair = false;
@@ -76,28 +74,39 @@ exports.getView = function() {
 			if (options.messageView) {
 				options.messageView.setText('');
 			}
-			$.spinner.hide();
 			break;
 		case 'TIMEOUT':
-			console.log('AAS: audioStreamer TIMEOUT');
-			croutonView && Crouton.hide(croutonView);
+			console.log('AAS: audioStreamer ' + _payload.status);
 			$.backgroundImage = PLAY;
-			if (options.messageView) {
-				options.messageView.setText('');
-			}
-			$.spinner.hide();
+			break;
+		case 'OFFLINE':
+			console.log('AAS: audioStreamer ' + _payload.status);
+			$.backgroundImage = PLAY;
+			Ti.UI.createNotification({
+				message : "Bitte Internetzugang überprüfen!"
+			}).show();
 			break;
 		case 'BUFFERING':
 			break;
 		}
 	};
 	$.addEventListener('click', function() {
+		$.spinner.hide();
 		if (onair) {
 			AudioStreamer.stop();
 			onair = false;
 			return;
 		}
-		currentStation = radiostationsList[Ti.App.Properties.getInt('CURRENT_STATION_INDEX')];
+		if ( typeof $.onSelect == 'function') {
+			var ndx = $.onSelect();
+			currentStation = radiostationsList[ndx];
+			if (!currentStation)
+				return;
+			Ti.App.Properties.setInt('CURRENT_STATION_INDEX', ndx);
+		} else {
+			console.log('Warning: ' + typeof $.onSelect);
+			return;
+		}
 		if (currentStation.module != undefined) {
 			var win = require(currentStation.module)();
 			win.open();
@@ -111,7 +120,7 @@ exports.getView = function() {
 		if ( typeof $.onSelect == 'function') {
 			$.onSelect();
 		}
-		$.hide();
+		$.spinner.show();
 		require('controls/resolveplaylist')({
 			playlist : currentStation.playlist,
 			stream : currentStation.stream,
@@ -120,7 +129,6 @@ exports.getView = function() {
 					animated : true
 				});
 				AudioStreamer.play(_icyurl, callbackFn);
-				$.spinner.show();
 			},
 			onerror : function() {
 				//ui.StatusLog.setText('FEHLER: Radio-Adresse nicht erkannt.');

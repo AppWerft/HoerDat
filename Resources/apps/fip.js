@@ -32,12 +32,14 @@ module.exports = function() {
 	var keys = ['previous2', 'previous1', 'current', 'next1', 'next2'];
 	$.add(Ti.UI.createView({
 		top : 0.2,
-		backgroundColor : '#555',
+
+		backgroundColor : '#fff',
 		height : 3
 	}));
 	$.children[0].add(Ti.UI.createView({
 		backgroundColor : '#EE2887',
-		width : 1
+		width : 1,
+		left : 0,
 	}));
 	$.add(FlipModule.createFlipView({
 		top : 3,
@@ -57,6 +59,8 @@ module.exports = function() {
 		abx.title = payload.current.emission.titre || 'fipRadio';
 		abx.subtitle = 'bis: ' + Moment.unix(payload.current.emission.endTime).format('HH:mm') + ' Uhr';
 		var song = payload.current.song;
+		if (!song)
+			return;
 		var duration = song.endTime - song.startTime;
 		// seconds
 		var done = ((new Date().getTime()) / 1000 - song.startTime) / duration * 100;
@@ -90,9 +94,9 @@ module.exports = function() {
 				if (payload[key]) {
 					scheduler.add(Ti.UI.createImageView({
 						center : {
-							x : (positions[key] * 60 + screenwidth / 2)
+							x : (positions[key] * 65 + screenwidth / 2)
 						},
-						width : (key == "current") ? 65 : 60,
+						width : (key == "current") ? 70 : 60,
 						borderWidth : 0,
 						borderColor : (key == "current") ? '#EE2887' : 'transparent',
 						height : (key == "current") ? 65 : 60,
@@ -168,15 +172,24 @@ module.exports = function() {
 		abx.subtitleColor = "#ccc";
 		var activity = $.getActivity();
 		if (activity) {
+			
 			activity.onCreateOptionsMenu = function(e) {
 				activity.actionBar.displayHomeAsUp = true;
 				e.menu.clear();
+				e.menu.add({
+				title : 'Youtube',
+				icon : Ti.App.Android.R.drawable.ic_action_youtube,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+			}).addEventListener("click", function(_e) {
+			});
+			
 			};
-			activity.actionBar.homeButtonEnabled = true;
+			//activity.actionBar.homeButtonEnabled = true;
 			activity.actionBar.onHomeIconItemSelected = function() {
 				$.close();
 			};
 		}
+		activity.invalidateOptionsMenu();
 	});
 
 	return $;

@@ -20,7 +20,7 @@ module.exports = function(Window) {
 	self.addTab(Ti.UI.createTab({
 		title : 'LiveRadio',
 		window : require('ui/common/radiowheel.window')(),
-		ndx : 2
+		ndx : 1
 	}));
 	var tabindex = Ti.App.Properties.getInt('LASTTAB', 1);
 	if (tabindex < self.tabs.length)

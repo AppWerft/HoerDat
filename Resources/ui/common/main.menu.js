@@ -31,11 +31,24 @@ module.exports = function(_openevent) {
 				require('ui/common/search.window')().open();
 			});
 		};
+		var last = {};
 		activity.invalidateOptionsMenu();
+		activity.onPause = function() {
+			console.log('onPause <<<<<<<<<<<<<<<<<<<<<<<<<<<');
+			last.title = АктйонБар.title;
+			last.subtitle = АктйонБар.subtitle;
+		};
+		activity.onResume = function() {
+			console.log('onResume >>>>>>>>>>>>>>>>>>>>>>>>>>>');
+			АктйонБар.title = last.title || 'HörDat';
+			АктйонБар.subtitle = last.subtitle || 'Dein Hörspielkalender';
+		};
+
 		Ti.Gesture.addEventListener('orientationchange', function() {
 			if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
 				activity.actionBar.show();
-			} else activity.actionBar.hide();
+			} else
+				activity.actionBar.hide();
 		});
 
 	}

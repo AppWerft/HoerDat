@@ -3,7 +3,7 @@ module.exports = function(_args) {
 		segments : _args.segmentIcons,
 		iconsize : _args.iconSize || 200,
 		radius : _args.radius,
-		gear : _args.gear || 0.2,
+		gear : _args.gear || 0.03,
 		verticalOffset : _args.verticalOffset || 100,
 		activesegment : _args.activeSegment || 0
 	};
@@ -15,7 +15,6 @@ module.exports = function(_args) {
 		height : Ti.UI.FILL
 	});
 	var WHEELSIZE = 2 * options.radius + options.iconsize * 1.3;
-	console.log('WHEELSIZE=' + WHEELSIZE);
 	if (!Array.isArray(options.segments)) {
 		return null;
 	}
@@ -42,20 +41,10 @@ module.exports = function(_args) {
 			center : center,
 			transform : Ti.UI.create2DMatrix({
 				rotate : degree_of_segment * ndx + 180,
-				
+
 			})
 		}));
-		/*wheelView.toImage(function(blob) {// making screenshot to save the CPU
-		 require('ti.permissions').requestPermissions(['android.permission.WRITE_EXTERNAL_STORAGE'], function(_e) {
-		 if (_e.success) {
-		 var file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, 'bigwheel.png');
-		 file.write(blob);
-		 var image = file.read();
-		 wheelView.removeAllChildren();
-		 wheelView.backgroundImage = image.nativePath;
-		 }
-		 });
-		 });*/
+
 	});
 	var handler = Ti.UI.createScrollView({
 		scrollType : 'horizontal',
@@ -75,32 +64,40 @@ module.exports = function(_args) {
 
 	function onScrollFn(_e) {
 		var φ = (BIG / 2 - _e.x) * options.gear;
-		wheelView.removeEventListener('postlayout', onPostlayoutFn);
-		setTimeout(function() {
-			if (Math.abs(lastφ - φ) < .1)
-				wheelView.addEventListener('postlayout', onPostlayoutFn);
-		}, 10);
 		lastφ = φ;
 		wheelView.setTransform(matrix.rotate(φ));
-		//}
 	}
 
-	function onPostlayoutFn() {
-		var ndx = -Math.round(((lastφ + 180) % 360) / degree_of_segment);
-		activesegment = ndx % degree_of_segment;
-		if (options.segments[activesegment]) {
-			if ( typeof $.onChange == 'function') {
-				$.onChange(activesegment);
-			}
-		}
-	}
+
 	handler.addEventListener('scroll', onScrollFn);
-	wheelView.addEventListener('postlayout', onPostlayoutFn);
+	//wheelView.addEventListener('postlayout', onPostlayoutFn);
 	$.getActiveSegment = function() {
+		var ndx = -Math.round(((lastφ + 180) % 360) / degree_of_segment);
+		console.log(ndx);
+		activesegment = (ndx + options.segments.length) % options.segments.length;
+		lockIn();
 		return parseInt(activesegment);
+	};
+
+	function lockIn() {
+		/* to correct position */
+		var φ = lastφ - degree_of_segment / 2;
+		var δ = (φ / degree_of_segment - Math.round(φ / degree_of_segment)) * degree_of_segment;
+		console.log('>>>>>>>>>>>>>> ' + (lastφ - δ));
+		wheelView.animate({
+			transform : matrix.rotate(lastφ - δ)
+		});
+
+	};
+	$.setActiveSegment = function(ndx) {
+
 	};
 	$.add(wheelView);
 	$.add(handler);
+	wheelView.animate({
+		transform : matrix.rotate(options.activesegment * degree_of_segment-90)
+	});
+	lockIn();
 	return $;
 };
 //https://github.com/kgividen/TiCircularSliderBtnWidget

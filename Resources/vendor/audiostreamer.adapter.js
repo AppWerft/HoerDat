@@ -11,17 +11,27 @@ function LOG() {
 	//console.log('AAS: ' + arguments[0]);
 }
 
-function pingNet() {
-	if (Ti.Network.online == false)
+function requestOnlinestate(_cb) {
+	if (Ti.Network.online == false) {
 		wasLastPingSuccessful = false;
-	else {
+		_cb && _cb(false);
+	} else {
 		var xhr = Ti.Network.createHTTPClient({
 			timeout : TICK,
 			onload : function() {
-				wasLastPingSuccessful=  (xhr.status==302) ? true: false;
+
+				console.log(xhr.status);
+				if (xhr.status == 301) {
+					wasLastPingSuccessful = true;
+					_cb && _cb(true);
+				} else {
+					wasLastPingSuccessful = false;
+					_cb && _cb(false);
+				}
 			},
 			onerror : function() {
 				wasLastPingSuccessful = false;
+				_cb && _cb(false);
 			}
 		});
 		xhr.setAutoRedirect(false);
@@ -70,12 +80,13 @@ function onPlayerChange(_e) {
 		});
 		break;
 	case STOPPED:
+		LOG('event STOPPED FROM streamer');
 		if (!shouldStopp) {
 			LOG('stopping by offline');
 			Ti.App.AudioStreamer.stop();
 		}
 		shouldStopp = false;
-		LOG('event STOPPED FROM streamer');
+
 		if (shouldStream && Ti.Network.online) {
 			LOG('play in STOP event node, timeouttimer started');
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
@@ -120,6 +131,7 @@ exports.play = function(_icyurl, _callbackFn) {
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
 		LOG('≠≠≠≠≠≠≠ PLAY');
 		shouldStream = _icyurl;
+		Ti.App.AudioStreamer.stop();
 		/* was playing: we stop, wait og stop is finished a try to start again */
 		LOG('status after start method = ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
 		if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
@@ -127,11 +139,22 @@ exports.play = function(_icyurl, _callbackFn) {
 			shouldStop = true;
 			Ti.App.AudioStreamer.stop();
 		} else {
-			LOG('timeout watcher started, statsu was ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
-			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
-			console.log('timeouttimer started');
-			Ti.App.AudioStreamer.play(_icyurl);
-			LOG('PLAY STARTED');
+			requestOnlinestate(function(_online) {
+				console.log('Result from requestOnlinestate ' + _online);
+				if (_online == true) {
+					LOG('timeout watcher started, status was ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
+					//	timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
+					//	console.log('timeouttimer started');
+					Ti.App.AudioStreamer.play(_icyurl);
+					LOG('PLAY STARTED');
+				} else {
+					timeoutTimer && clearTimeout(timeoutTimer);
+					callbackFn({
+						status : 'OFFLINE'
+					});
+
+				}
+			});
 		}
 	}
 };
@@ -151,11 +174,14 @@ exports.isOnline = function() {
 	return wasLastPingSuccessful;
 };
 
-
 /* every click */
+/*
 var watchDog = setInterval(function() {
-	/* if should play we test conenctivity */
+	
+	
 	if (shouldStream != null)
-		pingNet(); // set module variable wasLastPingSuccessful
+		requestOnlinestate(function() {
+		});
+	// set module variable wasLastPingSuccessful
 }, TICK);
-
+*/

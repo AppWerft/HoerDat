@@ -1,24 +1,27 @@
 const URL = 'http://www.fipradio.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json';
 var abx = require('com.alcoapps.actionbarextras');
 var Moment = require('vendor/moment');
-var FlipModule = require('de.manumaticx.androidflip');
-
 var screenwidth = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor,
     screenheight = Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor;
 
-function getView() {
-	return Ti.UI.createScrollView({
-		scrollType : 'vertical',
-		backgroundColor : 'black',
-		layout : 'vertical'
-	});
-}
+var positions = {
+	"previous2" : -2,
+	"previous1" : -1,
+	"current" : 0,
+	"next1" : 1,
+	"next2" : 2
+};
 
 module.exports = function() {
-	function getMeta() {
+	function getCurrentDataFromFIP() {
 		var $ = Ti.Network.createHTTPClient({
 			onload : function() {
-				onLoadFn(JSON.parse(this.responseText));
+				try {
+					var payload = JSON.parse(this.responseText);
+				} catch(E) {
+					console.log(E);
+				}
+				payload && updateViews(payload);
 			}
 		});
 		$.open('GET', URL);
@@ -26,140 +29,146 @@ module.exports = function() {
 	}
 
 	var $ = Ti.UI.createWindow({
-		fullscreen : true
+		fullscreen : true,
 	});
-	$.cron = setInterval(getMeta, 2000);
-	var keys = ['previous2', 'previous1', 'current', 'next1', 'next2'];
-	$.add(Ti.UI.createView({
-		top : 0.2,
+	$.container = Ti.UI.createScrollView({
+		layout : 'vertical',
+		scrollType : 'vertical'
+	});
+	$.add($.container);
 
-		backgroundColor : '#fff',
+	$.cron = setInterval(getCurrentDataFromFIP, 2500);
+	var keys = ['previous2', 'previous1', 'current', 'next1', 'next2'];
+
+	$.emissionprogressView = Ti.UI.createView({
+		top : 0,
+		backgroundColor : '#000',
 		height : 3
-	}));
-	$.children[0].add(Ti.UI.createView({
+	});
+	$.emissionprogressView.add(Ti.UI.createView({
 		backgroundColor : '#EE2887',
 		width : 1,
 		left : 0,
 	}));
-	$.add(FlipModule.createFlipView({
-		top : 3,
-		orientation : FlipModule.ORIENTATION_HORIZONTAL,
-		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
-		views : ['current'].map(function(key) {
-			return getView(key);
-		}),
-		currentPage : 2,
-		height : Ti.UI.FILL
-	}));
-	$.addEventListener('focus', function() {
-		$.children[1].peakNext(true);
+	// adding progress view
+	$.songprogressView = Ti.UI.createView({
+		top : 0,
+		backgroundColor : '#000',
+		height : 3
 	});
+	$.songprogressView.add(Ti.UI.createView({
+		backgroundColor : '#EE2887',
+		width : 1,
+		left : 0,
+	}));
+	// history:
+	$.historyView = Ti.UI.createView({
+		top : 0,
+		height : 70
+	});
+	// title
+	$.titleView = Ti.UI.createLabel({
+		top : 15,
+		left : 10,
+		width : Ti.UI.FILL,
+		height : 'auto',
+		color : '#ddd',
+		font : {
+			fontFamily : 'Montserrat-Light',
+			fontSize : 18
+		},
+	});
+	$.albumView = Ti.UI.createLabel({
+		top : 0,
+		left : 10,
+		width : Ti.UI.FILL,
+		height : 'auto',
+		color : '#aaa',
+		font : {
+			fontFamily : 'Montserrat-Bold',
+			fontSize : 32
+		},
+	});
+	$.coverView = Ti.UI.createImageView({
+		top : 5,
+		width : Ti.UI.FILL,
+		height : 'auto',
+		defaultImage : '/images/fiplogo.png'
+	});
+	$.sourceView = Ti.UI.createLabel({
+		top : 5,
+		left : 10,
+		textAlign : 'right',
+		width : Ti.UI.FILL,
+		height : 'auto',
+		color : '#EE2887',
+		font : {
+			fontSize : 12
+		}
+	});
+	$.container.add($.emissionprogressView);
+	$.container.add($.songprogressView);
+	$.container.add($.historyView);
+	$.container.add($.titleView);
+	$.container.add($.albumView);
+	$.container.add($.coverView);
+	$.container.add($.sourceView);
+
 	var lastsong = {};
-	var onLoadFn = function(payload) {
+	var updateViews = function(payload) {
 		abx.title = payload.current.emission.titre || 'fipRadio';
-		abx.subtitle = 'bis: ' + Moment.unix(payload.current.emission.endTime).format('HH:mm') + ' Uhr';
-		var song = payload.current.song;
-		if (!song)
+		abx.subtitle = Moment.unix(payload.current.emission.startTime).format('HH:mm') + ' – ' + Moment.unix(payload.current.emission.endTime).format('HH:mm') + ' Uhr';
+		var emission = payload.current.emission;
+		if (!emission)
 			return;
-		var duration = song.endTime - song.startTime;
+		var emissionduration = emission.endTime - emission.startTime;
 		// seconds
-		var done = ((new Date().getTime()) / 1000 - song.startTime) / duration * 100;
-		$.children[0].children[0].setWidth(done + '%');
+		var emissiondone = ((new Date().getTime()) / 1000 - emission.startTime) / emissionduration * 100;
+		$.emissionprogressView.children[0].setWidth(emissiondone + '%');
+		var song = payload.current.song;
+		if (!song) {
+			$.titleView.setText('Es liegt derweil kein Songliste vor');
+			$.songprogressView.setHeight(0);
+			$.historyView.setHeight(0);
+			return;
+		}
+		$.songprogressView.setHeight(3);
+		$.historyView.setHeight(70);
+		var songduration = song.endTime - song.startTime;
+		// seconds
+		var songdone = ((new Date().getTime()) / 1000 - song.startTime) / songduration * 100;
+		$.songprogressView.children[0].setWidth(songdone + '%');
 		if (lastsong.id == payload['current'].song.id)
 			return;
 		lastsong = payload['current'].song;
-		['current'].forEach(function(key, i) {
-			var view = $.children[1].views[i];
-			if (!payload[key]) {
-				view.removeAllChildren();
-				return;
-			}
-			var song = payload[key].song;
-			view.removeAllChildren();
-			var scheduler = Ti.UI.createView({
-				top : 0,
-				width : Ti.UI.FILL,
-				height : 65
-
-			});
-			//console.log(payload.current.song);
-			var positions = {
-				"previous2" : -2,
-				"previous1" : -1,
-				"current" : 0,
-				"next1" : 1,
-				"next2" : 2
-			};
-			keys.forEach(function(key) {
-				if (payload[key]) {
-					scheduler.add(Ti.UI.createImageView({
-						center : {
-							x : (positions[key] * 65 + screenwidth / 2)
-						},
-						width : (key == "current") ? 70 : 60,
-						borderWidth : 0,
-						borderColor : (key == "current") ? '#EE2887' : 'transparent',
-						height : (key == "current") ? 65 : 60,
-						image : payload[key].song.visuel.small
-					}));
-				} else
-					console.log('Warning: no payload for ' + key);
-			});
-
-			view.add(scheduler);
-
-			view.add(Ti.UI.createLabel({
-				top : 15,
-				left : 10,
-				width : Ti.UI.FILL,
-				height : 'auto',
-				color : '#ddd',
-				font : {
-					fontFamily : 'Montserrat-Light',
-
-					fontSize : 18
-				},
-				text : song.titre
-			}));
-			view.add(Ti.UI.createLabel({
-				top : 0,
-				left : 10,
-				width : Ti.UI.FILL,
-				height : 'auto',
-				text : song.titreAlbum,
-				color : '#aaa',
-				font : {
-					fontFamily : 'Montserrat-Bold',
-					fontSize : 32
-				},
-			}));
-			view.add(Ti.UI.createImageView({
-				top : 5,
-				width : Ti.UI.FILL,
-				height : 'auto',
-				image : song.visuel.medium
-			}));
-			var annee = (song.anneeEditionMusique) ? song.anneeEditionMusique + '@' : '';
-			var label = (song.label) ? song.label : '';
-			var interprete = (song.interpreteMorceau) ? song.interpreteMorceau + ', ' : '';
-
-			view.add(Ti.UI.createLabel({
-				top : 5,
-				left : 10,
-				textAlign : 'right',
-				width : Ti.UI.FILL,
-				height : 'auto',
-				text : interprete + annee + label,
-				color : '#EE2887',
-				font : {
-					fontSize : 12
-				},
-			}));
-
+		$.historyView.removeAllChildren();
+		Object.getOwnPropertyNames(positions).forEach(function(key) {
+			if (payload[key]) {
+				$.historyView.add(Ti.UI.createImageView({
+					center : {
+						x : (positions[key] * 95 + screenwidth / 2)
+					},
+					width : (key == "current") ? 70 : 70,
+					borderWidth : 0,
+					borderColor : (key == "current") ? '#EE2887' : 'transparent',
+					height : (key == "current") ? 70 : 70,
+					image : payload[key].song.visuel.small
+				}));
+			} else
+				console.log('Warning: no payload for ' + key);
 		});
-
+		var song = payload['current'].song;
+		$.titleView.setText(song.titre);
+		$.albumView.setText(song.titreAlbum);
+		$.coverView.setImage(song.visuel.medium);
+		var annee = (song.anneeEditionMusique) ? song.anneeEditionMusique + '@' : '';
+		var label = (song.label) ? song.label : '';
+		var interprete = (song.interpreteMorceau) ? song.interpreteMorceau + ', ' : '';
+		$.sourceView.setText(interprete + annee + label);
+		payload = null;
 	};
-	getMeta(onLoadFn);
+	getCurrentDataFromFIP();
+	// init
 	$.addEventListener('close', function(_e) {
 		$.cron && clearInterval($.cron);
 	});
@@ -172,17 +181,16 @@ module.exports = function() {
 		abx.subtitleColor = "#ccc";
 		var activity = $.getActivity();
 		if (activity) {
-			
 			activity.onCreateOptionsMenu = function(e) {
 				activity.actionBar.displayHomeAsUp = true;
 				e.menu.clear();
 				e.menu.add({
-				title : 'Youtube',
-				icon : Ti.App.Android.R.drawable.ic_action_youtube,
-				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-			}).addEventListener("click", function(_e) {
-			});
-			
+					title : 'Youtube',
+					icon : Ti.App.Android.R.drawable.ic_action_youtube,
+					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				}).addEventListener("click", function(_e) {
+				});
+
 			};
 			//activity.actionBar.homeButtonEnabled = true;
 			activity.actionBar.onHomeIconItemSelected = function() {
@@ -191,6 +199,5 @@ module.exports = function() {
 		}
 		activity.invalidateOptionsMenu();
 	});
-
 	return $;
 };

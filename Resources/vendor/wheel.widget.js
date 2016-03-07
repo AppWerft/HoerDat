@@ -94,10 +94,10 @@ module.exports = function(_args) {
 	};
 	$.add(wheelView);
 	$.add(handler);
+	console.log('INITROTATE: ' + (options.activesegment * degree_of_segment));
 	wheelView.animate({
-		transform : matrix.rotate(options.activesegment * degree_of_segment-90)
+		transform : matrix.rotate(options.activesegment * degree_of_segment+degree_of_segment/2)
 	});
-	lockIn();
 	return $;
 };
 //https://github.com/kgividen/TiCircularSliderBtnWidget

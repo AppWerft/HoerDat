@@ -1,1 +1,1 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/ui/tablet/ApplicationWindow.js
+function ApplicationWindow(e){var t=Ti.UI.createWindow({title:e,backgroundColor:"white"});return t}module.exports=ApplicationWindow;

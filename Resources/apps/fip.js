@@ -173,7 +173,8 @@ module.exports = function() {
 		/* preparing of youtube */
 		require('vendor/tiyoutube').searchVideos(interprete, function(_payload) {
 			ytlist = _payload;
-			if ($.yticon) $.yticon.visible = true;
+			if ($.yticon)
+				$.yticon.visible = true;
 
 		});
 
@@ -189,6 +190,9 @@ module.exports = function() {
 	$.addEventListener('focus', function(_e) {
 		console.log('FIP focused');
 		$.cron = setInterval(getCurrentDataFromFIP, 5000);
+	});
+	$.addEventListener('close', function(_e) {
+		$ = null;
 	});
 	$.addEventListener('open', function(_e) {
 		abx.title = 'FIP';

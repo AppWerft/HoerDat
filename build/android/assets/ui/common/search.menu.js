@@ -1,1 +1,1 @@
-var abx=require("com.alcoapps.actionbarextras");module.exports=function(e){var t=e.source;t.data;abx.title="HörDat-Suche",abx.backgroundColor="#225588",abx.subtitle=t.searchItem?t.searchItem.a:"Formular",abx.titleFont="Rambla-Bold",abx.subtitleColor="#ccc";var r=e.source.getActivity();r&&(r.onCreateOptionsMenu=function(e){r.actionBar.displayHomeAsUp=!0,e.menu.clear()},r.actionBar.homeButtonEnabled=!0,r.actionBar.onHomeIconItemSelected=function(){t.close()})};
+/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/ui/common/search.menu.js

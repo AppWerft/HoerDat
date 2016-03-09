@@ -22,7 +22,7 @@ exports.createView = function() {
 	$.spinner = Ti.UI.createActivityIndicator({
 		style : Ti.UI.ActivityIndicatorStyle.BIG,
 		transform : Ti.UI.create2DMatrix({
-			scale : 1.85
+			scale : 1.7
 		})
 	});
 	$.add($.spinner);

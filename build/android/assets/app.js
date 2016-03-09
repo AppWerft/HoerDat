@@ -1,1 +1,1 @@
-!function(){var i=require("ui/handheld/ApplicationWindow"),n=require("ui/common/ApplicationTabGroup");new n(i).open()}();
+/Users/fuerst/Documents/TitaniumStudioWorkspace/Hoerdat/Resources/app.js

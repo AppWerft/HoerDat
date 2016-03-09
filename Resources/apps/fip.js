@@ -12,6 +12,9 @@ var positions = {
 	"next2" : 2
 };
 
+var ytlist = [];
+var interprete;
+
 module.exports = function() {
 	function getCurrentDataFromFIP() {
 		var $ = Ti.Network.createHTTPClient({
@@ -37,7 +40,6 @@ module.exports = function() {
 	});
 	$.add($.container);
 
-	$.cron = setInterval(getCurrentDataFromFIP, 2500);
 	var keys = ['previous2', 'previous1', 'current', 'next1', 'next2'];
 
 	$.emissionprogressView = Ti.UI.createView({
@@ -130,6 +132,7 @@ module.exports = function() {
 			$.titleView.setText('Es liegt derweil kein Songliste vor');
 			$.songprogressView.setHeight(0);
 			$.historyView.setHeight(0);
+			interprete = '';
 			return;
 		}
 		$.songprogressView.setHeight(3);
@@ -142,11 +145,13 @@ module.exports = function() {
 			return;
 		lastsong = payload['current'].song;
 		$.historyView.removeAllChildren();
+		if ($.yticon)
+			$.yticon.setVisible(false);
 		Object.getOwnPropertyNames(positions).forEach(function(key) {
 			if (payload[key]) {
 				$.historyView.add(Ti.UI.createImageView({
 					center : {
-						x : (positions[key] * 95 + screenwidth / 2)
+						x : (positions[key] * 75 + screenwidth / 2)
 					},
 					width : (key == "current") ? 70 : 70,
 					borderWidth : 0,
@@ -163,14 +168,27 @@ module.exports = function() {
 		$.coverView.setImage(song.visuel.medium);
 		var annee = (song.anneeEditionMusique) ? song.anneeEditionMusique + '@' : '';
 		var label = (song.label) ? song.label : '';
-		var interprete = (song.interpreteMorceau) ? song.interpreteMorceau + ', ' : '';
+		interprete = (song.interpreteMorceau) ? song.interpreteMorceau + ', ' : '';
 		$.sourceView.setText(interprete + annee + label);
+		/* preparing of youtube */
+		require('vendor/tiyoutube').searchVideos(interprete, function(_payload) {
+			ytlist = _payload;
+			if ($.yticon) $.yticon.visible = true;
+
+		});
+
 		payload = null;
 	};
 	getCurrentDataFromFIP();
 	// init
-	$.addEventListener('close', function(_e) {
+	$.addEventListener('blur', function(_e) {
+		console.log('FIP blurred cron=' + $.cron);
+
 		$.cron && clearInterval($.cron);
+	});
+	$.addEventListener('focus', function(_e) {
+		console.log('FIP focused');
+		$.cron = setInterval(getCurrentDataFromFIP, 5000);
 	});
 	$.addEventListener('open', function(_e) {
 		abx.title = 'FIP';
@@ -184,13 +202,18 @@ module.exports = function() {
 			activity.onCreateOptionsMenu = function(e) {
 				activity.actionBar.displayHomeAsUp = true;
 				e.menu.clear();
-				e.menu.add({
+				$.yticon = e.menu.add({
 					title : 'Youtube',
+					visible : false,
 					icon : Ti.App.Android.R.drawable.ic_action_youtube,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-				}).addEventListener("click", function(_e) {
 				});
-
+				$.yticon.addEventListener("click", function(_e) {
+					require('apps/fipyt')({
+						ytlist : ytlist,
+						interprete : interprete
+					}).open();
+				});
 			};
 			//activity.actionBar.homeButtonEnabled = true;
 			activity.actionBar.onHomeIconItemSelected = function() {

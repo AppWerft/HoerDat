@@ -55,9 +55,7 @@ module.exports = [{
 }, {
 	logo : 'DLR',
 	playlist : 'http://www.dradio.de/streaming/dkultur.m3u',
-	name : 'DeutschlandRadio Kultur',
-	stream:"http://dradio_mp3_dkultur_m.akacast.akamaistream.net/7/530/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dkultur_m",
-	feed : 'http://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=1'
+	name : 'DeutschlandRadio Kultur'
 }, {
 	logo : 'DLF',
 	playlist : 'http://www.dradio.de/streaming/dlf.m3u',

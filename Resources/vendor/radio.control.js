@@ -1,8 +1,6 @@
 var AudioStreamer = require('vendor/audiostreamer.adapter');
 var radiostationsList = require('model/radiostations');
 
-var Crouton = require('de.manumaticx.crouton');
-var croutonView;
 const PLAY = '/images/play.png',
     LEER = '/images/leer.png',
     STOP = '/images/stop.png';
@@ -50,26 +48,23 @@ exports.createView = function() {
 				 var message = _payload.message;*/
 				var message = _payload.message.replace('�', ' ');
 				if (onair && message != lastmessage && !currentStation.module) {
-					croutonView = Crouton.show({
-						text : message,
-						color : '#aa326598'
-					});
+					Ti.UI.createNotification({
+						message : message,
+						duration: Ti.UI.NOTIFICATION_DURATION_LONG,
+						gravity: 48 // Gravity.TOP
+					}).show();
+
 					if (onair)
 						lastmessage = message;
 					else
 						lastmessage = '';
 				}
-				/*				Ti.UI.createNotification({
-				 center: {y:'20%'},
-				 duration : 5000,
-				 message : message
-				 }).show(message);*/
+				
 			}
 			$.backgroundImage = STOP;
 			break;
 		case 'STOPPED':
 			onair = false;
-			croutonView && Crouton.hide(croutonView);
 			$.backgroundImage = PLAY;
 			if (options.messageView) {
 				options.messageView.setText('');

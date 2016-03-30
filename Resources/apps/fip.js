@@ -15,7 +15,7 @@ var positions = {
 var ytlist = [];
 var interprete;
 
-module.exports = function() {
+var $ = function() {
 	function getCurrentDataFromFIP() {
 		var $ = Ti.Network.createHTTPClient({
 			onload : function() {
@@ -30,7 +30,6 @@ module.exports = function() {
 		$.open('GET', URL);
 		$.send();
 	}
-
 	var $ = Ti.UI.createWindow({
 		fullscreen : true,
 	});
@@ -39,9 +38,7 @@ module.exports = function() {
 		scrollType : 'vertical'
 	});
 	$.add($.container);
-
 	var keys = ['previous2', 'previous1', 'current', 'next1', 'next2'];
-
 	$.emissionprogressView = Ti.UI.createView({
 		top : 0,
 		backgroundColor : '#000',
@@ -115,7 +112,6 @@ module.exports = function() {
 	$.container.add($.albumView);
 	$.container.add($.coverView);
 	$.container.add($.sourceView);
-
 	var lastsong = {};
 	var updateViews = function(payload) {
 		abx.title = payload.current.emission.titre || 'fipRadio';
@@ -184,7 +180,6 @@ module.exports = function() {
 	// init
 	$.addEventListener('blur', function(_e) {
 		console.log('FIP blurred cron=' + $.cron);
-
 		$.cron && clearInterval($.cron);
 	});
 	$.addEventListener('focus', function(_e) {
@@ -219,7 +214,6 @@ module.exports = function() {
 					}).open();
 				});
 			};
-			//activity.actionBar.homeButtonEnabled = true;
 			activity.actionBar.onHomeIconItemSelected = function() {
 				$.close();
 			};
@@ -228,3 +222,5 @@ module.exports = function() {
 	});
 	return $;
 };
+
+module.exports = $;

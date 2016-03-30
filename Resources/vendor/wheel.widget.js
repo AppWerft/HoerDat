@@ -28,7 +28,7 @@ module.exports = function(_args) {
 		width : WHEELSIZE,
 		height : WHEELSIZE,
 	});
-	options.segments.forEach(function(segment, ndx) {// adding of station logos
+	function addIcon(segment, ndx) {// adding of station logos
 		var α = degree_of_segment * ndx + 90;
 		var center = {
 			x : WHEELSIZE / 2 + Math.cos(α * Math.PI / 180) * options.radius,
@@ -41,11 +41,10 @@ module.exports = function(_args) {
 			center : center,
 			transform : Ti.UI.create2DMatrix({
 				rotate : degree_of_segment * ndx + 180,
-
 			})
 		}));
-
-	});
+	}
+	options.segments.forEach(addIcon);
 	var handler = Ti.UI.createScrollView({
 		scrollType : 'horizontal',
 		backgroundColor : 'transparent',

@@ -10,15 +10,15 @@
     <fullscreen>true</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>false</analytics>
+    <property name="ti.android.root.reappears.restart" type="bool">true</property>
     <guid>a14bead2-dfad-448f-9666-d75f914064b9</guid>
     <property name="GAPI_test" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
     <property name="GAPI_stage" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
     <property name="GAPI_production" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <property name="ti.android.compilejs" type="bool">true</property>
-   
     <ios>
-    	<run-on-main-thread>true</run-on-main-thread>
+        <run-on-main-thread>true</run-on-main-thread>
         <plist>
             <dict>
                 <key>UISupportedInterfaceOrientations~iphone</key>
@@ -45,7 +45,7 @@
     </ios>
     <version>2.2.0</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-    	<run-on-main-thread>true</run-on-main-thread>
+        <run-on-main-thread>true</run-on-main-thread>
         <services>
             <service type="interval" url="radiowecker.js"/>
         </services>

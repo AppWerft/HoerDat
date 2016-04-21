@@ -56,7 +56,7 @@
         <module platform="android" version="1.7.4">com.woohoo.androidaudiostreamer</module>
         <module platform="android">ti.permissions</module>
         <module platform="android">com.alcoapps.actionbarextras</module>
-        <module platform="android">ti.chromecast</module>
+        <module platform="android">ti.audiovisualizerview</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

@@ -1,3 +1,5 @@
+var Visualizer = require('ti.audiovisualizerview');
+
 module.exports = function() {
 	var radiostations = require('model/radiostations');
 	var $ = Ti.UI.createWindow({
@@ -5,6 +7,7 @@ module.exports = function() {
 	});
 	/* display of station name on top */
 	var messageView = require('ui/marquee.widget')();
+
 	messageView.setTop(10);
 	/* display of tuning wheel */
 	var wheelView = require('vendor/wheel.widget')({
@@ -19,7 +22,7 @@ module.exports = function() {
 	var playStopControlView = require('vendor/radio.control').createView({
 		messageView : messageView
 	});
-	
+
 	/* bridge between wheel and player*/
 	playStopControlView.onSelect = function() {
 		return wheelView.getActiveSegment();
@@ -27,6 +30,19 @@ module.exports = function() {
 	$.add(wheelView);
 	$.add(messageView);
 	$.add(playStopControlView);
+	$.visualizerView = Visualizer.createVisualizerView({
+		height : 400,
+		borderWidth : 1,
+		borderColor : 'gray',
+		top : 50,
+		zIndex : 9999,
+		width : Ti.UI.FILL,
+		onready : function() {
+			$.visualizerView.addLineRenderer();
+		}
+	});
+	$.add($.visualizerView);
+
 	return $;
 };
 //https://github.com/kgividen/TiCircularSliderBtnWidget

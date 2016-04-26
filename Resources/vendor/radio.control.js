@@ -7,6 +7,7 @@ const PLAY = '/images/play.png',
 var onair = false;
 var currentStation;
 var lastmessage = '';
+var audioSessionId = 0;
 
 exports.createView = function() {
 	var options = arguments[0] || {};
@@ -15,7 +16,8 @@ exports.createView = function() {
 		width : 110,
 		height : 110,
 		zIndex : 999,
-		backgroundImage : PLAY
+		backgroundImage : PLAY,
+		audioSessionId : 0
 	});
 	$.spinner = Ti.UI.createActivityIndicator({
 		style : Ti.UI.ActivityIndicatorStyle.BIG,
@@ -26,32 +28,20 @@ exports.createView = function() {
 	$.add($.spinner);
 	var callbackFn = function(_payload) {
 		$.spinner.hide();
+		if (_payload.audioSessionId) {
+			$.audioSessionId = _payload.audioSessionId;
+			return;
+		}
 		switch(_payload.status) {
 		case 'PLAYING':
 			onair = true;
 			if (_payload.message) {
-				/*if (currentStation.latin1) {
-
-				 var message = encodeURI(_payload.message)//
-				 .replace(/%20/gm, ' ')//
-				 .replace(/%EF%BF%BD/gm, 'Ö')//
-				 .replace('Öchste', 'ächste')//
-				 .replace('fÖr', 'für')//
-				 .replace('Öume', 'äume')//
-				 .replace('esprÖch', 'espräch')//
-				 .replace('franzÖs', 'französ')//
-				 .replace('Öln', 'öln')//
-				 .replace('Ören', 'ören')//
-				 .replace('Önster', 'ünster');
-
-				 } else
-				 var message = _payload.message;*/
 				var message = _payload.message.replace('�', ' ');
 				if (onair && message != lastmessage && !currentStation.module) {
 					Ti.UI.createNotification({
 						message : message,
-						duration: Ti.UI.NOTIFICATION_DURATION_LONG,
-						gravity: 48 // Gravity.TOP
+						duration : Ti.UI.NOTIFICATION_DURATION_LONG,
+						gravity : 48 // Gravity.TOP
 					}).show();
 
 					if (onair)
@@ -59,7 +49,7 @@ exports.createView = function() {
 					else
 						lastmessage = '';
 				}
-				
+
 			}
 			$.backgroundImage = STOP;
 			break;
@@ -71,11 +61,9 @@ exports.createView = function() {
 			}
 			break;
 		case 'TIMEOUT':
-			console.log('AAS: audioStreamer ' + _payload.status);
 			$.backgroundImage = PLAY;
 			break;
 		case 'OFFLINE':
-			console.log('AAS: audioStreamer ' + _payload.status);
 			$.backgroundImage = PLAY;
 			Ti.UI.createNotification({
 				message : "Bitte Internetzugang überprüfen!"

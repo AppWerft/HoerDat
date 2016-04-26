@@ -6,6 +6,7 @@ Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
 const TICK = 3000;
 
 var wasLastPingSuccessful = false;
+var audioSessionId;
 
 function LOG() {
 	//console.log('AAS: ' + arguments[0]);
@@ -19,8 +20,6 @@ function requestOnlinestate(_cb) {
 		var xhr = Ti.Network.createHTTPClient({
 			timeout : TICK,
 			onload : function() {
-
-				console.log(xhr.status);
 				if (xhr.status == 301) {
 					wasLastPingSuccessful = true;
 					_cb && _cb(true);
@@ -93,7 +92,7 @@ function onPlayerChange(_e) {
 			Ti.App.AudioStreamer.play(shouldStream);
 		}
 		callbackFn({
-			status : 'STOPPED'
+			status : 'STOPPED',
 		});
 		break;
 	case STREAMERROR:
@@ -123,13 +122,17 @@ function onTimeout() {
 
 }
 
+Ti.App.AudioStreamer.addEventListener('ready', function(_e) {
+	callbackFn({
+		audioSessionId : _e.audioSessionId
+	});
+});
 Ti.App.AudioStreamer.addEventListener('metadata', onMetaData);
 Ti.App.AudioStreamer.addEventListener('change', onPlayerChange);
 
 exports.play = function(_icyurl, _callbackFn) {
 	callbackFn = _callbackFn;
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
-		LOG('≠≠≠≠≠≠≠ PLAY');
 		shouldStream = _icyurl;
 		Ti.App.AudioStreamer.stop();
 		/* was playing: we stop, wait og stop is finished a try to start again */
@@ -176,12 +179,11 @@ exports.isOnline = function() {
 
 /* every click */
 /*
-var watchDog = setInterval(function() {
-	
-	
-	if (shouldStream != null)
-		requestOnlinestate(function() {
-		});
-	// set module variable wasLastPingSuccessful
-}, TICK);
-*/
+ var watchDog = setInterval(function() {
+
+ if (shouldStream != null)
+ requestOnlinestate(function() {
+ });
+ // set module variable wasLastPingSuccessful
+ }, TICK);
+ */

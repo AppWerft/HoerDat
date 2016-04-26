@@ -17,10 +17,11 @@ module.exports = [{
 	logo : 'ORF OE1',
 	name : "Österreich 1",
 	stream : 'http://mp3stream3.apasf.apa.at:8000',
-	"latin1" : true
+	charset : "LATIN-1"
 }, {
 	logo : 'SRF2',
 	name : 'Radio SRF 2 Kultur',
+	charset : "LATIN-1",
 	playlist : 'http://stream.srg-ssr.ch/drs2/mp3_128.m3u',
 	latin : true
 }, {

@@ -51,12 +51,13 @@
         </services>
     </android>
     <modules>
+        <module platform="android">ti.audiovisualizerview</module>
         <module platform="android">de.manumaticx.androidflip</module>
         <module platform="android" version="0.123RAI">bencoding.alarmmanager</module>
-        <module platform="android" version="1.7.4">com.woohoo.androidaudiostreamer</module>
+        <module platform="android" version="1.7.7">com.woohoo.androidaudiostreamer</module>
         <module platform="android">ti.permissions</module>
         <module platform="android">com.alcoapps.actionbarextras</module>
-        <module platform="android">ti.audiovisualizerview</module>
+        <module platform="android">com.kcwdev.audio</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

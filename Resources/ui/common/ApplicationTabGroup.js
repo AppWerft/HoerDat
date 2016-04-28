@@ -19,7 +19,8 @@ module.exports = function(Window) {
 	
 	$.addTab(Ti.UI.createTab({
 		title : 'LiveRadio',
-		window : require('ui/common/radiowheel.window')(),
+		
+		window : require('ui/common/radiowheel.window')($),
 		ndx : 1
 	}));
 	var tabindex = Ti.App.Properties.getInt('LASTTAB', 1);

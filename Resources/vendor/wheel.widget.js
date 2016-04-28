@@ -3,6 +3,7 @@ module.exports = function(_args) {
 		segments : _args.segmentIcons,
 		iconsize : _args.iconSize || 200,
 		radius : _args.radius,
+		opacity : _args.opacity || 1.0,
 		gear : _args.gear || 0.03,
 		verticalOffset : _args.verticalOffset || 100,
 		activesegment : _args.activeSegment || 0
@@ -12,7 +13,8 @@ module.exports = function(_args) {
 	var activesegment = options.activesegement;
 	var $ = Ti.UI.createView({
 		width : Ti.UI.FILL,
-		height : Ti.UI.FILL
+		height : Ti.UI.FILL,
+		opacity : options.opacity || 0.9
 	});
 	var WHEELSIZE = 2 * options.radius + options.iconsize * 1.3;
 	if (!Array.isArray(options.segments)) {
@@ -20,6 +22,7 @@ module.exports = function(_args) {
 	}
 	var degree_of_segment = 360 / options.segments.length;
 	var BIG = 3600 / options.gear;
+
 	/* Generating of wheel */
 	var wheelView = Ti.UI.createView({
 		top : options.verticalOffset,
@@ -44,7 +47,10 @@ module.exports = function(_args) {
 			})
 		}));
 	}
+
+
 	options.segments.forEach(addIcon);
+
 	var handler = Ti.UI.createScrollView({
 		scrollType : 'horizontal',
 		backgroundColor : 'transparent',
@@ -95,7 +101,7 @@ module.exports = function(_args) {
 	$.add(handler);
 	console.log('INITROTATE: ' + (options.activesegment * degree_of_segment));
 	wheelView.animate({
-		transform : matrix.rotate(options.activesegment * degree_of_segment+degree_of_segment/2)
+		transform : matrix.rotate(options.activesegment * degree_of_segment + degree_of_segment / 2)
 	});
 	return $;
 };

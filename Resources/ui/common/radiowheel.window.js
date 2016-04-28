@@ -1,7 +1,8 @@
-module.exports = function() {
+module.exports = function(_tabgroup) {
 	var radiostations = require('model/radiostations');
 	var $ = Ti.UI.createWindow({
-		backgroundColor : 'white'
+		backgroundColor : 'white',
+		tabgroup : _tabgroup
 	});
 	var messageView = require('ui/marquee.widget')();
 	messageView.setTop(10);
@@ -12,6 +13,7 @@ module.exports = function() {
 		}),
 		iconSize : 240,
 		radius : 640,
+		opacity: 0.8,
 		verticalOffset : 90,
 		activeSegment : Ti.App.Properties.getInt('CURRENT_STATION_INDEX', 0)
 	});

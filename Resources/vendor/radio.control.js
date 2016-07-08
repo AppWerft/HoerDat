@@ -111,6 +111,7 @@ exports.createView = function() {
 				$.show({
 					animated : true
 				});
+				console.log("Play resolved URL: "+ _icyurl);
 				AudioStreamer.play(_icyurl, callbackFn);
 			},
 			onerror : function() {

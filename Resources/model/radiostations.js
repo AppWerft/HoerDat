@@ -68,6 +68,7 @@ module.exports = [{
 }, {
 	logo : 'MDRFIGARO',
 	name : "MDR FIGARO",
+	stream: "http://c22033-ls.i.core.cdn.streamfarm.net/HZSKMnDUg9922033/22033mdr/live/app2128740352/w2128904193/live_de_128.mp3",
 	playlist : 'http://avw.mdr.de/livestreams/mdr_figaro_live_128.m3u'
 },{
 	logo : 'mdrklassik',
@@ -76,7 +77,7 @@ module.exports = [{
 },  {
 	logo : 'rbbkultur',
 	name : 'rbb Kultur',
-	stream : 'http://rbb-mp3-kulturradio-m.akacast.akamaistream.net/7/935/292095/v1/gnl.akacast.akamaistream.net/rbb_mp3_kulturradio_m',
+	stream : 'icy://rbb-mp3-kulturradio-m.akacast.akamaistream.net/7/935/292095/v1/gnl.akacast.akamaistream.net/rbb_mp3_kulturradio_m',
 	name : 'kulturradio rbb	',
 	latin1 : true
 }];

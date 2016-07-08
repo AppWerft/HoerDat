@@ -1,7 +1,7 @@
 /* Init */
 //https://github.com/vbartacek/aacdecoder-android/blob/master/decoder/src/com/spoledge/aacdecoder/IcyInputStream.java#L98-L112
 
-Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
+var StreamingPlayer = require('com.woohoo.androidaudiostreamer');
 
 const TICK = 3000;
 
@@ -82,14 +82,14 @@ function onPlayerChange(_e) {
 		LOG('event STOPPED FROM streamer');
 		if (!shouldStopp) {
 			LOG('stopping by offline');
-			Ti.App.AudioStreamer.stop();
+			StreamingPlayer.stop();
 		}
 		shouldStopp = false;
 
 		if (shouldStream && Ti.Network.online) {
 			LOG('play in STOP event node, timeouttimer started');
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
-			Ti.App.AudioStreamer.play(shouldStream);
+			StreamingPlayer.play(shouldStream);
 		}
 		callbackFn({
 			status : 'STOPPED',
@@ -122,40 +122,42 @@ function onTimeout() {
 
 }
 
-Ti.App.AudioStreamer.addEventListener('ready', function(_e) {
+StreamingPlayer.addEventListener('ready', function(_e) {
+	console.log(_e);
 	callbackFn({
 		audioSessionId : _e.audioSessionId
 	});
 });
-Ti.App.AudioStreamer.addEventListener('metadata', onMetaData);
-Ti.App.AudioStreamer.addEventListener('change', onPlayerChange);
+StreamingPlayer.addEventListener('metadata', onMetaData);
+StreamingPlayer.addEventListener('change', onPlayerChange);
 
 exports.play = function(_icyurl, _callbackFn) {
 	callbackFn = _callbackFn;
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
 		shouldStream = _icyurl;
-		Ti.App.AudioStreamer.stop();
+		StreamingPlayer.stop();
 		/* was playing: we stop, wait og stop is finished a try to start again */
-		LOG('status after start method = ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
-		if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
+		LOG('status after start method = ' + STATUS[StreamingPlayer.getStatus()]);
+		if (StreamingPlayer.getStatus() == PLAYING) {
 			LOG('was playing => forced stopp');
 			shouldStop = true;
-			Ti.App.AudioStreamer.stop();
+			StreamingPlayer.stop();
 		} else {
 			requestOnlinestate(function(_online) {
 				console.log('Result from requestOnlinestate ' + _online);
 				if (_online == true) {
-					LOG('timeout watcher started, status was ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
+					LOG('timeout watcher started, status was ' + STATUS[StreamingPlayer.getStatus()]);
 					//	timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 					//	console.log('timeouttimer started');
-					Ti.App.AudioStreamer.play(_icyurl);
+					StreamingPlayer.play({
+						url : _icyurl
+					});
 					LOG('PLAY STARTED');
 				} else {
 					timeoutTimer && clearTimeout(timeoutTimer);
 					callbackFn({
 						status : 'OFFLINE'
 					});
-
 				}
 			});
 		}
@@ -166,11 +168,11 @@ exports.stop = function() {
 	LOG('≠≠≠≠≠≠≠ STOP');
 	shouldStream = null;
 	shoudStopp = true;
-	Ti.App.AudioStreamer.stop();
+	StreamingPlayer.stop();
 };
 
 exports.isPlaying = function() {
-	return Ti.App.AudioStreamer.getStatus() == PLAYING ? true : false;
+	return StreamingPlayer.getStatus() == PLAYING ? true : false;
 };
 
 exports.isOnline = function() {

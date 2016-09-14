@@ -19,7 +19,6 @@ module.exports = function(Window) {
 	
 	$.addTab(Ti.UI.createTab({
 		title : 'LiveRadio',
-		
 		window : require('ui/common/radiowheel.window')($),
 		ndx : 1
 	}));

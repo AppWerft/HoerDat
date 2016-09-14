@@ -1,4 +1,4 @@
-	exports.requestPermissions = function(_permissions, _callback) {
+exports.requestPermissions = function(_permissions, _callback) {
 	if (Ti.Platform.osname != 'android') {
 		_callback(true);
 		return;
@@ -7,16 +7,16 @@
 		return (perm.match(/^android\.permission\./)) ? perm : 'android.permission.' + perm;
 	});
 	var grantedpermissions = 0;
-	var TiPermissions = require('ti.permissions');
-	permissions.forEach(function(perm,i) {
-		console.log(perm);
-		if (TiPermissions.hasPermission(perm)) 
+	
+	permissions.forEach(function(perm, i) {
+		if (Ti.Android.hasPermission(perm))
 			grantedpermissions++;
+
 		if (grantedpermissions == permissions.length)
 			_callback(true);
 	});
 	if (grantedpermissions < permissions.length) {
-		TiPermissions.requestPermissions(permissions, function(_e) {
+		Ti.Android.requestPermissions(permissions, function(_e) {
 			console.log(_e);
 			_callback(_e.success);
 		});

@@ -54,10 +54,17 @@
         <module platform="android">ti.audiovisualizerview</module>
         <module platform="android">de.manumaticx.androidflip</module>
         <module platform="android" version="0.123RAI">bencoding.alarmmanager</module>
-        <module platform="android">ti.permissions</module>
         <module platform="android">com.alcoapps.actionbarextras</module>
         <module platform="android" version="1.8.0">com.woohoo.androidaudiostreamer</module>
-        <module platform="android">de.appwerft.icystreammeta</module>
+        <module platform="android">de.appwerft.icymetaclient</module>
+        <module platform="android">com.kcwdev.audio</module>
+        <module platform="android">de.appwerft.networkservicediscovery</module>
+        <module platform="android">de.appwerft.cameraparameters</module>
+        <module platform="android">de.appwerft.audiocontrols</module>
+        <module platform="android">de.appwerft.headphonebuttons</module>
+        <module platform="android">yy.tidialogs</module>
+        <module platform="android">de.appwerft.airlino</module>
+        <module platform="android">ti.filepicker</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>
@@ -65,6 +72,6 @@
         <target device="iphone">false</target>
         <target device="mobileweb">false</target>
     </deployment-targets>
-    <sdk-version>5.2.0.GENPERM</sdk-version>
+    <sdk-version>5.4.0.GA</sdk-version>
     <property name="appc-app-id" type="string">5528222e9731fb5f0fc0a5e5</property>
 </ti:app>

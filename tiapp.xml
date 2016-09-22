@@ -65,6 +65,7 @@
         <module platform="android">yy.tidialogs</module>
         <module platform="android">de.appwerft.airlino</module>
         <module platform="android">ti.filepicker</module>
+        <module platform="android">de.appwerft.remotexml</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

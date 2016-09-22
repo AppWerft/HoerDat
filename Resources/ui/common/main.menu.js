@@ -15,7 +15,6 @@ module.exports = function(_openevent) {
 	var activity = _openevent.source.getActivity();
 	if (activity) {
 		var data = activity.getIntent().getData();
-		console.log(data);
 		activity.onCreateOptionsMenu = function(_menu) {
 			activity.actionBar.displayHomeAsUp = false;
 			_menu.menu.add({
@@ -52,20 +51,21 @@ module.exports = function(_openevent) {
 		};
 		var last = {};
 		activity.invalidateOptionsMenu();
-		
-		
-	
-var FilePicker = require("ti.filepicker");
-FilePicker.getFileSelectDialog({
- mimeTypes: ["*/*"],
- onSuccess : function(_e) {
-       var resultBlob = _e.result;
- 		console.log(resultBlobe);
- 	}
-
-});		
-		
-		
+		/*
+		var Airlino= require("de.appwerft.airlino");
+		/*Airlino.isAvailable({
+			onResult: function(e) {
+				console.log(e.result);
+			}
+		});	
+		Airlino.startScan({
+			onSuccess: function(e) {
+				console.log(e.result);
+			},
+			onError: function(e) {
+				console.log(e);
+			}
+		});*/
 		/*
 		 activity.onPause = function() {
 		 console.log('onPause <<<<<<<<<<<<<<<<<<<<<<<<<<<');
@@ -83,17 +83,7 @@ FilePicker.getFileSelectDialog({
 			} else
 				activity.actionBar.hide();
 		});
-		/*
-		 var Bonjour=require("de.appwerft.networkservicediscovery");
-		 Bonjour.start({
-		 dnsType:"_http._tcp.",onFound: function(_e) {
-		 console.log(_e);
-
-		 },onLost: function(_e) {
-
-		 }
-		 });
-		 */
+		
 
 		var AudioControls = require("de.appwerft.audiocontrols");
 		var icons = [AudioControls.ICON_REWIND, AudioControls.ICON_PAUSE, AudioControls.ICON_FORWARD];
@@ -127,23 +117,7 @@ FilePicker.getFileSelectDialog({
 			icons : [AudioControls.ICON_REWIND, AudioControls.ICON_PAUSE, AudioControls.ICON_FORWARD],
 			iconBackgroundColor : "#44aaaa"
 		});
-
-		require("de.appwerft.headphonebuttons").registerListener();
-		Ti.App.addEventListener("mediaButton", function(e) {
-			console.log("name="+e.keyName + "   Code=" + e.keyCode);
-		});
-		/*
-		 var Camera = require("de.appwerft.cameraparameters");
-		 if (Camera.isPermissionGranted()) {
-		 Camera.getAllCameras({
-		 onSuccess : function(event) {
-		 console.log("\n\n============ Output of cameraparameters module: =====================\n\n");
-		 console.log(event);
-		 console.log("\n\n============ |||||||||||||||||||||||||||||||||| =====================\n\n");
-		 }
-		 });
-		 }
-		 */
+		
 	}
 	//require('vendor/versionsreminder')();
 };

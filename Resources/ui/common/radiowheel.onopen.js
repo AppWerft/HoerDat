@@ -1,7 +1,7 @@
-var Visualizer = require('ti.audiovisualizerview');
+//var Visualizer = require('ti.audiovisualizerview');
 
 module.exports = function(_e) {
-	require('vendor/permissions').requestPermissions(['RECORD_AUDIO', 'MODIFY_AUDIO_SETTINGS'], function(_success) {
+	/*require('vendor/permissions').requestPermissions(['RECORD_AUDIO', 'MODIFY_AUDIO_SETTINGS'], function(_success) {
 		if (_success == true) {
 			var window = _e.source;
 			window.visualizerView = Visualizer.createView({
@@ -21,5 +21,5 @@ module.exports = function(_e) {
 			window.add(window.visualizerView);
 		} else
 			console.log('Pheelicks: WRONG PERMISSIONS');
-	});
+	});*/
 };

@@ -24,14 +24,14 @@ module.exports = function(_openevent) {
 			}).addEventListener("click", function(_e) {
 				require('ui/common/about.window')().open();
 			});
-			_menu.menu.add({
+			/*_menu.menu.add({
 				title : 'Suche',
 				icon : Ti.App.Android.R.drawable.ic_action_search,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function(_e) {
 				require('ui/common/search.window')().open();
-			});
-			_menu.menu.add({
+			});*/
+			/*_menu.menu.add({
 				title : 'Airlino',
 				icon : Ti.App.Android.R.drawable.airlino,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
@@ -47,7 +47,7 @@ module.exports = function(_openevent) {
 					},
 					timeout : 5
 				});
-			});
+			});*/
 		};
 		var last = {};
 		activity.invalidateOptionsMenu();
@@ -85,7 +85,7 @@ module.exports = function(_openevent) {
 		});
 		
 
-		var AudioControls = require("de.appwerft.audiocontrols");
+		/*var AudioControls = require("de.appwerft.audiocontrols");
 		var icons = [AudioControls.ICON_REWIND, AudioControls.ICON_PAUSE, AudioControls.ICON_FORWARD];
 		var updateControl = function() {
 			AudioControls.updateRemoteAudioControl({
@@ -116,7 +116,7 @@ module.exports = function(_openevent) {
 			artist : Lorem(5),
 			icons : [AudioControls.ICON_REWIND, AudioControls.ICON_PAUSE, AudioControls.ICON_FORWARD],
 			iconBackgroundColor : "#44aaaa"
-		});
+		});*/
 		
 	}
 	//require('vendor/versionsreminder')();

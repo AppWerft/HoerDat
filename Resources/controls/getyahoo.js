@@ -10,6 +10,7 @@ function getText(foo) {
 }
 
 module.exports = function(url, onload, onerror) {
+	return;
     Ti.Yahoo.yql('select * from html where url="' + url + '" and xpath="//table"', function(_res) {
         if (_res.success && _res.data && _res.data.table && _res.data.table.length > 2) {
             var tables = _res.data.table;

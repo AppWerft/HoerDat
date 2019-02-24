@@ -2,14 +2,17 @@
 //https://github.com/vbartacek/aacdecoder-android/blob/master/decoder/src/com/spoledge/aacdecoder/IcyInputStream.java#L98-L112
 
 var StreamingPlayer = require('com.woohoo.androidaudiostreamer');
-
+//var Notification = require('vendor/notification');
 const TICK = 3000;
+var logo;
+var largeIcon = Ti.App.Android.R.drawable.applogo;
+
 
 var wasLastPingSuccessful = false;
 var audioSessionId;
 
 function LOG() {
-	//console.log('AAS: ' + arguments[0]);
+	console.log('AAS: ' + arguments[0]);
 }
 
 function requestOnlinestate(_cb) {
@@ -21,6 +24,7 @@ function requestOnlinestate(_cb) {
 			timeout : TICK,
 			onload : function() {
 				if (xhr.status == 301) {
+					console.log("FB PING successful");
 					wasLastPingSuccessful = true;
 					_cb && _cb(true);
 				} else {
@@ -69,14 +73,16 @@ function onPlayerChange(_e) {
 
 	switch (status) {
 	case BUFFERING:
-		callbackFn({
-			status : 'BUFFERING'
-		});
+		if (callbackFn && typeof callbackFn == 'function')
+			callbackFn({
+				status : 'BUFFERING'
+			});
 		break;
 	case PLAYING:
-		callbackFn({
-			status : 'PLAYING'
-		});
+		if (callbackFn && typeof callbackFn == 'function')
+			callbackFn({
+				status : 'PLAYING'
+			});
 		break;
 	case STOPPED:
 		LOG('event STOPPED FROM streamer');
@@ -89,54 +95,72 @@ function onPlayerChange(_e) {
 		if (shouldStream && Ti.Network.online) {
 			LOG('play in STOP event node, timeouttimer started');
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
-			StreamingPlayer.play(shouldStream);
+			//StreamingPlayer.play(shouldStream);
 		}
-		callbackFn({
-			status : 'STOPPED',
-		});
+		if (callbackFn && typeof callbackFn == 'function')
+			callbackFn({
+				status : 'STOPPED',
+			});
+			//Notification.remove();
 		break;
 	case STREAMERROR:
-		callbackFn({
-			status : 'STREAMERROR'
-		});
-		L('LOST_CONNECTION_TOAST') && Ti.UI.createNotification({
-			message : L('LOST_CONNECTION_TOAST')
-		}).show();
+		if (callbackFn && typeof callbackFn == 'function') {
+			callbackFn({
+				status : 'STREAMERROR'
+			});
+			L('LOST_CONNECTION_TOAST') && Ti.UI.createNotification({
+				message : L('LOST_CONNECTION_TOAST')
+			}).show();
+		}
+		//Notification.remove();
 		break;
 	};
 }
 
 function onMetaData(_e) {
 	var message = _e.title;
-	callbackFn({
-		message : message,
-		status : 'PLAYING'
-	});
+	if (callbackFn && typeof callbackFn == 'function')
+		callbackFn({
+			message : message,
+			status : 'PLAYING'
+		});
+	else
+		console.log('wrong callback var type ' + typeof callbackFn);
+	//Notification.update(message);
+
 }
 
 function onTimeout() {
 	console.log('Error: get timeout!!');
-	callbackFn({
-		status : 'TIMEOUT'
-	});
+	if (callbackFn && typeof callbackFn == 'function')
+		callbackFn({
+			status : 'TIMEOUT'
+		});
 
 }
 
 StreamingPlayer.addEventListener('ready', function(_e) {
-	console.log(_e);
-	callbackFn({
-		audioSessionId : _e.audioSessionId
-	});
+	if (callbackFn && typeof callbackFn == 'function')
+		callbackFn({
+			audioSessionId : _e.audioSessionId
+		});
 });
 StreamingPlayer.addEventListener('metadata', onMetaData);
 StreamingPlayer.addEventListener('change', onPlayerChange);
 
-exports.play = function(_icyurl, _callbackFn) {
+exports.play = function(opts, _callbackFn) {
+	stationtitle = opts.title;
 	callbackFn = _callbackFn;
+	const _icyurl = opts.url;
+	console.log('play started');
+	//Notification.create(opts.title,opts.logo);
+	
+	LOG(">>>>>  NotificationManager.notify " + opts.logo);
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
+		LOG('try to stop');
 		shouldStream = _icyurl;
 		StreamingPlayer.stop();
-		/* was playing: we stop, wait og stop is finished a try to start again */
+		/* was playing: we stop, wait of stop is finished a try to start again */
 		LOG('status after start method = ' + STATUS[StreamingPlayer.getStatus()]);
 		if (StreamingPlayer.getStatus() == PLAYING) {
 			LOG('was playing => forced stopp');
@@ -146,12 +170,11 @@ exports.play = function(_icyurl, _callbackFn) {
 			requestOnlinestate(function(_online) {
 				console.log('Result from requestOnlinestate ' + _online);
 				if (_online == true) {
+					LOG('was online => try start');
 					LOG('timeout watcher started, status was ' + STATUS[StreamingPlayer.getStatus()]);
 					//	timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 					//	console.log('timeouttimer started');
-					StreamingPlayer.play({
-						url : _icyurl
-					});
+					StreamingPlayer.play(_icyurl);
 					LOG('PLAY STARTED');
 				} else {
 					timeoutTimer && clearTimeout(timeoutTimer);
@@ -166,9 +189,11 @@ exports.play = function(_icyurl, _callbackFn) {
 
 exports.stop = function() {
 	LOG('≠≠≠≠≠≠≠ STOP');
+	Ti.Android.NotificationManager.cancel(1);
 	shouldStream = null;
 	shoudStopp = true;
 	StreamingPlayer.stop();
+	
 };
 
 exports.isPlaying = function() {

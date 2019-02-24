@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" android:versionCode="222" android:versionName="2.2.2">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="23"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" android:versionCode="300" android:versionName="3.0.0">
+	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="28"/>
 	<application android:debuggable="false" android:largeHeap="true" android:hardwareAccelerated="true" android:icon="@drawable/appicon" android:label="HörDat" android:name="HRdatApplication" android:theme="@style/Theme.Hoerdat">
 		<activity android:name=".HRdatActivity" android:exported="true" android:label="@string/app_name" android:theme="@style/Theme.Titanium" android:configChanges="keyboardHidden|orientation|screenSize">
 			<intent-filter>
@@ -12,8 +12,8 @@
 		<activity android:name="org.appcelerator.titanium.TiTranslucentActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@style/Theme.AppCompat.Translucent"/>
 		<activity android:name="ti.modules.titanium.ui.android.TiPreferencesActivity" android:configChanges="screenSize"/>
 		<service android:name=".RadioweckerService"/>
-		<service android:name="de.appwerft.audiocontrols.LockScreenService" android:enabled="true" android:exported="true"/>
-		<service android:name="de.appwerft.audiocontrols.NotificationCompactService" android:enabled="true" android:exported="true"/>
+		<service android:name="de.appwerft.audionotification.NotificationForegroundService"/>
+		
 		<receiver android:name="de.appwerft.headphonebuttons.HeadphoneButtonReceiver" android:enabled="true" android:exported="true">
 			<intent-filter android:priority="999" android:label="Listener for headphone/set buttons">
 				<action android:name="android.media.VOLUME_CHANGED_ACTION"/>
@@ -26,6 +26,7 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.CAMERA"/>
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>

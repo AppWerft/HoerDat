@@ -1,5 +1,3 @@
-
-
 function getText(foo) {
 	if (!foo)
 		return '';
@@ -20,6 +18,7 @@ module.exports = function(args) {
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
 		return;
 	}
+	return;
 	var yql = 'select * from html where url="http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date + '" and xpath="//table"';
 	Ti.Yahoo.yql(yql, function(_res) {
 		if (_res.success && _res.data && _res.data.table && Array.isArray(_res.data.table)) {
@@ -51,12 +50,12 @@ module.exports = function(args) {
 										//.replace(/ Teil.*/, '');
 										item.time = res[1];
 										//  console.log(item);
-										
+
 										var datestring = args.date + ' ' + item.time;
 										var date = Moment(datestring, 'YYYY-MM-DD HH:mm');
 										item.time_isostring = date.toISOString();
 										item.time = date;
-													//item.time_isostring = item.time.toISOString();
+										//item.time_isostring = item.time.toISOString();
 										var res = /^(.*?)\s/.exec(item.meta);
 										if (res) {
 											item.logo = '/images/' + res[1].toLowerCase() + '.png';
@@ -79,17 +78,17 @@ module.exports = function(args) {
 											}
 										}
 										if (tr.td[1] && tr.td[1].div && tr.td[1].div.a) {
-											tr.td[1].div.a.forEach(function(link) {
-												if (/^mp3/i.test(link.content)) {
-													if (/\.m3u$/.test(link.href))
-														item.playlist = link.href;
-													else
-														item.stream = link.href;
-												}
-											});
-										} else {
+											if (Array.isArray(tr.td[1].div.a)) {
+												tr.td[1].div.a.forEach(function(link) {
+													if (/^mp3/i.test(link.content)) {
+														if (/\.m3u$/.test(link.href))
+															item.playlist = link.href;
+														else
+															item.stream = link.href;
+													}
+												});
+											}
 										}
-
 										break;
 									case 'Autor(en):':
 										item.autor = tr.td[i + 1].content;

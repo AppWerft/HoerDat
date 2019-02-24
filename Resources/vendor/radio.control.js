@@ -1,5 +1,6 @@
 var AudioStreamer = require('vendor/audiostreamer.adapter');
 var radiostationsList = require('model/radiostations');
+const AudioNotification = require('de.appwerft.audionotification');
 
 const PLAY = '/images/play.png',
     LEER = '/images/leer.png',
@@ -11,6 +12,15 @@ var audioSessionId = 0;
 
 exports.createView = function() {
 	var options = arguments[0] || {};
+	
+	const Notification = AudioNotification.createNotification({
+		// lifecycleContainer : options.lifecycleContainer,
+		 title: "",
+		 subtitle : "",
+		 image : "/images/dlf.png",
+		 icon : "applogo"
+	});
+	
 	var $ = Ti.UI.createView({
 		bottom : 10,
 		width : 110,
@@ -26,7 +36,7 @@ exports.createView = function() {
 		})
 	});
 	$.add($.spinner);
-	var callbackFn = function(_payload) {
+	const callbackFn = function(_payload) {
 		$.spinner.hide();
 		if (_payload.audioSessionId) {
 			$.audioSessionId = _payload.audioSessionId;
@@ -43,7 +53,7 @@ exports.createView = function() {
 						duration : Ti.UI.NOTIFICATION_DURATION_LONG,
 						gravity : 48 // Gravity.TOP
 					}).show();
-
+					Notification.setSubtitle(message);
 					if (onair)
 						lastmessage = message;
 					else
@@ -83,6 +93,7 @@ exports.createView = function() {
 		if ( typeof $.onSelect == 'function') {
 			var ndx = $.onSelect();
 			currentStation = radiostationsList[ndx];
+			
 			if (!currentStation)
 				return;
 			Ti.App.Properties.setInt('CURRENT_STATION_INDEX', ndx);
@@ -111,8 +122,13 @@ exports.createView = function() {
 				$.show({
 					animated : true
 				});
-				console.log("Play resolved URL: "+ _icyurl);
-				AudioStreamer.play(_icyurl, callbackFn);
+				AudioStreamer.play({
+					url : _icyurl,
+					title : currentStation.name,
+					logo : currentStation.logo
+				}, callbackFn);
+				Notification.show();
+				Notification.setTitle(currentStation.name);
 			},
 			onerror : function() {
 				//ui.StatusLog.setText('FEHLER: Radio-Adresse nicht erkannt.');

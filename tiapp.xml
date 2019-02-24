@@ -5,13 +5,13 @@
     <publisher>fuerst</publisher>
     <url>http://hoerdat.de</url>
     <description>undefined</description>
-    <copyright>2015 by fuerst</copyright>
+    <copyright>2018 by fuerst</copyright>
     <icon>appicon.png</icon>
     <fullscreen>true</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>false</analytics>
     <property name="ti.android.root.reappears.restart" type="bool">true</property>
-    <guid>a14bead2-dfad-448f-9666-d75f914064b9</guid>
+    <guid>3a57e91a-0341-4b3e-9ddd-d75f914064b9</guid>
     <property name="GAPI_test" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
     <property name="GAPI_stage" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
     <property name="GAPI_production" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
@@ -43,7 +43,7 @@
             </dict>
         </plist>
     </ios>
-    <version>2.2.2</version>
+    <version>3.2.2</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
         <run-on-main-thread>true</run-on-main-thread>
         <services>
@@ -51,28 +51,20 @@
         </services>
     </android>
     <modules>
-        <module platform="android">ti.audiovisualizerview</module>
-        <module platform="android">de.manumaticx.androidflip</module>
-        <module platform="android" version="0.123RAI">bencoding.alarmmanager</module>
         <module platform="android">com.alcoapps.actionbarextras</module>
-        <module platform="android" version="1.8.0">com.woohoo.androidaudiostreamer</module>
-        <module platform="android">de.appwerft.icymetaclient</module>
-        <module platform="android">com.kcwdev.audio</module>
-        <module platform="android">de.appwerft.networkservicediscovery</module>
-        <module platform="android">de.appwerft.cameraparameters</module>
-        <module platform="android">de.appwerft.audiocontrols</module>
-        <module platform="android">de.appwerft.headphonebuttons</module>
         <module platform="android">yy.tidialogs</module>
-        <module platform="android">de.appwerft.airlino</module>
-        <module platform="android">ti.filepicker</module>
+        <module platform="android">de.appwerft.soup</module>
+        <module platform="android">de.manumaticx.androidflip</module>
         <module platform="android">de.appwerft.remotexml</module>
+        <module platform="android">com.woohoo.androidaudiostreamer</module>
+        <module platform="android">de.appwerft.audionotification</module>
+        <module platform="android">ti.scrollable.animation</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>
         <target device="ipad">false</target>
         <target device="iphone">false</target>
-        <target device="mobileweb">false</target>
     </deployment-targets>
-    <sdk-version>5.4.0.GA</sdk-version>
-    <property name="appc-app-id" type="string">5528222e9731fb5f0fc0a5e5</property>
+    <sdk-version>7.5.0.GA</sdk-version>
+    <property name="appc-app-id" type="string">5c010d171691bb41f43b57a9</property>
 </ti:app>

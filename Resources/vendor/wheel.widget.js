@@ -73,12 +73,13 @@ module.exports = function(_args) {
 		wheelView.setTransform(matrix.rotate(φ));
 	}
 
-
 	handler.addEventListener('scroll', onScrollFn);
+	handler.addEventListener('scrollend', function(e){
+		console.log(e);
+	});
 	//wheelView.addEventListener('postlayout', onPostlayoutFn);
 	$.getActiveSegment = function() {
 		var ndx = -Math.round(((lastφ + 180) % 360) / degree_of_segment);
-		console.log(ndx);
 		activesegment = (ndx + options.segments.length) % options.segments.length;
 		lockIn();
 		return parseInt(activesegment);
@@ -88,18 +89,16 @@ module.exports = function(_args) {
 		/* to correct position */
 		var φ = lastφ - degree_of_segment / 2;
 		var δ = (φ / degree_of_segment - Math.round(φ / degree_of_segment)) * degree_of_segment;
-		console.log('>>>>>>>>>>>>>> ' + (lastφ - δ));
+		
+		console.log('>>>>>>>>>>>>>> ' + (lastφ - δ) + '      δ='+δ);
 		wheelView.animate({
-			transform : matrix.rotate(lastφ - δ)
+			transform : matrix.rotate(lastφ -δ)
 		});
-
 	};
 	$.setActiveSegment = function(ndx) {
-
 	};
 	$.add(wheelView);
 	$.add(handler);
-	console.log('INITROTATE: ' + (options.activesegment * degree_of_segment));
 	wheelView.animate({
 		transform : matrix.rotate(options.activesegment * degree_of_segment + degree_of_segment / 2)
 	});

@@ -2,8 +2,12 @@ module.exports = function(Window) {
 	//create module instance
 	var $ = Ti.UI.createTabGroup({
 		fullscreen : false,
-		exitOnClose : false,
-		swipeable : false
+		exitOnClose : true,
+		swipeable : false,
+			orientationModes: [
+		Ti.UI.PORTRAIT,
+		Ti.UI.UPSIDE_PORTRAIT
+	]
 
 	});
 	$.addEventListener('open', require('ui/common/main.menu'));

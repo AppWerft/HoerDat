@@ -1,0 +1,1 @@
+appc ti build -p android -K /home/user/keyfile.keystore -T dist-playstore

@@ -4,7 +4,7 @@ module.exports = function(args) {
 	var count = 0;
 	var url = 'http://s507870211.online.de/index.php?col1=ti&a=' + encodeURI(args.payload.a) + '&so=autor&soo=asc';
 	var Soup = require("de.appwerft.soup");
-	
+	console.log(url);
 	Soup.createJSONObject({
 		url:url,
 		onLoad: function(res){

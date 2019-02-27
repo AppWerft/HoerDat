@@ -59,6 +59,9 @@
         <module platform="android">com.woohoo.androidaudiostreamer</module>
         <module platform="android">de.appwerft.audionotification</module>
         <module platform="android">ti.scrollable.animation</module>
+        <module platform="android">ti.audiovisualizerview</module>
+        <module platform="iphone">ti.animation</module>
+        <module platform="android">ti.animation</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

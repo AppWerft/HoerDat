@@ -14,6 +14,7 @@ module.exports = function(i) {
 
 	self.add(self.list);
 	setTimeout(function() {
+		return;
 		require('controls/html.adapter')({
 			date : (require('vendor/moment'))().add(i, 'd').format('YYYY-MM-DD'),
 			onload : function(list) {

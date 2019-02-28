@@ -58,16 +58,17 @@
         <module platform="android">de.appwerft.remotexml</module>
         <module platform="android">com.woohoo.androidaudiostreamer</module>
         <module platform="android">de.appwerft.audionotification</module>
-        <module platform="android">ti.scrollable.animation</module>
         <module platform="android">ti.audiovisualizerview</module>
         <module platform="iphone">ti.animation</module>
         <module platform="android">ti.animation</module>
+        <module platform="android">ru.netris.mobile.scrollableview</module>
+        <module platform="android">ti.scrollable.animation</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>
         <target device="ipad">false</target>
         <target device="iphone">false</target>
     </deployment-targets>
-    <sdk-version>7.5.0.GA</sdk-version>
+    <sdk-version>7.5.1.GA</sdk-version>
     <property name="appc-app-id" type="string">5c010d171691bb41f43b57a9</property>
 </ti:app>

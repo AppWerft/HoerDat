@@ -7,8 +7,9 @@ module.exports = function(item) {
         hasDetail : true,
         itemId : item
     });
+   
     row.add(Ti.UI.createImageView({
-        image : item.logo,
+        image : item.stationlogo,
         defaultImage : '/images/defaultimage.png',
         top : 5,
         left : 5,
@@ -17,19 +18,20 @@ module.exports = function(item) {
     }));
     var container = Ti.UI.createView({
         left : 80,
-        top : 10,
+        top : 0,
+        bottom:5,
+         height : Ti.UI.SIZE,
         layout : 'vertical'
     });
     row.add(container);
     if (!item.subtitle)
         container.add(Ti.UI.createLabel({
-            text : item.title.trim(),
+            text : item.title,
             left : 0,
             top : 0,
-          
             right : 10,
             height : Ti.UI.SIZE,
-            color : '#444',
+            color : '#111',
             font : {
                 fontSize : 24,
                 fontFamily : 'Rambla-Bold',
@@ -38,12 +40,12 @@ module.exports = function(item) {
         }));
     else {
         container.add(Ti.UI.createLabel({
-            text : item.title.trim(),
+            text : item.title,
             left : 0,
             top : 8,
             right : 10,
             height : Ti.UI.SIZE,
-            color : '#444',
+            color : '#111',
             font : {
                 fontSize : 14,
                 fontFamily : 'Rambla-Bold',
@@ -66,22 +68,21 @@ module.exports = function(item) {
         }));
 
     }
-    item.time && container.add(Ti.UI.createLabel({
-        text : Moment(item.time).format('dddd  HH:mm') + ' Uhr',
+    
+    item.start && container.add(Ti.UI.createLabel({
+        text : item.start.format('dddd  HH:mm') + ' Uhr\n'+ item.meta	 ,
         left : 0,
         top : 0,
         right : 10,
         height : Ti.UI.SIZE,
         color : '#427aa7',
         font : {
-            fontSize : 16,
-            fontFamily : 'Rambla-Bold',
-            fontWeight : 'bold'
-
+            fontSize : 20,
+            fontFamily : 'Rambla-Bold'
         }
     }));
     item.produktion && container.add(Ti.UI.createLabel({
-        text :  item.produktion,
+        text :  item.produktion+ "\n",
         left : 0,
         top : 0,
         right : 10,

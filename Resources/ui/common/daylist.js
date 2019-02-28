@@ -1,6 +1,5 @@
 var АктйонБар = require('com.alcoapps.actionbarextras');
 
-
 module.exports = function(i) {
 	var data = [];
 	var self = Ti.UI.createView({
@@ -8,13 +7,22 @@ module.exports = function(i) {
 	});
 	self.list = Ti.UI.createTableView({
 		data : data,
-		bottom : 0,
+		bottom : 30,
 		backgroundColor : 'white'
 	});
+	self.tag = Ti.UI.createLabel({
+		bottom : 0,
+		height : 30,
+		color : 'white',
+		font : {
+			fontFamily : 'Rambla-Bold',
+			fontSize : 22
+		}
 
+	});
 	self.add(self.list);
+	self.add(self.tag);
 	setTimeout(function() {
-		return;
 		require('controls/html.adapter')({
 			date : (require('vendor/moment'))().add(i, 'd').format('YYYY-MM-DD'),
 			onload : function(list) {
@@ -25,7 +33,7 @@ module.exports = function(i) {
 				self.list.setData(data);
 			}
 		});
-	}, Math.abs(i) * Math.random() * 1111);
+	}, Math.abs(i) * Math.random() * 5000);
 
 	self.list.addEventListener('click', function(_e) {
 		var item = _e.rowData.itemId;
@@ -43,7 +51,7 @@ module.exports = function(i) {
 		tag = 'Heute';
 		break;
 	case 1 :
-		tag = 'Morgen';
+		tag = 'Morgen  (' + moment().add(i, 'd').format('dddd') + ')';
 		break;
 	case 2:
 		tag = 'Übermorgen (' + moment().add(i, 'd').format('dddd') + ')';
@@ -51,24 +59,6 @@ module.exports = function(i) {
 	default:
 		tag = moment().add(i, 'd').format('dddd') + ', den ' + moment().add(i, 'd').format('LL');
 	}
-	self.addEventListener('focus',function(){
-		АктйонБар.subTitle = tag;
-		
-	});
-	Ti.App.fireEvent('app:set', {
-		subTitle : tag
-	});
-	
-	/*self.add(Ti.UI.createLabel({
-	 height : 40,
-	 bottom : 0,
-	 color : 'white',
-	 font : {
-	 fontSize : 20,
-	 fontFamily : 'Rambla-Bold'
-	 },
-	 textAlign : 'center',
-	 text : tag
-	 }));*/
+	self.tag.setText(tag);
 	return self;
 };

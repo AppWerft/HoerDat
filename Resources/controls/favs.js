@@ -1,4 +1,4 @@
-const FAVS = "FAVS2";
+const FAVS = "FAVS3";
 const MAX = 7;
 const EMPTY = JSON.stringify([]);
 
@@ -9,6 +9,10 @@ if (!Ti.App.Properties.hasProperty(FAVS)) {
 exports.getAll = function() {
 	const list = JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY));
 	return (Array.isArray(list)) ? list : [];
+};
+exports.getCount = function() {
+	const list = JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY));
+	return (Array.isArray(list)) ? list.length : 0;
 };
 
 exports.getFirst = function() {

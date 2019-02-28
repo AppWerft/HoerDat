@@ -33,7 +33,7 @@ function getMeta(key, value) {
 
 module.exports = function(item) {
     var self = Ti.UI.createWindow({
-        title : item.title.trim(),
+        title : item.title.trim,
         backgroundColor : 'white',
         fullscreen : false,
        
@@ -59,12 +59,12 @@ module.exports = function(item) {
         text : item.inhalt.replace(/[\s]{3,}/gm, '\n\n'),
         top : 10,
         height : Ti.UI.SIZE,
-        color : '#427aa7',
+        color : '#222',
         width : Ti.UI.FILL,
         textAlign : 'left',
         font : {
-            fontSize : 16,
-            fontFamily : 'DroidSans',
+            fontSize : 18,
+            fontFamily : 'Rambla',
 
         }
     }));

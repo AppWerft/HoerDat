@@ -1,36 +1,49 @@
 module.exports = [{
-	logo : 'swr-2',
+	logo : 'swr2',
 	stream : 'http://dg-swr-http-fra-dtag-cdn.cast.addradio.de/swr/swr2/live/mp3/256/stream.mp3',
 	meta : 'https://api.radio.de/info/v2/search/nowplaying?_=1544008170585&apikey=d8ce0be90cd1d703cf13564ee228d71c178b208c&numberoftitles=1&station=2414',
 	name : "SWR 2",
 	color : '#00BAE5'
 }, {
-	logo : 'wdr-3',
+	logo : 'wdr3',
 	playlist : 'http://www.wdr.de/wdrlive/media/wdr3_hq.m3u',
 	stream : 'http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/256/stream.mp3?ar-distributor=ffa1',
 	name : "Westdeutscher Rundfunk 3",
 	color : '#D5D000',
 	latin1 : true
 }, {
-	logo : 'wdr-5',
+	logo : 'wdr5',
 	name : "WDR 5",
 	stream : 'http://wdr-wdr5-live.icecast.wdr.de/wdr/wdr5/live/mp3/128/stream.mp3?ar-distributor=ffa1',
 	latin1 : true,
 	color : '#7FBA42'
+},{
+	logo : 'wdreinslive',
+	name : "1Live radio",
+	stream : 'http://wdr-wdr5-live.icecast.wdr.de/wdr/wdr5/live/mp3/128/stream.mp3?ar-distributor=ffa1',
+	latin1 : true,
+	color : '#7FBA42'
 }, {
-	logo : 'orf_oe1',
+	logo : 'orfoe1',
 	name : "Österreich 1",
 	stream : 'http://mp3stream3.apasf.apa.at:8000',
 	charset : "LATIN-1",
 	color : '#000000',//'#B73924'
 }, {
-	logo : 'srf-2',
+	logo : 'srf2',
 	name : 'Radio SRF 2 Kultur',
 	charset : "LATIN-1",
 	color : '#B42A69',
 	stream : 'http://stream.srg-ssr.ch/m/drs2/mp3_128',
 	latin : true
-}, {
+},{
+	logo : 'srf1',
+	name : 'Radio SRF 1',
+	charset : "LATIN-1",
+	color : '#FF7C00',
+	stream : 'http://stream.srg-ssr.ch/m/drs1/mp3_128',
+	latin : true
+},  {
 	logo : 'swissclassic',
 	name : 'Radio Swiss Classic',
 	stream : 'http://stream.srg-ssr.ch/m/rsc_de/mp3_128',
@@ -43,24 +56,36 @@ module.exports = [{
 	color : '#FABE2B'
 
 }, {
-	logo : 'sr-2',
+	logo : 'sr2',
 	name : 'Saarländischer Rundfunk 2',
 	stream : 'http://sr.audiostream.io/sr/1010/mp3/128/sr2',
 	latin : true,
 	color : '#FFCB0B'
 }, {
-	logo : 'br-2',
+	logo : 'br2',
 	name : "BayernRundfunk II",
 	stream : 'http://br-br2-nord.cast.addradio.de/br/br2/nord/mp3/128/stream.mp3',
 	color : '#F17E02'
 }, {
 	logo : 'ndrkultur',
-	name : "ndr Kultur",
-	color : '#C32E27',
+	name : "NDR Kultur",
+	color : '#9C341D',
 	stream : "http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
 
+},  {
+	logo : 'ndr1903',
+	name : "NDR 90.3",
+	color : '#CC292E',
+	stream : "http://ndr-ndr903-hamburg.cast.addradio.de/ndr/ndr903/hamburg/mp3/128/stream.mp3",
+
+},{
+	logo : 'ndrinfo',
+	name : "NDR Info",
+	color : '#E6B54B',
+	stream : "http://ndr-ndrinfo-niedersachsen.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
+
 }, {
-	logo : 'hr-2',
+	logo : 'hr2',
 	name : "hr2 Kultur",
 	color : '#00BCF2',
 	stream : 'http://hr-hr2-live.cast.addradio.de/hr/hr2/live/mp3/128/stream.mp3',
@@ -92,6 +117,11 @@ module.exports = [{
 	name : "MDR KLASSIK",
 	color : '#E9314D',
 	stream : 'http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3'
+},{
+	logo : 'mdrkultur',
+	name : "MDR Kultur",
+	color : '#FCBC00',
+	stream : 'http://mdr-284310-0.cast.mdr.de/mdr/284310/0/mp3/high/stream.mp3'
 }, {
 	logo : 'rbbkultur',
 	stream : 'https://dg-rbb-https-dus-dtag-cdn.sslcast.addradio.de/rbb/kulturradio/live/mp3/128/stream.mp3',
@@ -99,7 +129,7 @@ module.exports = [{
 	latin1 : true,
 	color : '#FE2D87'
 }, {
-	logo : 'bremen-2',
+	logo : 'bremen2',
 	name : 'Bremen2',
 	color : '#413474',
 	stream : 'https://rb-bremenzwei-live.sslcast.addradio.de/rb/bremenzwei/live/mp3/128/stream.mp3',

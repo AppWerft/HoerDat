@@ -1,5 +1,5 @@
 var АктйонБар = require('com.alcoapps.actionbarextras');
-var Lorem = require("vendor/loremipsum");
+
 
 /* this module will called from _e.source on open event */
 module.exports = function(_openevent) {
@@ -119,5 +119,5 @@ module.exports = function(_openevent) {
 		});*/
 		
 	}
-	//require('vendor/versionsreminder')();
+	require('vendor/versionsreminder')();
 };

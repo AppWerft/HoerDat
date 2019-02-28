@@ -1,1 +1,1 @@
-appc ti build -p android -K /home/user/keyfile.keystore -T dist-playstore
+appc ti build -p android -K ~/.android.keystore -P *MHpsNH -T dist-playstore

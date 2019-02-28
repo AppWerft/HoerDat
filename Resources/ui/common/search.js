@@ -7,7 +7,7 @@ module.exports = function(window) {
             return;
         }
         self.darker.show();
-        self.circleProgress.show();
+        
         var payload = {
             col1 : selectedkey,
             a : textField.getValue() || 'Rauschen',
@@ -18,20 +18,20 @@ module.exports = function(window) {
         require('controls/htmlpost.adapter')({
             payload : payload,
             onprogress : function(_e) {
-                self.circleProgress.setValue(_e);
+                
             },
             onerror : function() {
                 Ti.UI.createNotification({
                     message : 'Datenbankserver antwortet zu langsam …\n Einfach nochmals losschicken! '
                 }).show();
                 self.darker.hide();
-                self.circleProgress.hide();
+              
                 return;
             },
             onload : function(_list) {
                 var data = [];
                 self.darker.hide();
-                self.circleProgress.hide();
+              
                 if (_list.length == 0) {
                     Ti.UI.createNotification({
                         message : 'Mehr als 100 Datensätze, formulieren Sie Ihre Anfrage bitte etwas genauer. '
@@ -64,20 +64,7 @@ module.exports = function(window) {
         });
     }
     var self = Ti.UI.createView();
-    self.circleProgress = require('vendor/circularprogress')({
-        percent : 0,
-        size : 250,
-        margin : 10,
-        zIndex : 901,
-        progressColor : '#427aa7',
-        topper : {
-            color : '#fff',
-            size : 225
-        },
-        font : {
-            visible : false
-        }
-    });
+    
     self.darker = Ti.UI.createView({
         backgroundColor : 'black',
         opacity : 0.5,
@@ -87,7 +74,7 @@ module.exports = function(window) {
     window.add(self);
    
     window.add(self.darker);
-     window.add(self.circleProgress);
+    
 
     var selectedkey = 'ti';
     var keyselector = Ti.UI.createView({

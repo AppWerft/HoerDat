@@ -14,7 +14,6 @@ module.exports = function() {
 	var win1 = new Window('Heute, morgen …');
 	var win2 = new Window('suche');
 	require('ui/common/scheduler.window')(win1);
-	
 	require('ui/common/search')(win2);
 	$.addTab(Ti.UI.createTab({
 		title : 'Hörplan',

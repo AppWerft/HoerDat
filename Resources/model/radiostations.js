@@ -122,7 +122,7 @@ module.exports = [
 			color : '#EE2439',
 			meta : {
 				type : 'BR',
-				live: 'https://www.br-klassik.de/programm/livestream/br-klassik-audio-livestream-100~radioplayer.json'
+				live : 'https://www.br-klassik.de/programm/livestream/br-klassik-audio-livestream-100~radioplayer.json'
 			}
 
 		},
@@ -131,9 +131,9 @@ module.exports = [
 			name : "NDR Kultur",
 			color : '#9C341D',
 			stream : "http://ndr-ndrkultur-live.cast.addradio.de/ndr/ndrkultur/live/mp3/128/stream.mp3",
-			meta: {
-				type: 'NDR',
-				radiotext:true,
+			meta : {
+				type : 'NDR',
+				radiotext : true,
 				list : 'https://www.ndr.de/public/radioplaylists/ndrkultur.json'
 			}
 		},
@@ -159,7 +159,11 @@ module.exports = [
 			logo : 'radiofip',
 			name : "FIP radio",
 			stream : 'http://chai5she.cdn.dvmr.fr/fip-midfi.mp3',
-			color : '#EB2A86'
+			color : '#EB2A86',
+			meta : {
+				type : 'FIP',
+				current : 'https://www.fip.fr/sites/default/files/import_si/si_titre_antenne/FIP_player_current.json'
+			}
 		},
 		{
 			logo : 'fipjazz',
@@ -191,7 +195,8 @@ module.exports = [
 			logo : 'franceculture',
 			name : "France Culture",
 			stream : 'http://chai5she.cdn.dvmr.fr/franceculture-midfi.mp3',
-			color : '#79278B'
+			color : '#79278B',
+
 		},
 		{
 			logo : 'dlr',
@@ -223,7 +228,11 @@ module.exports = [
 			logo : 'mdrklassik',
 			name : "MDR KLASSIK",
 			color : '#E9314D',
-			stream : 'http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3'
+			stream : 'http://mdr-284350-0.cast.mdr.de/mdr/284350/0/mp3/high/stream.mp3',
+			meta : {
+				type : 'MDR',
+				titlelist : 'https://www.mdr.de/XML/titellisten/mdr_klassik_2.json'
+			}
 		},
 		{
 			logo : 'mdrkultur',
@@ -231,7 +240,7 @@ module.exports = [
 			color : '#FCBC00',
 			stream : 'http://mdr-284310-0.cast.mdr.de/mdr/284310/0/mp3/high/stream.mp3',
 			meta : {
-				type :'MDR',
+				type : 'MDR',
 				titlelist : 'https://www.mdr.de/XML/titellisten/mdr_figaro_2.json'
 			}
 		},

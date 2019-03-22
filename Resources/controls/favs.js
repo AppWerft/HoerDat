@@ -1,31 +1,64 @@
-const FAVS = "FAVS3";
-const MAX = 7;
-const EMPTY = JSON.stringify([]);
-
-if (!Ti.App.Properties.hasProperty(FAVS)) {
-	Ti.App.Properties.setString(FAVS, EMPTY);
-}
+const RADIOSTATIONS = require('model/radiostations');
+const DB = 'RadioRecentLog';
+var link = Ti.Database.open(DB);
+link
+		.execute('CREATE TABLE IF NOT EXISTS "fav" ("station" VARCHAR, "total" INTEGER);');
+link.close();
 
 exports.getAll = function() {
-	const list = JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY));
-	return (Array.isArray(list)) ? list : [];
-};
-exports.getCount = function() {
-	const list = JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY));
-	return (Array.isArray(list)) ? list.length : 0;
-};
-
-exports.getFirst = function() {
-	return JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY)).shift();
-};
-
-exports.add = function(newstation) {
-	var newlist = JSON.parse(Ti.App.Properties.getString(FAVS, EMPTY)).filter(function(station) {
-		return (newstation.logo != station.logo);
+	var radiostations = JSON.parse(JSON.stringify(RADIOSTATIONS));
+	radiostations.forEach(function(s) {
+		s.total = 0;
 	});
-	newlist.unshift(newstation);
-	if (newlist.length > MAX)
-		newlist.pop();
-	Ti.App.Properties.setString(FAVS, JSON.stringify(newlist));
-	return newlist;
+	const link = Ti.Database.open(DB);
+	link.execute('update fav set total=total*0.99'); // oldering
+	const favs = link.execute('select * from fav');
+	while (favs.isValidRow()) {
+		radiostations.forEach(function(s) {
+			if (s.logo == favs.fieldByName('station')) {
+				s.total = parseInt(favs.fieldByName('total'));
+			}
+		});
+		favs.next();
+	}
+	favs.close();
+	link.close();
+	radiostations.sort(function(a, b) {
+		return (b.total - a.total);
+	});
+	return radiostations;
+
+};
+
+exports.increment = function(id) {
+	if (!id) return;
+	const link = Ti.Database.open(DB);
+	if (link) {
+		const found = link.execute('select * from fav  where station=?', id);
+		if (found.isValidRow()) {
+			link.execute('update fav set total=total+1 where station=?', id);
+			found.close();
+		} else {
+			link.execute('insert into fav (station,total) values (?,1)', id);
+		}
+		link.close();
+	}
+};
+
+exports.getTotal = function(id) {
+	var total = 0;
+	const link = Ti.Database.open(DB);
+	if (link) {
+	
+		const favs = link
+				.execute((id == undefined) ? 'select SUM(total) as sum from fav'
+						: 'select SUM(total) as sum from fav where station="'
+								+ id + '"');
+		if (favs.isValidRow()) {
+			total = parseFloat(favs.fieldByName('sum'));
+		}
+		favs.close();
+		link.close();
+	}
+	return total;
 };

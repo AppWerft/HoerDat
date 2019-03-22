@@ -70,7 +70,7 @@ module.exports = function(item) {
     }
     
     item.start && container.add(Ti.UI.createLabel({
-        text : item.start.format('dddd  HH:mm') + ' Uhr\n'+ item.meta	 ,
+        text : Moment(item.start).format('dddd  HH:mm') + ' Uhr\n'+ item.meta	 ,
         left : 0,
         top : 0,
         right : 10,

@@ -6,7 +6,7 @@ module.exports = function() {
             }).show();
             return;
         }
-        self.darker.show();
+       // self.darker.show();
        
         var payload = {
             col1 : selectedkey,
@@ -30,7 +30,7 @@ module.exports = function() {
             },
             onload : function(_list) {
                 var data = [];
-                self.darker.hide();
+               // self.darker.hide();
                 
                 if (_list.length == 0) {
                     Ti.UI.createNotification({

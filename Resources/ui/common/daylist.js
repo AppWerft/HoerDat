@@ -30,7 +30,7 @@ module.exports = function(i) {
 				list.forEach(function(item) {
 					data.push(require('ui/common/row.widget')(item));
 				});
-				self.list.setData(data);
+				self.list.data= data;
 			}
 		});
 	}, Math.abs(i) * Math.random() * 5000);
@@ -59,6 +59,6 @@ module.exports = function(i) {
 	default:
 		tag = moment().add(i, 'd').format('dddd') + ', den ' + moment().add(i, 'd').format('LL');
 	}
-	self.tag.setText(tag);
+	self.tag.text = tag;
 	return self;
 };

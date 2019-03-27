@@ -11,6 +11,33 @@ module.exports = [
 			}
 		},
 		{
+			logo : 'swr4',
+			stream : 'http://swr-swr4-fr.cast.addradio.de/swr/swr4/fr/mp3/128/stream.mp3',
+			name : "SWR 4",
+			color : '#00BAE5',
+
+		},
+		{
+			logo : 'ndr1radiomv',
+			stream : 'https://ndr-ndr1radiomv-schwerin.sslcast.addradio.de/ndr/ndr1radiomv/schwerin/mp3/128/stream.mp3',
+			name : "NDR1 Radio MV",
+			color : '#00BAE5',
+			meta : {
+				playlist : 'https://www.ndr.de/public/radioplaylists/ndr1radiomv.json'
+			}
+
+		},
+		{
+			logo : 'ndr1niedersachsen',
+			stream : 'https://ndr-ndr1niedersachsen-hannover.sslcast.addradio.de/ndr/ndr1niedersachsen/hannover/mp3/128/stream.mp3',
+			name : "NDR1 Radio Niedersachsen",
+			color : '#163F87	',
+			meta : {
+				playlist : 'https://www.ndr.de/public/radioplaylists/ndr1niedersachsen.json'
+			}
+
+		},
+		{
 			logo : 'wdr3',
 			stream : 'http://wdr-wdr3-live.icecast.wdr.de/wdr/wdr3/live/mp3/256/stream.mp3?ar-distributor=ffa1',
 			name : "Westdeutscher Rundfunk 3",
@@ -148,6 +175,19 @@ module.exports = [
 			name : "NDR Info",
 			color : '#E6B54B',
 			stream : "http://ndr-ndrinfo-niedersachsen.cast.addradio.de/ndr/ndrinfo/niedersachsen/mp3/128/stream.mp3",
+			meta : {
+				playlist : 'https://www.ndr.de/public/radioplaylists/ndrinfo.json',
+				epg : 'https://www.ndr.de/radio/titelanzeige100-totalblank_station-ndrinfo.json'
+			}
+		},
+		{
+			logo : 'ndr1wellenord',
+			name : "NDR1 Welle Nord",
+			color : '#00A9D2',
+			stream : "https://ndr-ndr1wellenord-norderstedt.sslcast.addradio.de/ndr/ndr1wellenord/norderstedt/mp3/128/stream.mp3",
+			meta : {
+				playlist : 'https://www.ndr.de/public/radioplaylists/ndr1wellenord.json'
+			}
 		},
 		{
 			logo : 'hr2',
@@ -203,6 +243,7 @@ module.exports = [
 			color : '#FF6B00',
 			stream : 'http://st02.dlf.de/dlf/02/128/mp3/stream.mp3',
 			name : 'DeutschlandRadio Kultur',
+			url : 'https://m.deutschlandfunkkultur.de/dkultur-startseite.1477.de.mhtml',
 			meta : {
 				type : "DLFXML",
 				live : 'https://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=3'
@@ -258,5 +299,4 @@ module.exports = [
 			stream : 'https://rb-bremenzwei-live.sslcast.addradio.de/rb/bremenzwei/live/mp3/128/stream.mp3',
 			charset : 'latin-1'
 		}
-
 ];

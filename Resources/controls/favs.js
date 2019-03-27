@@ -31,15 +31,19 @@ exports.getAll = function() {
 };
 
 exports.increment = function(id) {
-	if (!id) return;
+	if (!id)
+		return;
 	const link = Ti.Database.open(DB);
 	if (link) {
-		const found = link.execute('select * from fav  where station=?', id);
+		const found = link.execute('select * from fav  where station="' + id
+				+ '"');
 		if (found.isValidRow()) {
-			link.execute('update fav set total=total+1 where station=?', id);
+			link.execute('update fav set total=total+1 where station="' + id
+					+ '"');
 			found.close();
 		} else {
-			link.execute('insert into fav (station,total) values (?,1)', id);
+			link.execute('insert into fav (station,total) values ("' + id
+					+ '",1)');
 		}
 		link.close();
 	}
@@ -49,7 +53,7 @@ exports.getTotal = function(id) {
 	var total = 0;
 	const link = Ti.Database.open(DB);
 	if (link) {
-	
+
 		const favs = link
 				.execute((id == undefined) ? 'select SUM(total) as sum from fav'
 						: 'select SUM(total) as sum from fav where station="'

@@ -1,8 +1,6 @@
 
 
 module.exports = function() {
-	const Window = require('ui/handheld/ApplicationWindow');
-	// create module instance
 	var $ = Ti.UI.createTabGroup({
 		fullscreen : false,
 		exitOnClose : true,
@@ -11,19 +9,21 @@ module.exports = function() {
 
 	});
 	$.addEventListener('open', require('ui/common/main.menu'));
-	var win1 = new Window('Heute, morgen …');
-	var win2 = new Window('suche');
-	require('ui/common/scheduler.window')(win1);
-	require('ui/common/search')(win2);
+
 	$.addTab(Ti.UI.createTab({
 		title : 'Hörplan',
-		window : win1,
+		window : require('ui/common/scheduler.window')($),
 		ndx : 0
 	}));
 	$.addTab(Ti.UI.createTab({
 		title : 'Radio',
 		window : require('ui/common/radio.window')($),
 		ndx : 1
+	}));
+	$.addTab(Ti.UI.createTab({
+		title : 'Depot & Pool',
+		window : require('ui/common/pool.window')($),
+		ndx : 2
 	}));
 	/*
 	 * $.addTab(Ti.UI.createTab({ title : 'Suche', window : win2, ndx : 2 }));

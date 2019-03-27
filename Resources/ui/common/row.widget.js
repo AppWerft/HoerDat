@@ -7,7 +7,7 @@ module.exports = function(item) {
         hasDetail : true,
         itemId : item
     });
-   
+    //console.log(item.stationlogo);
     row.add(Ti.UI.createImageView({
         image : item.stationlogo,
         defaultImage : '/images/defaultimage.png',

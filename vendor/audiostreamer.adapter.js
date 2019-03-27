@@ -39,7 +39,7 @@ function requestOnlinestate(_cb) {
 				_cb && _cb(false);
 			}
 		});
-		xhr.setAutoRedirect(false);
+		xhr.autoRedirect = false;
 		xhr.open('HEAD', 'https://facebook.com/'), xhr.send();
 	}
 }
@@ -60,7 +60,7 @@ var callbackFn;
 
 function onPlayerChange(_e) {
 	var status = _e.status;
-	//LOG(status + '     ' + PLAYING + '       ' + JSON.stringify(currentStation.id));
+	// LOG(status + ' ' + PLAYING + ' ' + JSON.stringify(currentStation.id));
 	if (status == PLAYING)
 		Favs.increment(currentStation.id);
 	if (!Ti.Network.online) {
@@ -91,15 +91,10 @@ function onPlayerChange(_e) {
 		break;
 	case STOPPED:
 		/*
-		if (!shouldStopp) {
-			StreamingPlayer.stop();
-			Notification.stop();
-		}
-		shouldStopp = false;
-		if (callbackFn && typeof callbackFn == 'function')
-			callbackFn({
-				status : 'STOPPED',
-			});*/
+		 * if (!shouldStopp) { StreamingPlayer.stop(); Notification.stop(); }
+		 * shouldStopp = false; if (callbackFn && typeof callbackFn ==
+		 * 'function') callbackFn({ status : 'STOPPED', });
+		 */
 		break;
 	case STREAMERROR:
 		if (callbackFn && typeof callbackFn == 'function') {
@@ -146,6 +141,7 @@ exports.init = function(lifecycleContainer, icon) {
 };
 
 exports.play = function(station, _callbackFn) {
+	LOG(station);
 	currentStation.title = station.title;
 	currentStation.id = station.id;
 	currentStation.url = station.url;
@@ -154,6 +150,7 @@ exports.play = function(station, _callbackFn) {
 	if (currentStation.url != undefined
 			&& typeof currentStation.url == 'string') {
 		if (Notification) {
+			LOG('STATIONTITLE:' + currentStation.title);
 			Notification.setTitle(currentStation.title);
 			Notification.setSubtitle(""); // old stuff remove
 			Notification.setLargeIcon(currentStation.largeIcon);
@@ -202,7 +199,7 @@ function stopStream() {
 }
 exports.stop = stopStream;
 
-Ti.App.addEventListener('stopRadio',stopStream);
+Ti.App.addEventListener('stopRadio', stopStream);
 
 exports.isPlaying = function() {
 	return StreamingPlayer.getStatus() == PLAYING ? true : false;

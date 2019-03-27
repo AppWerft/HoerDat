@@ -10,18 +10,17 @@ function getMeta(key, value) {
         left : 0,
         text : key,
         color : '#333',
-
         font : {
-            fontSize : 9
+            fontSize : 12
         },
         width : 80
     }));
     self.add(Ti.UI.createLabel({
-        left : 80,
+        left : 100,
         width : Ti.UI.FILL,
         textAlign : 'left',
         font : {
-            fontSize : 20,
+            fontSize : 22,
             fontFamily : 'Rambla-Bold'
         },
         text : value,
@@ -56,7 +55,7 @@ module.exports = function(item) {
     item.uebersetzer && self.container.add(getMeta('Übersetzer', item.uebersetzer));
 
     item.inhalt && self.container.add(Ti.UI.createLabel({
-        text : item.inhalt.replace(/[\s]{3,}/gm, '\n\n'),
+        text : item.inhalt.replace(/[\s]{3,}/gm, '\n\n').replace(/<br>/gm, '\n '),
         top : 10,
         height : Ti.UI.SIZE,
         color : '#222',

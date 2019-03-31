@@ -1,6 +1,6 @@
 const Soup = require("de.appwerft.soup");
 
-var Moment = require('vendor/moment');
+const Moment = require('vendor/moment');
 Moment.locale('de');
 
 module.exports = function(args) {

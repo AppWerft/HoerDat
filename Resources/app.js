@@ -1,6 +1,6 @@
 "use strict";
+
 !function() {
-	const ApplicationTabGroup = require('ui/common/ApplicationTabGroup');
-	new ApplicationTabGroup().open();
+	require('ui/common/ApplicationTabGroup')().open();
 }();
  

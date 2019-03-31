@@ -53,6 +53,7 @@
     </services>
   </android>
   <modules>
+    <module platform="android">com.miga.downloadmanager</module>
     <module platform="android">com.alcoapps.actionbarextras</module>
     <module platform="android">de.appwerft.soup</module>
     <module platform="android">de.manumaticx.androidflip</module>
@@ -64,7 +65,7 @@
     <module platform="android">ti.animation</module>
     <module platform="android">ti.scrollable.animation</module>
     <module platform="android">de.appwerft.podcast</module>
-    <module platform="android">com.miga.downloadmanager</module>
+    <module platform="android">de.appwerft.mp3agic</module>
   </modules>
   <deployment-targets>
     <target device="android">true</target>

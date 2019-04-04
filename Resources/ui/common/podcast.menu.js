@@ -9,15 +9,13 @@ module.exports = function(_e) {
 	АктйонБар.titleFont = "Rambla-Bold";
 	АктйонБар.subtitleColor = "#ccc";
 	var activity = _e.source.getActivity();
-	if (activity) {
-		activity.onCreateOptionsMenu = function(_e) {
-			_e.menu.clear();
-			//var seconds = Moment(data.time_isostring).unix() - Moment().unix();
-			activity.actionBar.displayHomeAsUp = true;
-			
-		};
-		activity.actionBar.homeButtonEnabled = true;
-		activity.actionBar.onHomeIconItemSelected = function() {
+	if (activity != undefined && activity.actionBar != undefined) { 
+		activity.onCreateOptionsMenu = function(e) {
+            activity.actionBar.displayHomeAsUp = true;
+            e.menu.clear();
+        };
+		activity.actionBar.displayHomeAsUp = true;
+		activity.actionBar.onHomeIconItemSelected = function() { // click on home
 			_e.source.close();
 		};
 	}

@@ -16,12 +16,12 @@ module.exports = function(_openevent) {
 		activity.onCreateOptionsMenu = function(_menu) {
 			console.log("_openevent onCreateOptionsMenu");
 			const menuItem = _menu.menu.add({
-				title : 'Über uns',
-				icon : Ti.App.Android.R.drawable.ic_action_about,
+				title : 'Audio',
+				icon : Ti.App.Android.R.drawable.ic_action_audio,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			});
 			menuItem && menuItem.addEventListener("click", function(_e) {
-				require('ui/common/about.window')().open();
+				require('ui/common/audioselector.widget')();
 			});
 			/*
 			 * _menu.menu.add({ title : 'Suche', icon :

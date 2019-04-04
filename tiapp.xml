@@ -1,78 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ti:app 
-  xmlns:ti="http://ti.appcelerator.org">
-  <id>de.appwerft.hoerdat</id>
-  <name>HörDat</name>
-  <publisher>fuerst</publisher>
-  <url>http://hoerdat.de</url>
-  <description>undefined</description>
-  <copyright>2018 by fuerst</copyright>
-  <icon>appicon.png</icon>
-  <fullscreen>true</fullscreen>
-  <navbar-hidden>false</navbar-hidden>
-  <analytics>false</analytics>
-  <property name="ti.android.root.reappears.restart" type="bool">true</property>
-  <guid>60873f96-df1e-4789-9333-d75f914064b9</guid>
-  <property name="GAPI_test" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
-  <property name="GAPI_stage" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
-  <property name="GAPI_production" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
-  <property name="ti.ui.defaultunit" type="string">dp</property>
-  <property name="ti.android.compilejs" type="bool">true</property>
-  <ios>
-    <run-on-main-thread>true</run-on-main-thread>
-    <plist>
-      <dict>
-        <key>UISupportedInterfaceOrientations~iphone</key>
-        <array>
-          <string>UIInterfaceOrientationPortrait</string>
-        </array>
-        <key>UISupportedInterfaceOrientations~ipad</key>
-        <array>
-          <string>UIInterfaceOrientationPortrait</string>
-          <string>UIInterfaceOrientationPortraitUpsideDown</string>
-          <string>UIInterfaceOrientationLandscapeLeft</string>
-          <string>UIInterfaceOrientationLandscapeRight</string>
-        </array>
-        <key>UIRequiresPersistentWiFi</key>
-        <false/>
-        <key>UIPrerenderedIcon</key>
-        <false/>
-        <key>UIStatusBarHidden</key>
-        <false/>
-        <key>UIStatusBarStyle</key>
-        <string>UIStatusBarStyleDefault</string>
-      </dict>
-    </plist>
-  </ios>
-  <version>3.2.2</version>
-  <android 
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <run-on-main-thread>true</run-on-main-thread>
-    <services>
-      <service type="interval" url="radiowecker.js"/>
-    </services>
-  </android>
-  <modules>
-    <module platform="android">com.miga.downloadmanager</module>
-    <module platform="android">com.alcoapps.actionbarextras</module>
-    <module platform="android">de.appwerft.soup</module>
-    <module platform="android">de.manumaticx.androidflip</module>
-    <module platform="android">de.appwerft.remotexml</module>
-    <module platform="android">com.woohoo.androidaudiostreamer</module>
-    <module platform="android">de.appwerft.audionotification</module>
-    <module platform="android">ti.audiovisualizerview</module>
-    <module platform="iphone">ti.animation</module>
-    <module platform="android">ti.animation</module>
-    <module platform="android">ti.scrollable.animation</module>
-    <module platform="android">de.appwerft.podcast</module>
-    <module platform="android">de.appwerft.mp3agic</module>
-  </modules>
-  <deployment-targets>
-    <target device="android">true</target>
-    <target device="ipad">false</target>
-    <target device="iphone">false</target>
-  </deployment-targets>
-  <sdk-version>8.0.0.GA</sdk-version>
-  <property name="appc-app-id" type="string">5c90a3ece6c9637be49ae7bf</property>
-  <plugins/>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <id>de.appwerft.hoerdat</id>
+    <name>HörDat</name>
+    <publisher>fuerst</publisher>
+    <url>http://hoerdat.de</url>
+    <description>undefined</description>
+    <copyright>2018 by fuerst</copyright>
+    <icon>appicon.png</icon>
+    <fullscreen>true</fullscreen>
+    <navbar-hidden>false</navbar-hidden>
+    <analytics>false</analytics>
+    <property name="ti.android.root.reappears.restart" type="bool">true</property>
+    <guid>60873f96-df1e-4789-9333-d75f914064b9</guid>
+    <property name="GAPI_test" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
+    <property name="GAPI_stage" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
+    <property name="GAPI_production" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>
+    <property name="ti.ui.defaultunit" type="string">dp</property>
+    <property name="ti.android.compilejs" type="bool">true</property>
+    <ios>
+        <run-on-main-thread>true</run-on-main-thread>
+        <plist>
+            <dict>
+                <key>UISupportedInterfaceOrientations~iphone</key>
+                <array>
+                    <string>UIInterfaceOrientationPortrait</string>
+                </array>
+                <key>UISupportedInterfaceOrientations~ipad</key>
+                <array>
+                    <string>UIInterfaceOrientationPortrait</string>
+                    <string>UIInterfaceOrientationPortraitUpsideDown</string>
+                    <string>UIInterfaceOrientationLandscapeLeft</string>
+                    <string>UIInterfaceOrientationLandscapeRight</string>
+                </array>
+                <key>UIRequiresPersistentWiFi</key>
+                <false/>
+                <key>UIPrerenderedIcon</key>
+                <false/>
+                <key>UIStatusBarHidden</key>
+                <false/>
+                <key>UIStatusBarStyle</key>
+                <string>UIStatusBarStyleDefault</string>
+            </dict>
+        </plist>
+    </ios>
+    <version>3.2.2</version>
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+        <run-on-main-thread>true</run-on-main-thread>
+        <manifest>
+            <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+        </manifest>
+        <services>
+            <service type="interval" url="radiowecker.js"/>
+        </services>
+    </android>
+    <modules>
+        <module platform="android">com.miga.downloadmanager</module>
+        <module platform="android">com.alcoapps.actionbarextras</module>
+        <module platform="android">de.appwerft.soup</module>
+        <module platform="android">de.manumaticx.androidflip</module>
+        <module platform="android">de.appwerft.remotexml</module>
+        <module platform="android">com.woohoo.androidaudiostreamer</module>
+        <module platform="android">de.appwerft.audionotification</module>
+        <module platform="android">ti.audiovisualizerview</module>
+        <module platform="iphone">ti.animation</module>
+        <module platform="android">ti.animation</module>
+        <module platform="android">ti.scrollable.animation</module>
+        <module platform="android">de.appwerft.podcast</module>
+        <module platform="android">de.appwerft.mp3agic</module>
+        <module platform="android">de.appwerft.a2dp</module>
+    </modules>
+    <deployment-targets>
+        <target device="android">true</target>
+        <target device="ipad">false</target>
+        <target device="iphone">false</target>
+    </deployment-targets>
+    <sdk-version>7.5.1.GA</sdk-version>
+    <property name="appc-app-id" type="string">5c90a3ece6c9637be49ae7bf</property>
+    <plugins/>
 </ti:app>

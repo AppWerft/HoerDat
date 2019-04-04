@@ -1,5 +1,4 @@
 
-
 module.exports = function() {
 	var $ = Ti.UI.createTabGroup({
 		fullscreen : false,
@@ -11,7 +10,7 @@ module.exports = function() {
 	$.addEventListener('open', require('ui/common/main.menu'));
 
 	$.addTab(Ti.UI.createTab({
-		title : 'Hörplan',
+		title : 'Kalender',
 		window : require('ui/common/scheduler.window')($),
 		ndx : 0
 	}));
@@ -21,8 +20,8 @@ module.exports = function() {
 		ndx : 1
 	}));
 	$.addTab(Ti.UI.createTab({
-		title : 'Depot & Pool',
-		window : require('ui/common/pool.window')($),
+		title : 'Hörspiele',
+		window : require('ui/common/cachedpool.window')($),
 		ndx : 2
 	}));
 	/*

@@ -35,13 +35,16 @@ exports.increment = function(id) {
 		return;
 	const link = Ti.Database.open(DB);
 	if (link) {
+		console.log("test if station always in db");
 		const found = link.execute('select * from fav  where station="' + id
 				+ '"');
 		if (found.isValidRow()) {
+			console.log("yes: inc");
 			link.execute('update fav set total=total+1 where station="' + id
 					+ '"');
 			found.close();
 		} else {
+			console.log("no : create new one");
 			link.execute('insert into fav (station,total) values ("' + id
 					+ '",1)');
 		}

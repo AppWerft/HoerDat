@@ -1,6 +1,6 @@
 "use strict";
 
 !function() {
-	require('ui/common/ApplicationTabGroup')().open();
+	require('ui/ApplicationTabGroup')();
 }();
  

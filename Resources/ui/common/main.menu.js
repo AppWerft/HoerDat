@@ -11,7 +11,11 @@ module.exports = function(_openevent) {
 	if (!_openevent.source)
 		return;
 	var activity = _openevent.source.getActivity();
+
 	if (activity) {
+		activity.onDestroy = function() {
+			
+		};
 		console.log("_openevent activity");
 		activity.onCreateOptionsMenu = function(_menu) {
 			console.log("_openevent onCreateOptionsMenu");
@@ -42,30 +46,6 @@ module.exports = function(_openevent) {
 		};
 		var last = {};
 		activity.invalidateOptionsMenu();
-		/*
-		 * var Airlino= require("de.appwerft.airlino"); /*Airlino.isAvailable({
-		 * onResult: function(e) { console.log(e.result); } });
-		 * Airlino.startScan({ onSuccess: function(e) { console.log(e.result); },
-		 * onError: function(e) { console.log(e); } });
-		 */
-		/*
-		 * activity.onPause = function() { console.log('onPause <<<<<<<<<<<<<<<<<<<<<<<<<<<');
-		 * last.title = АктйонБар.title; last.subtitle = АктйонБар.subtitle; };
-		 * activity.onResume = function() { console.log('onResume
-		 * >>>>>>>>>>>>>>>>>>>>>>>>>>>'); АктйонБар.title = last.title ||
-		 * 'HörDat'; АктйонБар.subtitle = last.subtitle || 'Dein
-		 * Hörspielkalender'; };
-		 */
-		Ti.Gesture
-				.addEventListener(
-						'orientationchange',
-						function() {
-							if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
-								activity.actionBar.show();
-							} else
-								activity.actionBar.hide();
-						});
-
 	}
 //	require('vendor/versionsreminder')();
 };

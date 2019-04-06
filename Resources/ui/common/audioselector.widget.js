@@ -1,76 +1,84 @@
 //const AudioSelector = require("de.appwerft.audioselector");
 const A2DP = require("de.appwerft.a2dp");
+const BT = A2DP.Bluetooth;
+const Permissions = require('vendor/permissions');
+const AS = require("de.appwerft.audioselector");
+const DeviceRow = require('ui/common/audiodevice.row');
+
+const DEVICES = require('model/devices').get(AS);
 
 module.exports = function() {
-	function handleBT() {
-		if (A2DP.init()) {
-			A2DP.startScanPairedDevices({
-				repeat : true,
-				onchanged : function(res) {
-					console.log(res)
-				}
-			});
-			A2DP.startScanNearbyDevices({
-				onchanged : function(res) {
-					console.log(res)
-				}
-			});
+	// console.log(AS.getActivePlaybackConfigurations());
+	console.log("///////////////\nRingerMode=" + AS.getRingerMode());
 
-		}
+	function handleBT() {
+		Permissions.requestPermissions([ 'ACCESS_COARSE_LOCATION' ], function(
+				success) {
+			if (success) {
+				console.log("startScanPairedDevices 💎");
+				return;
+				A2DP.startMonitorPairedDevices({
+					repeat : true,
+					onchanged : function(res) {
+						console.log(res.devices);
+					}
+				});
+			} else
+				console.log("requestPermission COARSE_LOCATION failed 💎");
+		});
 	}
-	switch (A2DP.Bluetooth.getAvailibility()) {
-	case A2DP.Bluetooth.BT_NOTAVAILABLE:
+	// Test if BT available:
+	const btavail = BT.getAvailibility();
+	switch (btavail) {
+	case BT.NOTAVAILABLE:
+		console.log("BT_NOTAVAILABLE");
 		break;
-	case A2DP.Bluetooth.BT_DISABLED:
-		A2DP.Bluetooth.enableBluetooth({
+	case BT.DISABLED:
+		console.log("BT_DISABLED");
+		BT.enableBluetooth({
 			onsuccess : handleBT,
 			onerror : function() {
 			}
 		});
 		break;
-	case A2DP.Bluetooth.BT_ENABLED:
-		handleBT()
+	case BT.ENABLED:
+		console.log("ENABLED");
+		handleBT();
 		break;
-
+	default:
+		console.log("BT: " + btavail + ' ' + BT.ENABLED);
 	}
-	function getRow(device) {
-		const $ = Ti.UI.createTableViewRow({
-			height : 45,
-			borderRadius : 10,
-			backgroundColor : "#225588"
+
+	// / Rendering:
+	function getAndroidView() {
+		function onClick(e) {
+			$.removeEventListener("click", onClick);
+			AS.setTypeOn(parseInt(e.source.itemId));
+		}
+		const $ = Ti.UI.createView({
+			height : Ti.UI.SIZE,
+			width : 160,
+			layout : 'vertical'
 		});
-		$.add(Ti.UI.createLabel({
-			text : device.label,
-			left : 100,
-			textAlign : 'left',
-			width : Ti.UI.FILL,
-			color : 'white',
-			font : {
-				fontFamily : 'Rambla-Bold',
-				fontSize : 22
-			}
-		}));
+		function renderList() {
+			$.removeAllChildren();
+			AS.getDevices().forEach(function(device) {
+				if (DEVICES[device.type]) {
+					$.add(DeviceRow.create(DEVICES[device.type], device.type,device.active));
+				} 
+			});
+		}
+		renderList();
+		AS.addEventListener("audiochanged", renderList);
+		$.addEventListener("click", onClick);
 		return $;
 	}
-	function getRows() {
-		return 
-
-		[ {
-			label : 'Lautsprecher'
-		}, {
-			label : 'Kopfhörer (3.5"-Buchse)'
-		}, {
-			label : 'Bluetooth'
-		} ].map(getRow);
-
-	}
 	const $ = Ti.UI.createOptionDialog({
-		androidView : Ti.UI.createTableView({
-			data : getRows(),
-		}),
-		selectedIndex : 0,
-		destructive : 0,
-		title : 'Auswahl der akustischen Abspieleinrichtung	'
+		androidView : getAndroidView(),
+		backgroundColor : 'transparent',
+
+	// title : 'Auswahl des Audioabspielers'
 	});
+	
 	$.show();
 };

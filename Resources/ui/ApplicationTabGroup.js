@@ -5,10 +5,7 @@ module.exports = function() {
 		exitOnClose : true,
 		swipeable : false,
 		orientationModes : [ Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT ]
-
 	});
-	$.addEventListener('open', require('ui/common/main.menu'));
-
 	$.addTab(Ti.UI.createTab({
 		title : 'Kalender',
 		window : require('ui/common/scheduler.window')($),
@@ -33,15 +30,16 @@ module.exports = function() {
 		$.setActiveTab(1);
 
 	var timer;
-	const Warning = Ti.UI
-	.createNotification(
-			{
+	const Warning = Ti.UI.createNotification({
 				message : 'Nochmaliges Drücken der Backtaste beendet das Radio.'
-			});
-	function onBack(_e) {
-		
+	});
+	function onBack(event) {
+		event.cancelBubble = true;
+		Ti.App.fireEvent('stopRadio');
+		return false;
+		/*
 		if (timer == true) {
-			Ti.App.fireEvent('stopRadio');
+			
 			Warning.hide();
 			$.close();
 			return false;
@@ -53,16 +51,19 @@ module.exports = function() {
 		}
 		timer = true;
 		_e.cancelBubble = true;
-		return false;
+		return false;*/
 	}
-	$.addEventListener("android:back", onBack);
+	//$.addEventListener("android:back", onBack);
 	$.getTabs().forEach(function(_tab) {
 		_tab.addEventListener('selected', function(_e) {
 			Ti.App.Properties.setInt('LASTTAB', $.getActiveTab().ndx);
 		});
 	});
-
-	return $;
+	$.addEventListener('open', require('ui/common/main.menu'));
+	$.addEventListener('close', function() {
+		Ti.App.fireEvent('stopRadio');
+	});
+	$.open();
 };
 /*
  * var intent = Ti.Android.createIntent({ action : Ti.Android.ACTION_MAIN, flags :

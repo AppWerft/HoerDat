@@ -1,7 +1,7 @@
 
 exports.pool_online = {
 	properties : {
-		height : Ti.UI.SIZE,
+		height : 200,
 		backgroundColor : 'white',
 		itemId : ''
 	},

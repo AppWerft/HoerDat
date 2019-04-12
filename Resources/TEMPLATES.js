@@ -1,7 +1,7 @@
 
 exports.pool_online = {
 	properties : {
-		height : 200,
+		height : 150,
 		backgroundColor : 'white',
 		itemId : ''
 	},
@@ -47,7 +47,7 @@ exports.pool_online = {
 			layout : 'vertical',
 			left : 120,
 			top : 0,
-			height : Ti.UI.SIZE,
+			height : 150,
 			right : 15
 		},
 		childTemplates : [ {
@@ -102,7 +102,7 @@ exports.pool_online = {
 };
 exports.pool_saved = {
 	properties : {
-		height : 120,
+		height : Ti.UI.SIZE,
 		backgroundColor : 'white',
 		itemId : ''
 	},
@@ -152,6 +152,7 @@ exports.pool_saved = {
 				top : 0,
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
+				textAlign:'left',
 				font : {
 					fontSize : 16,
 					fontFamily : 'Rambla'
@@ -177,7 +178,7 @@ exports.pool_saved = {
 };
 exports.pool_used = {
 		properties : {
-			height : 110,
+			height : Ti.UI.SIZE,
 			backgroundColor : 'white',
 			itemId : ''
 		},

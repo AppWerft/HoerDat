@@ -4,10 +4,10 @@ exports.get = function(AS) {
 		label : 'Gerätelautsprecher',
 		icon : '/images/loudspeaker.png'
 	};	
-	$[AS.TYPE_BUILTIN_EARPIECE] = {
+	/*$[AS.TYPE_BUILTIN_EARPIECE] = {
 			label : 'Geräteohrhörer',
 			icon : '/images/earpieces.png'
-		};
+		};*/
 	$[AS.TYPE_WIRED_HEADSET] = {
 		label : 'Schnursprechgarnitur',
 		icon : '/images/headphones.png'

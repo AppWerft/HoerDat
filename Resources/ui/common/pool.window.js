@@ -25,7 +25,6 @@ function getDataItems(state, position, ndx) {
 		if (item.position)
 			duration += ' | gehört: ' + item.positionstring;
 		return {
-
 			properties : {
 				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
 				searchableText : item.title + item.author + item.description,
@@ -48,7 +47,8 @@ function getDataItems(state, position, ndx) {
 				opacity : item.cached ? 0.5 : 0
 			},
 			author : {
-				text : item.author
+				text : item.author,
+				height : item.author.length ? Ti.UI.SIZE : 0
 			},
 			description : {
 				text : item.description
@@ -101,12 +101,10 @@ module.exports = function(_tabgroup) {
 	$.poolList = Ti.UI.createListView({
 		caseInsensitiveSearch : true,
 		templates : {
-			'pool_online' : require('TEMPLATES').pool_online,
 			'pool_saved' : require('TEMPLATES').pool_saved,
 			'pool_used' : require('TEMPLATES').pool_used,
-
 		},
-		defaultItemTemplate : 'pool_online',
+		defaultItemTemplate : 'pool_saved',
 		sections : HEADERLABELS.map(function(label) {
 			return Ti.UI.createListSection({
 				headerView : createHeaderView(label)
@@ -182,8 +180,6 @@ module.exports = function(_tabgroup) {
 
 							require("ui/common/podcast.window")(
 									JSON.parse(e.itemId)).open();
-
-							// _tabgroup.activity.startActivity(intent);
 							break;
 						}
 					});
@@ -191,7 +187,6 @@ module.exports = function(_tabgroup) {
 		const start = new Date().getTime();
 		$.poolList.sections[0].items = getDataItems(STATUS_SAVED, true, 0);
 		$.poolList.sections[1].items = getDataItems(STATUS_SAVED, false, 1);
-		$.poolList.sections[2].items = getDataItems(STATUS_ONLINE, false, 2);
 		console.log("setSections: " + (new Date().getTime() - start));
 	}
 	$.fabView = require('ui/common/fabview.widget')({

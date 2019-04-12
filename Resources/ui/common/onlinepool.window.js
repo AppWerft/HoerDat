@@ -1,6 +1,7 @@
 const Permissions = require('vendor/permissions');
 const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
 const TEMPLATES = [ 'pool_online' ];
+const ABX = require('com.alcoapps.actionbarextras');
 
 const Pool = require("controls/pool");
 
@@ -31,10 +32,11 @@ function getDataItems(state, position, ndx) {
 				opacity : item.cached ? 0.5 : 0
 			},
 			author : {
-				text : item.author
+				text : item.author,
+				height : item.author ? 20 :0
 			},
 			description : {
-				text : item.description
+				text : item.description.substring(0,256)
 			},
 			logo : {
 				image : item.image
@@ -52,6 +54,29 @@ module.exports = function(_tabgroup) {
 	var $ = Ti.UI.createWindow({
 		backgroundImage : '/images/bg.png',
 		tabgroup : _tabgroup
+	});
+	function onOpen() {
+		
+	}
+	$.addEventListener('open', function(_e) {
+		ABX.title = 'ARD - Hörspiele';
+		ABX.backgroundColor = "#225588";
+		ABX.subtitle = 'Runderladerampe';
+		ABX.titleFont = "Rambla-Bold";
+		ABX.subtitleColor = "#ccc";
+		const activity = $.activity;
+		if (activity != undefined && activity.actionBar != undefined) { 
+			activity.onCreateOptionsMenu = function(e) {
+	            activity.actionBar.displayHomeAsUp = true;
+	            activity.actionBar.onHomeIconItemSelected = function(){
+					$.close();
+				};	
+	        };
+	        
+			//activity.actionBar.displayHomeAsUp = true;
+			//activity.invalidateOptionsMenu();
+		} else
+			console.log("win has no activity");
 	});
 	$.searchBar = Ti.UI.createSearchBar({
 		barColor : '#fff',
@@ -87,7 +112,7 @@ module.exports = function(_tabgroup) {
 			'pool_online' : require('TEMPLATES').pool_online,
 		},
 		defaultItemTemplate : 'pool_online',
-		sections : [Ti.UI.createListSection()]
+		sections : [ Ti.UI.createListSection() ]
 	});
 
 	setSections();
@@ -102,7 +127,7 @@ module.exports = function(_tabgroup) {
 						started = true;
 						Permissions
 								.requestPermissions(
-										['WRITE_EXTERNAL_STORAGE' ],
+										[ 'WRITE_EXTERNAL_STORAGE' ],
 										function(success) {
 											if (success) {
 												const url = JSON
@@ -142,7 +167,7 @@ module.exports = function(_tabgroup) {
 					});
 	function setSections() {
 		const start = new Date().getTime();
-		 $.poolList.sections[0].items = getDataItems(STATUS_ONLINE, false, 2);
+		$.poolList.sections[0].items = getDataItems(STATUS_ONLINE, false, 2);
 		console.log("setSections: " + (new Date().getTime() - start));
 	}
 	$.filterButton = require('ui/common/filterbutton.widget')({
@@ -155,10 +180,10 @@ module.exports = function(_tabgroup) {
 			// $.poolList.searchView = null;
 		}
 	});
-	$.filterButton.bottom=26;
+	$.filterButton.bottom = 26;
 	$.add($.filterButton);
 	$.searchBar.addEventListener('change', $.filterButton.onChange);
-	$.addEventListener('open',require('ui/common/online.menu'));
+
 	return $;
 };
 

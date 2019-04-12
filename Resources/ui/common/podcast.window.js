@@ -113,7 +113,7 @@ module.exports = opts => {
 	}));
 
 	$.container.add(Ti.UI.createLabel({
-		text : id3v2tag ? id3v2tag.comment.replace(/\/\/[\s]*/mg, '\n\n')
+		text : id3v2tag && id3v2tag.comment ? id3v2tag.comment.replace(/\/\/[\s]*/mg, '\n\n')
 				.replace(/\/\s/mg, '\n∙') : opts.description,
 		left : 10,
 		right : 10,

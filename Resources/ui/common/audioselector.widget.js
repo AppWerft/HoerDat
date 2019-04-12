@@ -9,7 +9,6 @@ const DEVICES = require('model/devices').get(AS);
 
 module.exports = function() {
 	// console.log(AS.getActivePlaybackConfigurations());
-	console.log("///////////////\nRingerMode=" + AS.getRingerMode());
 
 	function handleBT() {
 		Permissions.requestPermissions([ 'ACCESS_COARSE_LOCATION' ], function(
@@ -52,8 +51,10 @@ module.exports = function() {
 	// / Rendering:
 	function getAndroidView() {
 		function onClick(e) {
-			$.removeEventListener("click", onClick);
-			AS.setTypeOn(parseInt(e.source.itemId));
+			//$.removeEventListener("click", onClick);
+			if (typeof e.source.itemId == "number")
+				AS.setRoute(e.source.itemId);
+			renderList();
 		}
 		const $ = Ti.UI.createView({
 			height : Ti.UI.SIZE,

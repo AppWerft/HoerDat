@@ -53,10 +53,6 @@ module.exports = function(_tabgroup) {
 				if (e.message && $.radiotextView)
 					$.radiotextView.children[0].text = e.message;
 				if (lastStatus != e.status) {
-					switch (e.status) {
-					case "PLAYING":
-						break;
-					}
 					lastStatus = e.status;
 				}
 			});
@@ -129,6 +125,7 @@ module.exports = function(_tabgroup) {
 					"click",
 					function(e) {
 						Ti.Media.vibrate([ 50, 0 ]);
+						visible=true;
 						$.ContainerView.scrollToView(PLAYER);
 						try {
 							const station = JSON.parse(e.source.itemId);
@@ -149,7 +146,6 @@ module.exports = function(_tabgroup) {
 	_tabgroup.addEventListener('open', onTabgroupOpen);
 	function onPermission(success) {
 		if (success) {
-			console.log("PERMISSION GRANTED,ADDING ZAPPLER");
 			$.visualizerView = VisualizerModule
 					.createView({
 						center : {

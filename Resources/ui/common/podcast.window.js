@@ -24,41 +24,67 @@ const visualizerView = Visualizer.createView({
 
 
 module.exports = opts => {
+	var HEIGHT;
 	let start = new Date().getTime();
 	const duration = opts.duration, position = Pool.getPosition(opts.url), url = opts.url, cover = opts.cover, mp3file = Pool
 			.getCachedFile(url);
-	const id3v2tag = ID3.getId3v2Tag(mp3file);
-	console.log("Duration for ID3: " + (new Date().getTime()-start));
+	console.log(opts);
 	var $ = Ti.UI.createWindow({
 		fullscreen : false,
 		backgroundColor : 'white',
-		meta : id3v2tag ? {
-			title : id3v2tag.albumartist,
-			subtitle : id3v2tag.title
-		} : {
+		itemId : opts.id,
+		meta :  {
 			title : opts.author,
 			subtitle : opts.title
 		}
 	});
-	$.topView = Ti.UI.createView({
+	$.topContainer = Ti.UI.createView({
+		top:0,
+		height:SCREENWIDTH
+	});
+	$.add($.topContainer);
+	$.topView = Ti.UI.createImageView({
 		top : 0,
 		width : SCREENWIDTH,
-		height : SCREENWIDTH*.88,
-		backgroundImage : cover
+		height: 'auto',
+		image : cover
 	});
-	$.playcontrolButton = require('ui/common/playbutton.widget')( () => {
-		if (audioPlayer.playing) {
-			audioPlayer.pause();
-			$.playcontrolButton.setPause();
-		} else {
-			audioPlayer.url = mp3file.nativePath;
-			audioPlayer.time = position;
-			audioPlayer.start();
-			audioPlayer.time = position;
-			$.playcontrolButton.setPlay();
-		}
-	});
-	$.topView.add($.playcontrolButton);
+	$.topContainer.add($.topView);
+	function onPostlayout(e) {
+		$.topView.removeEventListener("postlayout",onPostlayout);
+		HEIGHT=e.source.size.height;
+		console.log("height="+HEIGHT);
+		$.topContainer.height=HEIGHT;
+		$.bottomContainer.top=HEIGHT;
+		$.thumbView = Ti.UI.createView({
+				right : 0,
+				top : HEIGHT-100,
+				width : 100,
+				height : 100
+			});
+		$.topView.add($.thumbView);
+		if (ID3.getId3v2Tag(mp3file)) {
+			$.thumbView.add(ID3.createAlbumImage({
+					image : mp3file,
+			}));
+		};
+		$.playcontrolButton = require('ui/common/playbutton.widget')( () => {
+			if (audioPlayer.playing) {
+				audioPlayer.pause();
+				$.playcontrolButton.setPause();
+			} else {
+				audioPlayer.url = mp3file.nativePath;
+				audioPlayer.time = position;
+				audioPlayer.start();
+				audioPlayer.time = position;
+				$.playcontrolButton.setPlay();
+			}
+		});
+		$.topContainer.add($.playcontrolButton);
+	}
+	
+	$.topView.addEventListener("postlayout",onPostlayout);
+	
 	function onProgress(e) {
 		$.progressView.width = e.progress / duration * 100 + '%';
 		Pool.setPosition(url, e.progress);
@@ -66,20 +92,8 @@ module.exports = opts => {
 	
 	audioPlayer.removeEventListener('progress', onProgress);
 	audioPlayer.addEventListener('progress', onProgress);
-	$.add($.topView);
-	setTimeout(() => {
-		$.thumbView = Ti.UI.createView({
-			right : 0,
-			top : SCREENWIDTH - 100,
-			width : 100,
-			height : 100
-		});
-		$.topView.add($.thumbView);
-		if (id3v2tag)
-			$.thumbView.add(ID3.createAlbumImage({
-				image : mp3file,
-			}));
-	},200);
+	$.add($.topContainer);
+	
 	$.progressView = Ti.UI.createView({
 		top : SCREENWIDTH - 100,
 		left : 0,
@@ -88,16 +102,16 @@ module.exports = opts => {
 		backgroundColor : '#88ffffff'
 	});
 
-	$.topView.add($.progressView);
+	$.topContainer.add($.progressView);
 
-	$.container = Ti.UI.createScrollView({
+	$.bottomContainer = Ti.UI.createScrollView({
 		scrollType : 'vertical',
 		layout : 'vertical',
 		top : SCREENWIDTH
 
 	});
-	$.container.add(Ti.UI.createLabel({
-		text : id3v2tag ? id3v2tag.title : opts.title,
+	$.bottomContainer.add(Ti.UI.createLabel({
+		text : opts.title,
 		left : 10,
 		right : 10,
 		top : 5,
@@ -112,9 +126,8 @@ module.exports = opts => {
 
 	}));
 
-	$.container.add(Ti.UI.createLabel({
-		text : id3v2tag && id3v2tag.comment ? id3v2tag.comment.replace(/\/\/[\s]*/mg, '\n\n')
-				.replace(/\/\s/mg, '\n∙') : opts.description,
+	$.bottomContainer.add(Ti.UI.createLabel({
+		text : opts.description,
 		left : 10,
 		right : 10,
 		font : {
@@ -127,13 +140,25 @@ module.exports = opts => {
 		height : Ti.UI.SIZE
 	}));
 
-	$.add($.container);
+	$.add($.bottomContainer);
 	$.addEventListener('open', require('ui/common/podcast.menu'));
 	$.addEventListener('close', function() {
-		audioPlayer.stop();
-		audioPlayer.release();
+		
 		audioPlayer.removeEventListener('progress', onProgress);
 		$.remove(visualizerView);
+		/*const dialog =Ti.UI.createOptionDialog({
+			title:"Wie soll es mit dem eben gehörten weitergehen?",
+			options: ["Vom Gerät löschen","Später weiterhören"],elevation:5
+		});
+		dialog.addEventListener('click',function(e){
+			console.log(e.index);
+			if (e.index==0) Pool.removeDownload(opts.id);
+			
+		});
+		dialog.show();*/
+		audioPlayer.stop();
+		audioPlayer.release();
+		
 	});
 	$.add(visualizerView);
 	audioPlayer.addEventListener('complete', function() {

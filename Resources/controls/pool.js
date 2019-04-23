@@ -1,7 +1,24 @@
 const DB = 'Pool4';
 const STATE_ONLINE = 0, STATE_PROGRESS = 1, STATE_SAVED = 2;
-const DownloadManager = require("com.miga.downloadmanager");
+const Downloader = require("de.appwerft.downloadmanager");
 
+
+const addColumn = function(dbname, tblName, newFieldName, colSpec) {
+    var db = Ti.Database.open(dbname);
+    var fieldExists = false;
+    resultSet = db.execute('PRAGMA TABLE_INFO(' + tblName + ')');
+    while (resultSet.isValidRow()) {
+        if(resultSet.field(1)==newFieldName) {
+            fieldExists = true;
+        }
+        resultSet.next();
+    } // end while
+    if(!fieldExists) {
+        // field does not exist, so add it
+        db.execute('ALTER TABLE ' + tblName + ' ADD COLUMN '+newFieldName + ' ' + colSpec);
+    }
+    db.close();
+};
 function hmsToSecondsOnly(str) {
 	str=str.replace(/:$/,'');
 	str=str.replace(/^:/,'');
@@ -18,6 +35,8 @@ link
 		.execute('CREATE TABLE IF NOT EXISTS "pool" ("title" VARCHAR, "author" VARCHAR, "keywords" VARCHAR,"weblink" VARCHAR, "description" VARCHAR, "pubdate" VARCHAR,"depubdate" VARCHAR, "duration" INTEGER,"image" VARCHARs,"position" INTEGER,"url" VARCHAR, "state" INTEGER,"faved" INTEGER, localfile STRING);');
 link.close();
 
+addColumn(DB, "pool", "id", "Number");
+
 function stripFilename(url) {
 	if (url) {
 		const ndx = url.lastIndexOf('/');
@@ -25,23 +44,42 @@ function stripFilename(url) {
 	}
 }
 
-function setStateToProgress(url, localfile) {
+function removeDownload(id) {
+	console.log("try to forget download with id " + id);
+	const link = Ti.Database.open(DB);
+	link.execute('UPDATE pool SET state=? WHERE id=?',
+			STATE_ONLINE,id);
+	link.close();
+	const count = Downloader.removeDownloadById(id);
+	Ti.App.fireEvent('renderPool',{});
+}
+
+function setStateToProgress(localfile,id,url) {
 	const link = Ti.Database.open(DB);
 	
-	link.execute('UPDATE pool SET state=?,localfile=? WHERE url=?',
-			STATE_PROGRESS, stripFilename(localfile), url);
+	link.execute('UPDATE pool SET id=?,state=?,localfile=? WHERE url=?',
+			id,STATE_PROGRESS, stripFilename(localfile), url);
 	link.close();
 }
 
-function setStateToCached(localfile) {
-	const link = Ti.Database.open(DB);
+
+function getStorageStatistics() {
+	return Downloader.getStorageStatistics();
+}
+
+function syncAllDownloads() {
+	const downloads = Downloader.getSuccessfulDownloads();
+	var link = Ti.Database.open(DB);
 	if (link) {
-	link.execute('UPDATE pool SET state=? WHERE localfile=?', STATE_SAVED,
-			stripFilename(localfile));
-	link.close();
+		link.execute("BEGIN TRANSACTION");
+		downloads.forEach(function(d){
+			link.execute('UPDATE pool SET state=? WHERE id=?',STATE_SAVED,d.id);
+		});
+		link.execute("COMMIT");
+		link.close();
 	}
+	
 }
-
 function setStateToOnline(localfile) {
 	const link = Ti.Database.open(DB);
 	if (link) {
@@ -100,6 +138,7 @@ const getAll = function(state, inprogress) {
 						title : found.fieldByName('title'),
 						author : found.fieldByName('author'),
 						position : position,
+						id: found.fieldByName('id'),
 						duration : duration,
 						progress : position / duration,
 						durationstring : isNaN(duration) ? "":new Date(duration).toISOString().substr(11, 8),
@@ -127,7 +166,6 @@ const getAll = function(state, inprogress) {
 };
 
 const syncAll = function(onReady) {
-	
 	const RSS =
 	[	'http://www.mdr.de/kultur/podcast/hoerspiele/audiogalerie-106-podcast.xml',
 		'https://www.ndr.de/kultur/radiokunst/podcast4336.xml',
@@ -145,6 +183,7 @@ const syncAll = function(onReady) {
 									userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
 								},
 								function(_e) {
+									if (!_e.items) return;
 									var link = Ti.Database.open(DB);
 									if (link) {
 										link.execute("BEGIN TRANSACTION");
@@ -154,7 +193,7 @@ const syncAll = function(onReady) {
 										link.execute("COMMIT");
 										link.close();
 									}
-									console.log("COUNT="+count);
+									
 									count--;
 									if (count==0 && onReady && typeof onReady == 'function')
 										onReady();
@@ -221,36 +260,27 @@ const getCachedFile = (url) => {
 	return file.exists ? file : null;
 };
 
+Downloader.onComplete = function(e){
+	syncAllDownloads();
+	Ti.App.fireEvent('renderPool',{});
+};
+Downloader.onDone =function(e){
+	console.log(e);
+	Ti.App.fireEvent('renderPool',{});
+};
+
+
 const downloadFile = function(url, title, cb) {
 	const filename = stripFilename(url), file = Ti.Filesystem.getFile(
-			Ti.Filesystem.externalStorageDirectory, filename).nativePath;
-	var match = DownloadManager.getDownloads().filter(function(dl) {
-		return (stripFilename(dl.filename) == stripFilename(file));
-	});
-	// if (match.length > 0)
-	// return false;
-	setStateToProgress(url, filename);
-	console.log("setStateToProgress:::" + filename);
-	DownloadManager.enableNotification();
-	DownloadManager.setEventName("download::ready");
-	DownloadManager.startDownload({
-		url : url,
-		filename : file,
-		success : function() {
-			DownloadManager.getAllDownloads().forEach(function(dl) {
-				console.log(dl);
-				if (dl.status == DownloadManager.STATUS_SUCCESSFUL) {
-					console.log("setStateToCache:::" + dl.filename);
-					setStateToCached(stripFilename(dl.filename));
-				}	
-				else if (dl.status == DownloadManager.STATUS_FAILED)
-					setStateToOnline(dl.filename);
-			});
-			
-		},
-		title : title,
-		description : filename
-	});
+			Ti.Filesystem.externalStorageDirectory, filename);
+	
+	const Request = Downloader.createRequest(url);
+	Request
+		.setNotificationVisibility(Request.VISIBILITY_VISIBLE)
+		.setDestinationFile(file)
+		.setTitle(title)
+		.setDescription(filename);
+	setStateToProgress(filename,Downloader.enqueue(Request),url);
 	return true;
 };
 
@@ -258,7 +288,8 @@ exports.getAll = getAll;
 exports.getAllTotal = getAllTotal;
 exports.setPosition = setPosition;
 exports.getPosition = getPosition;
-
+exports.removeDownload = removeDownload;
 exports.syncAll = syncAll;
+exports.getStorageStatistics = getStorageStatistics;
 exports.downloadFile = downloadFile;
 exports.getCachedFile = getCachedFile;

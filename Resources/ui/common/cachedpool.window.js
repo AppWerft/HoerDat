@@ -2,7 +2,9 @@ const Permissions = require('vendor/permissions');
 const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
 const TEMPLATES = [ 'pool_used', 'pool_saved' ];
 const HEADERLABELS = [ 'Begonnene Hörspiele',
-		'Lokal verfügbare, bislang ungehörte Hörspiele' ];
+
+'Lokal verfügbare, bislang ungehörte Hörspiele' ];
+const STATHEIGHT = 5;
 const Pool = require("controls/pool");
 const ID3 = require("de.appwerft.mp3agic")
 
@@ -24,18 +26,18 @@ function getDataItems(state, position, ndx) {
 		if (item.position)
 			duration += ' | gehört: ' + item.positionstring;
 		return {
-
 			properties : {
 				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
 				searchableText : item.title + item.author + item.description,
 				itemId : JSON.stringify({
+					id : item.id,
 					url : item.url,
 					title : item.title,
 					cover : item.image,
+					author: item.author,
 					position : item.position,
 					description : item.description,
 					duration : item.duration
-
 				})
 			},
 			searchableText : 'title',
@@ -78,8 +80,37 @@ module.exports = function(_tabgroup) {
 		top : 0,
 	});
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
-
+	$.statisticView = Ti.UI.createView({
+		top : 0,
+		height : STATHEIGHT,
+		backgroundColor : 'white'
+	});
+	$.add($.statisticView);
+	renderStatisticView();
+	function renderStatisticView() {
+		$.statisticView.removeAllChildren();
+		const stats = Pool.getStorageStatistics();
+		if (stats.externalTotal) {
+			const our = stats.bytesconsumed / stats.externalTotal;
+			const other = (stats.externalTotal - stats.externalFree - stats.bytesconsumed)
+					/ stats.externalTotal;
+			$.statisticView.add(Ti.UI.createView({
+				backgroundColor : 'gray',
+				left : 0,
+				height : 20,
+				width : (other * 100) + '%'
+			}));
+			$.statisticView.add(Ti.UI.createView({
+				backgroundColor : '#225588',
+				left : (other * 100) + '%',
+				height : 20,
+				width : (stats.bytesconsumed / stats.externalTotal * 100) + '%'
+			}));
+		}
+	}
+	// {"files":10,"externalTotal":5951,"externalFree":2319,"bytesconsumed":486}
 	$.poolList = Ti.UI.createListView({
+		top : STATHEIGHT,
 		caseInsensitiveSearch : true,
 		templates : {
 			'pool_saved' : require('TEMPLATES').pool_saved,
@@ -96,6 +127,7 @@ module.exports = function(_tabgroup) {
 	// https://github.com/prashantsaini1/scrollable_animation
 	$.add($.poolList);
 	$.headerView = require('ui/common/headerview.widget')(HEADERLABELS[0]);
+	$.headerView.top = STATHEIGHT;
 	$.add($.headerView);
 	$.poolList
 			.addEventListener(
@@ -105,18 +137,18 @@ module.exports = function(_tabgroup) {
 					});
 	$.poolList.addEventListener('itemclick', function(e) {
 		started = true;
-
 		require("ui/common/podcast.window")(JSON.parse(e.itemId)).open();
 
 		// _tabgroup.activity.startActivity(intent);
 
 	});
 	function renderSections() {
+		renderStatisticView();
 		const start = new Date().getTime();
 
 		$.poolList.sections[0].items = getDataItems(STATUS_SAVED, true, 0);
 		$.poolList.sections[1].items = getDataItems(STATUS_SAVED, false, 1);
-		if (Pool.getAllTotal(STATUS_SAVED,false)>0)
+		if (Pool.getAllTotal(STATUS_SAVED, false) > 0)
 			$.add($.filterButton);
 		console.log("renderSections: " + (new Date().getTime() - start));
 	}
@@ -130,11 +162,11 @@ module.exports = function(_tabgroup) {
 			// $.poolList.searchView = null;
 		}
 	});
-	
+
 	$.addButton = require('ui/common/addbutton.widget')({
 		onClick : function() {
-			const subwin = require('ui/common/onlinepool.window')();
-			subwin.open();
+			require('ui/common/onlinepool.window')().open();
+
 		}
 	});
 	$.add($.addButton);
@@ -148,7 +180,7 @@ module.exports = function(_tabgroup) {
 		}).show();
 		renderSections();
 	});
-
+	Ti.App.addEventListener('renderPool', renderSections);
 	renderSections();
 	return $;
 };

@@ -13,14 +13,14 @@ exports.pool_online = {
 			touchEnabled : false,
 			top : 5,
 			width : 100,
-			height : 80
+			height : 'auto'
 		}
 	}, {
 		type : 'Ti.UI.Label',
 		bindId : 'duration',
 		properties : {
 			left : 5,
-			top : 90,
+			top : 120,
 			height : Ti.UI.SIZE,
 			touchEnabled : false,
 			font : {
@@ -113,8 +113,8 @@ exports.pool_saved = {
 			left : 5,
 			touchEnabled : false,
 			top : 5,
-			width : 90,
-			height : 72
+			width : 100,
+			height : 'auto'
 		}
 	}, {
 		type : 'Ti.UI.View',
@@ -189,8 +189,8 @@ exports.pool_used = {
 				left : 5,
 				touchEnabled : false,
 				top : 5,
-				width : 90,
-				height : 72
+				width : 100,
+				height : 'auto'
 			}
 		}, {
 			type : 'Ti.UI.View',

@@ -5,11 +5,13 @@ Moment.locale('de');
 
 module.exports = function(args) {
 	if (Ti.App.Properties.hasProperty(args.date)) {
-		console.log("always onboard: " + args.date);
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
 		return;
 	}
-
+	if (Ti.Network.online == false)  {
+		args.onload([]);
+		return;
+	};
 	var sendungen = [];
 	var Doc = Soup.createDocument({
 		url : 'http://s507870211.online.de/index.php?aktion=suche&dat='

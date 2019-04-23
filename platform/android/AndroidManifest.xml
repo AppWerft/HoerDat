@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" 
-	android:versionCode="354" android:versionName="3.5.4">
+	android:versionCode="375" android:versionName="3.7.5">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="28"/>
 	<application android:debuggable="false" 
 	   	    android:usesCleartextTraffic="true"
@@ -24,7 +24,7 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<!--other activities: ->
+		<!-- other activities: -->
 		<activity 
 			android:screenOrientation="sensorPortrait" 
 			android:name="org.appcelerator.titanium.TiActivity" 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" 
-	android:versionCode="375" android:versionName="3.7.5">
+	android:versionCode="376" android:versionName="3.7.6">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="28"/>
 	<application android:debuggable="false" 
 	   	    android:usesCleartextTraffic="true"
@@ -33,23 +33,23 @@
 			android:name="org.appcelerator.titanium.TiTranslucentActivity" 
 			android:configChanges="keyboardHidden|orientation|screenSize" 
 			android:theme="@style/Theme.AppCompat.Translucent"/>
-		<service android:name=".RadioweckerService"/>
+		
 		<service
             android:enabled="true"
             android:exported="false"
             android:stopWithTask="true"
             android:name="de.appwerft.audionotification.NotificationForegroundService"
         />
-		<receiver android:name="de.appwerft.headphonebuttons.HeadphoneButtonReceiver" 
+		<!--<receiver android:name="de.appwerft.headphonebuttons.HeadphoneButtonReceiver" 
 			 android:enabled="true" 
 			 android:exported="true">
 			<intent-filter android:priority="999" android:label="Listener for headphone/set buttons">
 				<action android:name="android.media.VOLUME_CHANGED_ACTION"/>
 				<action android:name="android.intent.action.MEDIA_BUTTON"/>
 			</intent-filter>
-		</receiver>
-		<receiver android:name="bencoding.alarmmanager.AlarmNotificationListener"/>
-		<receiver android:name="bencoding.alarmmanager.AlarmServiceListener"/>
+		</receiver>-->
+		<receiver android:name="de.appwerft.watchdog.Watchdog"/>
+		
 	</application>
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.INTERNET"/>

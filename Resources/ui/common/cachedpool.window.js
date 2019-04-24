@@ -4,21 +4,9 @@ const TEMPLATES = [ 'pool_used', 'pool_saved' ];
 const HEADERLABELS = [ 'Begonnene Hörspiele',
 
 'Lokal verfügbare, bislang ungehörte Hörspiele' ];
-const STATHEIGHT = 5;
+const STATHEIGHT = 10;
 const Pool = require("controls/pool");
 const ID3 = require("de.appwerft.mp3agic")
-
-// https://jira.appcelerator.org/browse/AC-6128?focusedCommentId=445947&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-445947
-function requestIgnoreBatteryOptimizations() {
-	if (Ti.Platform.Android.API_LEVEL >= 23) {
-		const intent = Ti.Android.createIntent({
-			action : "android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
-			data : "package:" + Ti.App.Android.launchIntent.packageName,
-		});
-		Ti.Android.currentActivity.startActivity(intent);
-		Ti.App.Properties.setBool('IgnoreBatteryOptimizations', true);
-	}
-}
 
 function getDataItems(state, position, ndx) {
 	return Pool.getAll(state, position).map(function(item) {
@@ -34,7 +22,7 @@ function getDataItems(state, position, ndx) {
 					url : item.url,
 					title : item.title,
 					cover : item.image,
-					author: item.author,
+					author : item.author,
 					position : item.position,
 					description : item.description,
 					duration : item.duration
@@ -64,9 +52,9 @@ function getDataItems(state, position, ndx) {
 	});
 };
 
+/* START */
 module.exports = function(_tabgroup) {
 	var started = false;
-	// // START /////
 	var $ = Ti.UI.createWindow({
 		backgroundImage : '/images/bg.png',
 		tabgroup : _tabgroup
@@ -80,37 +68,21 @@ module.exports = function(_tabgroup) {
 		top : 0,
 	});
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
-	$.statisticView = Ti.UI.createView({
-		top : 0,
-		height : STATHEIGHT,
+	$.statisticView = require('ui/common/statisticview')(STATHEIGHT);
+	$.statisticView.onSwipe = function(e) {
+		$.container.animate({
+			top : e.direction == 'down' ? 400 : STATHEIGHT
+		});
+	};
+	$.add($.statisticView);
+	$.container = Ti.UI.createView({
+		top : STATHEIGHT,
 		backgroundColor : 'white'
 	});
-	$.add($.statisticView);
-	renderStatisticView();
-	function renderStatisticView() {
-		$.statisticView.removeAllChildren();
-		const stats = Pool.getStorageStatistics();
-		if (stats.externalTotal) {
-			const our = stats.bytesconsumed / stats.externalTotal;
-			const other = (stats.externalTotal - stats.externalFree - stats.bytesconsumed)
-					/ stats.externalTotal;
-			$.statisticView.add(Ti.UI.createView({
-				backgroundColor : 'gray',
-				left : 0,
-				height : 20,
-				width : (other * 100) + '%'
-			}));
-			$.statisticView.add(Ti.UI.createView({
-				backgroundColor : '#225588',
-				left : (other * 100) + '%',
-				height : 20,
-				width : (stats.bytesconsumed / stats.externalTotal * 100) + '%'
-			}));
-		}
-	}
+	$.add($.container);
 	// {"files":10,"externalTotal":5951,"externalFree":2319,"bytesconsumed":486}
 	$.poolList = Ti.UI.createListView({
-		top : STATHEIGHT,
+		top : 0,
 		caseInsensitiveSearch : true,
 		templates : {
 			'pool_saved' : require('TEMPLATES').pool_saved,
@@ -125,10 +97,10 @@ module.exports = function(_tabgroup) {
 		})
 	});
 	// https://github.com/prashantsaini1/scrollable_animation
-	$.add($.poolList);
+	$.container.add($.poolList);
 	$.headerView = require('ui/common/headerview.widget')(HEADERLABELS[0]);
-	$.headerView.top = STATHEIGHT;
-	$.add($.headerView);
+	$.headerView.top = 0;
+	$.container.add($.headerView);
 	$.poolList
 			.addEventListener(
 					'scrollend',
@@ -143,7 +115,7 @@ module.exports = function(_tabgroup) {
 
 	});
 	function renderSections() {
-		renderStatisticView();
+		$.statisticView.renderView();
 		const start = new Date().getTime();
 
 		$.poolList.sections[0].items = getDataItems(STATUS_SAVED, true, 0);
@@ -173,7 +145,8 @@ module.exports = function(_tabgroup) {
 	$.searchBar.addEventListener('change', $.filterButton.onChange);
 
 	$.addEventListener('focus', renderSections);
-	$.addEventListener('open', requestIgnoreBatteryOptimizations);
+	$.addEventListener('open',
+			require('vendor/requestignorebatteryoptimizations'));
 	Ti.App.addEventListener('download::ready', function() {
 		Ti.UI.createNotification({
 			message : "Runterladen war erfolgreich.\n"

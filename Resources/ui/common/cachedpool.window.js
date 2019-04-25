@@ -6,7 +6,7 @@ const HEADERLABELS = [ 'Begonnene Hörspiele',
 'Lokal verfügbare, bislang ungehörte Hörspiele' ];
 const STATHEIGHT = 10;
 const Pool = require("controls/pool");
-const ID3 = require("de.appwerft.mp3agic")
+
 
 function getDataItems(state, position, ndx) {
 	return Pool.getAll(state, position).map(function(item) {
@@ -43,7 +43,7 @@ function getDataItems(state, position, ndx) {
 				text : item.description
 			},
 			logo : {
-				image : item.image
+				image : item.image.replace('jpeg?w=1800','jpeg?w=200')
 			},
 			duration : {
 				text : duration
@@ -69,12 +69,14 @@ module.exports = function(_tabgroup) {
 	});
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
 	$.statisticView = require('ui/common/statisticview')(STATHEIGHT);
-	$.statisticView.onSwipe = function(e) {
+	$.swipeHandler= Ti.UI.createView({top:0,height:100,zIndex:999});
+	$.swipeHandler.addEventListener('swipe',function(e) {
 		$.container.animate({
 			top : e.direction == 'down' ? 400 : STATHEIGHT
 		});
-	};
+	});
 	$.add($.statisticView);
+	$.add($.swipeHandler);
 	$.container = Ti.UI.createView({
 		top : STATHEIGHT,
 		backgroundColor : 'white'

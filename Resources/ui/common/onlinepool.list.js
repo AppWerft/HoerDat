@@ -42,7 +42,7 @@ function getDataItems(state, position, ndx) {
 								256) : ""
 					},
 					logo : {
-						image : item.image
+						image : item.image.replace('jpeg?w=1800','jpeg?w=200')
 					},
 					duration : {
 						text : duration

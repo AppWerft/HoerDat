@@ -20,7 +20,7 @@ function getMeta(key, value) {
         width : Ti.UI.FILL,
         textAlign : 'left',
         font : {
-            fontSize : 22,
+            fontSize : 20,
             fontFamily : 'Rambla-Bold'
         },
         text : value,
@@ -62,7 +62,7 @@ module.exports = function(item) {
         width : Ti.UI.FILL,
         textAlign : 'left',
         font : {
-            fontSize : 18,
+            fontSize : 16,
             fontFamily : 'Rambla',
 
         }

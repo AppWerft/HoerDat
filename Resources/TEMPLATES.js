@@ -121,7 +121,7 @@ exports.pool_saved = {
 		properties : {
 			width : Ti.UI.FILL,
 			layout : 'vertical',
-			left : 110,
+			left : 120,
 			top : 0,
 			height : Ti.UI.SIZE,
 			right : 15

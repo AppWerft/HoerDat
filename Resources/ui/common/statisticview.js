@@ -31,9 +31,6 @@ module.exports = function(H) {
 		layout : 'vertical',
 		backgroundColor : 'white'
 	});
-	$.addEventListener("swipe", function(e) {
-		$.onSwipe(e);
-	});
 	$.container = Ti.UI.createView({
 		top : 0,
 		height : H,

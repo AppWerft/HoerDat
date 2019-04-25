@@ -3,7 +3,6 @@ Moment.locale('de');
 const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
 		/ Ti.Platform.displayCaps.logicalDensityFactor;
 const Pool = require("controls/pool");
-const ID3 = require("de.appwerft.mp3agic");
 const Visualizer = require('ti.audiovisualizerview');
 const audioPlayer = Ti.Media.createAudioPlayer({
 	allowBackground : true,
@@ -56,16 +55,18 @@ module.exports = function(opts) {
 		$.bottomContainer.top = HEIGHT;
 		$.thumbView = Ti.UI.createView({
 			right : 0,
-			top : HEIGHT - 100,
+			bottom : 0,
 			width : 100,
 			height : 100
 		});
+		$.topContainer.add($.thumbView);
 		$.topView.add($.thumbView);
+		const ID3 = require("de.appwerft.mp3agic");
 		if (ID3.getId3v2Tag(mp3file)) {
 			$.thumbView.add(ID3.createAlbumImage({
 				image : mp3file,
 			}));
-		}
+		} else console.log("mp3 has no id3v2");
 		;
 		$.playcontrolButton = require('ui/common/playbutton.widget')(
 				function() {
@@ -143,7 +144,7 @@ module.exports = function(opts) {
 		}));
 	}
 	$.bottomContainer.add(Ti.UI.createLabel({
-		text : opts.description + "\n\n\n",
+		text : opts.description + "\n\n\n	",
 		left : 10,
 		right : 10,
 		font : {
@@ -160,15 +161,7 @@ module.exports = function(opts) {
 	$.addEventListener('close', function() {
 		audioPlayer.removeEventListener('progress', onProgress);
 		$.remove(visualizerView);
-		/*
-		 * const dialog =Ti.UI.createOptionDialog({ title:"Wie soll es mit dem
-		 * eben gehörten weitergehen?", options: ["Vom Gerät löschen","Später
-		 * weiterhören"],elevation:5 });
-		 * dialog.addEventListener('click',function(e){ console.log(e.index); if
-		 * (e.index==0) Pool.removeDownload(opts.id);
-		 * 
-		 * }); dialog.show();
-		 */
+		
 		audioPlayer.stop();
 		audioPlayer.release();
 	});

@@ -16,7 +16,7 @@ module.exports = function(i) {
 		color : 'white',
 		font : {
 			fontFamily : 'Rambla-Bold',
-			fontSize : 22
+			fontSize : 20
 		}
 
 	});

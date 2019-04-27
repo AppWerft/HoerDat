@@ -3,9 +3,6 @@ const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
 const TEMPLATES = [ 'pool_online' ];
 const ABX = require('com.alcoapps.actionbarextras');
 
-const Pool = require("controls/pool");
-
-
 module.exports = function(_tabgroup) {
 	var started = false;
 	// // START /////

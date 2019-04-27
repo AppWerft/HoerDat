@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" 
-	android:versionCode="382" android:versionName="3.8.2">
+	android:versionCode="386" android:versionName="3.8.6">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="28"/>
 	<application android:debuggable="false" 
 	   	    android:usesCleartextTraffic="true"

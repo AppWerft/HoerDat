@@ -10,7 +10,6 @@ module.exports = function() {
 	});
 
 	$.addEventListener('open', require('ui/common/main.menu'));
-	setTimeout(function() {
 		$.addTab(Ti.UI.createTab({
 			title : 'Kalender',
 			icon : '/images/1.png',
@@ -30,17 +29,24 @@ module.exports = function() {
 			window : require('ui/common/cachedpool.window')($),
 			ndx : 2
 		}));
-		$.setActiveTab(1);
-	}, 20);
+		$.setActiveTab(Ti.App.Properties.getInt("ACTIVE_TAB",1));
 	require('de.appwerft.watchdog').start({
-		interval : 60 * 1000 * 10, // 10 min
-		debug : true,
+		interval : 1000 * 60, // 1 min
+		debug : false,
 		exact : false
 	});
 
 	$.addEventListener('close', function() {
 		Ti.App.fireEvent('stopRadio');
 	});
+	
+	
+	$.getTabs().forEach(function(_tab) {
+		_tab.addEventListener('selected', function(_e) {
+			Ti.App.Properties.setInt('ACTIVE_TAB', $.getActiveTab().ndx);
+		});
+	});
+
 	return $;
 };
 /*

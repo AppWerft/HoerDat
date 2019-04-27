@@ -7,7 +7,6 @@ const HEADERLABELS = [ 'Begonnene Hörspiele',
 const STATHEIGHT = 10;
 const Pool = require("controls/pool");
 
-
 function getDataItems(state, position, ndx) {
 	return Pool.getAll(state, position).map(function(item) {
 		var duration = 'Dauer: ' + item.durationstring;
@@ -43,7 +42,7 @@ function getDataItems(state, position, ndx) {
 				text : item.description
 			},
 			logo : {
-				image : item.image.replace('jpeg?w=1800','jpeg?w=200')
+				image : item.image.replace('jpeg?w=1800', 'jpeg?w=200')
 			},
 			duration : {
 				text : duration
@@ -69,11 +68,24 @@ module.exports = function(_tabgroup) {
 	});
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
 	$.statisticView = require('ui/common/statisticview')(STATHEIGHT);
-	$.swipeHandler= Ti.UI.createView({top:0,height:100,zIndex:999});
-	$.swipeHandler.addEventListener('swipe',function(e) {
-		$.container.animate({
-			top : e.direction == 'down' ? 400 : STATHEIGHT
-		});
+	const HEIGHT_OF_HANDLER_SHORT=80,HEIGHT_OF_HANDLER_LONG=300;
+	$.swipeHandler = Ti.UI.createView({
+		top : 0,
+		height : HEIGHT_OF_HANDLER_SHORT,
+		zIndex : 999
+	});
+	$.swipeHandler.addEventListener('swipe', function(e) {
+		if (e.direction == 'down') {
+			$.swipeHandler.height=HEIGHT_OF_HANDLER_LONG;
+			$.container.animate({
+				top : 400
+			});
+		} else {
+			$.container.animate({
+				top : STATHEIGHT
+			});
+			$.swipeHandler.height=HEIGHT_OF_HANDLER_SHORT;
+		}
 	});
 	$.add($.statisticView);
 	$.add($.swipeHandler);
@@ -122,7 +134,7 @@ module.exports = function(_tabgroup) {
 
 		$.poolList.sections[0].items = getDataItems(STATUS_SAVED, true, 0);
 		$.poolList.sections[1].items = getDataItems(STATUS_SAVED, false, 1);
-		if (Pool.getAllTotal(STATUS_SAVED, false) > 0)
+		if ($.poolList.sections[1].items.length > 0 || $.poolList.sections[0].items.length > 0)
 			$.add($.filterButton);
 		console.log("renderSections: " + (new Date().getTime() - start));
 	}
@@ -146,9 +158,9 @@ module.exports = function(_tabgroup) {
 	$.add($.addButton);
 	$.searchBar.addEventListener('change', $.filterButton.onChange);
 
-	$.addEventListener('focus', renderSections);
-	$.addEventListener('open',
-			require('vendor/requestignorebatteryoptimizations'));
+	//$.addEventListener('focus', renderSections);
+	//$.addEventListener('open',
+	//		require('vendor/requestignorebatteryoptimizations'));
 	Ti.App.addEventListener('download::ready', function() {
 		Ti.UI.createNotification({
 			message : "Runterladen war erfolgreich.\n"
@@ -156,6 +168,7 @@ module.exports = function(_tabgroup) {
 		renderSections();
 	});
 	Ti.App.addEventListener('renderPool', renderSections);
+	/* inital fill: */
 	renderSections();
 	return $;
 };

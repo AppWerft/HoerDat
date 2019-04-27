@@ -9,8 +9,6 @@ const STATIONCHOOSER = 0, PLAYER = 1;
 
 module.exports = function(_tabgroup) {
 	const radiostations = require('model/radiostations');
-
-	const Favs = require("controls/favs");
 	const Streamer = require('vendor/audiostreamer.adapter');
 	Streamer.init(_tabgroup, "applogo");
 	var lastStatus = "STOPPED";

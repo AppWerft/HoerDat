@@ -1,7 +1,7 @@
 const DB = 'Pool4';
 const STATE_ONLINE = 0, STATE_PROGRESS = 1, STATE_SAVED = 2;
 const Downloader = require("de.appwerft.downloadmanager");
-
+const Moment  = require('vendor/moment');
 
 const addColumn = function(dbname, tblName, newFieldName, colSpec) {
     var db = Ti.Database.open(dbname);
@@ -33,10 +33,11 @@ function hmsToSecondsOnly(str) {
 var link = Ti.Database.open(DB);
 link
 		.execute('CREATE TABLE IF NOT EXISTS "pool" ("title" VARCHAR, "author" VARCHAR, "keywords" VARCHAR,"weblink" VARCHAR, "description" VARCHAR, "pubdate" VARCHAR,"depubdate" VARCHAR, "duration" INTEGER,"image" VARCHARs,"position" INTEGER,"url" VARCHAR, "state" INTEGER,"faved" INTEGER, localfile STRING);');
+
 link.close();
 
 addColumn(DB, "pool", "id", "Number");
-
+addColumn(DB, "pool", "sender", "VARCHAR");
 function stripFilename(url) {
 	if (url) {
 		const ndx = url.lastIndexOf('/');
@@ -64,10 +65,57 @@ function setStateToProgress(localfile,id,url) {
 
 
 function getStorageStatistics() {
-	return Downloader.getStorageStatistics();
+	var toHHMMSS = (secs) => {
+	    let sec_num = parseInt(secs, 10)    
+	    let hours   = Math.floor(sec_num / 3600);
+	    let minutes = Math.floor(sec_num / 60) % 60
+	    let seconds = sec_num % 60    
+	    return [hours,minutes,seconds]
+	        .map(v => v < 10 ? "0" + v : v)
+	        .filter((v,i) => v !== "00" || i > 0)
+	        .join(":");
+	}
+	var result =  Downloader.getStorageStatistics();
+	
+	var link = Ti.Database.open(DB);
+	if (link) {
+		var curs;
+		var val;
+		curs = link.execute('SELECT count(*) AS total FROM pool');
+		if  (curs.isValidRow() == true) {
+			result.counttotal = curs.field(0);
+		}
+		curs.close();
+		curs = link.execute('SELECT count(*) AS total FROM pool WHERE state=?',STATE_SAVED);
+		if  (curs.isValidRow() == true) {
+			result.countlocal = curs.field(0);
+		}
+		
+		curs.close();
+		curs = link.execute('SELECT SUM(duration/1000) AS total FROM pool');
+		if  (curs.isValidRow() == true) {
+			val = curs.field(0);
+			console.log("GESAMT LAUFZEIT\n"+ val/3600 + "  " +toHHMMSS(val));
+			result.durationtotal = toHHMMSS(val);
+		}
+		curs.close();
+		curs = link.execute('SELECT SUM(duration/1000) AS total FROM pool WHERE state=?',STATE_SAVED);
+		if  (curs.isValidRow() == true) {
+			val = curs.field(0);
+			console.log("LOKALE LAUFZEIT\n"+ val/3600+ "  " +toHHMMSS(val));
+			result.durationlocal = toHHMMSS(val);
+		}
+		curs.close();
+		curs = link.execute('SELECT SUM(position/1000) AS total FROM pool WHERE state=?',STATE_SAVED);
+		if  (curs.isValidRow() == true) {
+			result.progresslocal = toHHMMSS(curs.field(0));		}
+		curs.close();
+		link.close();
+	}
+	return result;
 }
 
-function syncAllDownloads() {
+function syncWithDownloadManager() {
 	const downloads = Downloader.getSuccessfulDownloads();
 	var link = Ti.Database.open(DB);
 	if (link) {
@@ -114,11 +162,10 @@ const setPosition = function(url, position) {
 		console.log("no link to DB");
 };
 
-const getAllTotal = function(state,inprogress) {
-	return getAll(state,inprogress).length;
-}
+
 
 const getAll = function(state, inprogress) {
+	const start = new Date().getTime();
 	var res = [];
 	var link = Ti.Database.open(DB);
 	var where = ' WHERE 1=1 ';
@@ -127,7 +174,7 @@ const getAll = function(state, inprogress) {
 		where += (inprogress == true ? ' AND position>0'
 				: ' AND (position IS NULL OR position=0)');
 		const sql = 'select * from pool ' + where + ' ORDER BY faved DESC';
-		
+		console.log(sql);
 		const found = link.execute(sql);
 		while (found.isValidRow() == true) {
 			var image = found.fieldByName('image');
@@ -151,57 +198,57 @@ const getAll = function(state, inprogress) {
 						description : found.fieldByName('description'),
 						faved : found.fieldByName('faved'),
 						state : found.fieldByName('state'),
-
 					});
 			found.next();
 		}
 		found.close();
 		link.close();
 	}
-	console.log("TOTAL >>>>>>>>>>>>"+ state + '  '+ res.length);
+	console.log("getAll_"+ state + '  items='+ res.length + " Duration="+(new Date().getTime()-start));
 	return (state == STATE_SAVED) ? res.filter(function(item) {
 		return isFile(item.url);
 	}) : res;
 
 };
 
-const syncAll = function(onReady) {
-	const RSS =
-	[	'http://www.mdr.de/kultur/podcast/hoerspiele/audiogalerie-106-podcast.xml',
-		'https://www.ndr.de/kultur/radiokunst/podcast4336.xml',
-		'https://www.kulturradio.de/zum_nachhoeren/podcast/hoerspiel-feed.xml/feed=podcast.xml',
-		'https://www1.wdr.de/mediathek/audio/hoerspiel-speicher/wdr_hoerspielspeicher150.podcast',//
-		'https://feeds.br.de/hoerspiel-pool/feed.xml' 
-		];
-	var count=RSS.length;
-	RSS.forEach(function(url) {
+const syncWithRSS = function(onReady) {
+	const FEEDS = require('model/hoerspielfeeds');
+	var numberOfNewItems = 0;
+	var count=FEEDS.length;
+	/* start native HTTPClient: */
+	FEEDS.forEach(function(feed) {
+				var sender = feed.id;
+				var start = new Date().getTime();
 				require("de.appwerft.podcast")
 						.loadPodcast(
 								{
-									url : url,
+									url : feed.url,
 									timeout : 10000,
 									userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
 								},
 								function(_e) {
 									if (!_e.items) return;
+									numberOfNewItems += _e.items.length;
+									console.log(sender+ " DL: " + (new Date().getTime()-start));
+									start=new Date().getTime();
 									var link = Ti.Database.open(DB);
 									if (link) {
 										link.execute("BEGIN TRANSACTION");
 										_e.items.forEach(function(item) {
-											replaceItem(item, link);
+											insertOrUpdateItem(item, link, feed);
 										});
 										link.execute("COMMIT");
 										link.close();
 									}
-									
+									console.log(sender+ " DBwork" + (new Date().getTime()-start));
 									count--;
-									if (count==0 && onReady && typeof onReady == 'function')
+									if (count==0)
 										onReady();
 								});
 			});
 };
 
-function replaceItem(_item, _link) {
+function insertOrUpdateItem(_item, _link,_feed) {
 	var title, author;
 	var m;
 	if (m = _item.title.match(/^(.*?):\s(.*)/)) {
@@ -212,17 +259,29 @@ function replaceItem(_item, _link) {
 		author = m[2];
 	} else
 		title = _item.title;
-	author = _item.author;
 	
+	author = _item.author;
+	// special case DLF:
+	// HTML as CDATE inside description:
+	if (_item.description && _item.description.substr(0,1)=='<') {
+		var img  = RegExp('src="([^"]+)','gmi').exec(_item.description);
+		if (img &&img.length>1) {
+			_item.image = img[1];
+		}
+		var d  = RegExp('<img.*?\/>([^<]+)','gmi').exec(_item.description);
+		if (d && d.length>1) {
+			_item.description = d[1];
+		}
+	} 
+	var defaultImage = _feed.logo;
 	const item = {
 		author : author,
 		weblink : _item.link,
 		title : title,
-		image : _item.image ? _item.image : null,
-		description : _item.description,
+		image : _item.image || defaultImage,
+		description : _item.description || "",
 		url : _item.enclosure.url,
 		duration : (function(duration) {
-			
 			if (duration) {
 				return 1000 * hmsToSecondsOnly(duration)
 			} else {
@@ -230,12 +289,11 @@ function replaceItem(_item, _link) {
 			}
 		})(_item.duration)
 	};
-	
 	const found = _link.execute('select * from pool  where url=?', item.url);
 	if (found.isValidRow()) {
 		found.close();
-		_link.execute("update pool set duration=?,author=?, title=? where url=?",
-				item.duration,item.author, item.title, item.url);
+		_link.execute("update pool set description=?,image=?,duration=?,author=?, title=? where url=?",
+				item.description,item.image,item.duration,item.author, item.title, item.url);
 
 	} else {
 		_link
@@ -261,7 +319,7 @@ const getCachedFile = (url) => {
 };
 
 Downloader.onComplete = function(e){
-	syncAllDownloads();
+	syncWithDownloadManager();
 	Ti.App.fireEvent('renderPool',{});
 };
 Downloader.onDone =function(e){
@@ -285,11 +343,13 @@ const downloadFile = function(url, title, cb) {
 };
 
 exports.getAll = getAll;
-exports.getAllTotal = getAllTotal;
+
 exports.setPosition = setPosition;
 exports.getPosition = getPosition;
 exports.removeDownload = removeDownload;
-exports.syncAll = syncAll;
+exports.syncWithDownloadManager = syncWithDownloadManager;
+exports.syncWithRSS = syncWithRSS;
+
 exports.getStorageStatistics = getStorageStatistics;
 exports.downloadFile = downloadFile;
 exports.getCachedFile = getCachedFile;

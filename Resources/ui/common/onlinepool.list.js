@@ -1,9 +1,8 @@
 const Permissions = require('vendor/permissions');
 const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
 const TEMPLATES = [ 'pool_online' ];
-const ABX = require('com.alcoapps.actionbarextras');
-
 const Pool = require("controls/pool");
+const ProgressBar = require("com.artanisdesign.tismoothprogressbar");
 
 function getDataItems(state, position, ndx) {
 	return Pool.getAll(state, position).map(
@@ -42,7 +41,7 @@ function getDataItems(state, position, ndx) {
 								256) : ""
 					},
 					logo : {
-						image : item.image.replace('jpeg?w=1800','jpeg?w=200')
+						image : item.image.replace('jpeg?w=1800', 'jpeg?w=200')
 					},
 					duration : {
 						text : duration
@@ -51,11 +50,34 @@ function getDataItems(state, position, ndx) {
 			});
 };
 
-module.exports = function(_tabgroup) {
-	var started = false;
-	// // START /////
-	var $ = Ti.UI.createView({
-		backgroundImage : '/images/bg.png',
+module.exports = function(_lcc) {
+	function setSections() {
+		$.progressBar.height = 5;
+		$.poolList.top=5;
+		const start = new Date().getTime();
+		const newitems = getDataItems(STATUS_ONLINE, false, 2);
+		$.poolList.sections[0].items = newitems;
+		console.log("setSections: " + (new Date().getTime() - start));
+		$.progressBar.height = 0;
+		$.poolList.top=0;
+	}
+	const $ = Ti.UI.createView({
+		backgroundImage : '/images/bg.png'
+	});
+	$.progressBar = ProgressBar.createSmoothProgressBar({
+		height : 5,
+		zIndex : 1111,
+		backgroundColor : 'white',
+		top : 0,
+		width : Ti.UI.FILL,
+		color : "#225588", // color of the bar
+		sectionsCount : 6, // default
+		separatorLength : 8, // default 8,
+		strokeWidth : 50, // default 10
+		speed : 1.0, // default 1.0
+		reversed : false, // default false
+		mirrorMode : true, // default false
+		interpolator : ProgressBar.ACCELERATE
 	});
 	$.searchBar = Ti.UI.createSearchBar({
 		barColor : '#fff',
@@ -65,27 +87,11 @@ module.exports = function(_tabgroup) {
 		hintText : 'Suchwort',
 		top : 0,
 	});
+	$.add($.progressBar);
+	//$.add($.searchBar);
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
-	function createHeaderView(label) {
-		const header = Ti.UI.createView({
-			height : 25,
-			top : 0,
-			backgroundColor : '#3F79A9'
-		});
-		header.add(Ti.UI.createLabel({
-			text : label,
-			left : 10,
-			color : 'white',
-			font : {
-				fontSize : 14,
-				fontFamily : 'Rambla-Bold'
-			},
-			height : Ti.UI.FILL
-		}));
-		return header;
-	}
-	;
 	$.poolList = Ti.UI.createListView({
+		top : 5,
 		caseInsensitiveSearch : true,
 		templates : {
 			'pool_online' : require('TEMPLATES').pool_online,
@@ -96,7 +102,9 @@ module.exports = function(_tabgroup) {
 
 	setSections();
 	// https://github.com/prashantsaini1/scrollable_animation
-	Pool.syncAll(setSections);
+	
+	$.progressBar.height = 5;
+	Pool.syncWithRSS(setSections);
 	$.add($.poolList);
 
 	$.poolList
@@ -144,13 +152,7 @@ module.exports = function(_tabgroup) {
 										});
 
 					});
-	function setSections() {
-		const start = new Date().getTime();
-		const newitems = getDataItems(STATUS_ONLINE, false, 2);
-		if (newitems.length != $.poolList.sections[0].items.length)
-			$.poolList.sections[0].items = newitems;
-		console.log("setSections: " + (new Date().getTime() - start));
-	}
+
 	$.filterButton = require('ui/common/filterbutton.widget')({
 		onShow : function() {
 			$.poolList.searchView = $.searchBar;
@@ -158,7 +160,6 @@ module.exports = function(_tabgroup) {
 		},
 		onHide : function() {
 			console.log("hide Search");
-			// $.poolList.searchView = null;
 		}
 	});
 	$.filterButton.bottom = 26;

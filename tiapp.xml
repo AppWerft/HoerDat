@@ -71,13 +71,14 @@
     <module platform="android">de.appwerft.audioselector</module>
     <module platform="android">de.appwerft.a2dp</module>
     <module platform="android">de.appwerft.downloadmanager</module>
+    <module platform="android">com.artanisdesign.tismoothprogressbar</module>
   </modules>
   <deployment-targets>
     <target device="android">true</target>
     <target device="ipad">false</target>
     <target device="iphone">false</target>
   </deployment-targets>
-  <sdk-version>8.0.0.GA</sdk-version>
+  <sdk-version>8.0.1.v20190426162041</sdk-version>
   <property name="appc-app-id" type="string">5c90a3ece6c9637be49ae7bf</property>
   <plugins/>
 </ti:app>

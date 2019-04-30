@@ -37,11 +37,10 @@ function getDataItems(state, position, ndx) {
 						height : item.author ? 20 : 0
 					},
 					description : {
-						text : item.description ? item.description.substring(0,
-								256) : ""
+						text : item.description ? item.description : ""
 					},
 					logo : {
-						image : item.image.replace('jpeg?w=1800', 'jpeg?w=200')
+						image : item.image 
 					},
 					duration : {
 						text : duration
@@ -56,10 +55,12 @@ module.exports = function(_lcc) {
 		$.poolList.top=5;
 		const start = new Date().getTime();
 		const newitems = getDataItems(STATUS_ONLINE, false, 2);
-		$.poolList.sections[0].items = newitems;
-		console.log("setSections: " + (new Date().getTime() - start));
-		$.progressBar.height = 0;
-		$.poolList.top=0;
+		if (newitems&& newitems.lenght != $.poolList.sections[0].items.length) {
+			$.poolList.sections[0].items = newitems;
+			console.log("setSections: " + (new Date().getTime() - start));
+			$.progressBar.height = 0;
+			$.poolList.top=0;
+		}
 	}
 	const $ = Ti.UI.createView({
 		backgroundImage : '/images/bg.png'
@@ -88,7 +89,7 @@ module.exports = function(_lcc) {
 		top : 0,
 	});
 	$.add($.progressBar);
-	//$.add($.searchBar);
+	// $.add($.searchBar);
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
 	$.poolList = Ti.UI.createListView({
 		top : 5,
@@ -122,32 +123,13 @@ module.exports = function(_lcc) {
 														.parse(e.itemId).title;
 												if (!url)
 													return;
-												const res = Pool
-														.downloadFile(
-																url,
-																title,
-																function(e) {
-																	if (e.success == true) {
-																		setSections();
-																		$.poolList
-																				.scrollToItem(
-																						0,
-																						0);
-																	}
-																});
-												if (res == true) {
+												Pool.downloadFile(url,title);
 													setSections();
-													Ti.UI
-															.createNotification(
+													Ti.UI.createNotification(
 																	{
 																		message : "Dieses Stück wird jetzt im Hintergrund runtergeholt und ist alsbald verfügbar.\nFortschritt im Tray verfolgbar"
 																	}).show();
-												} else
-													Ti.UI
-															.createNotification(
-																	{
-																		message : "Dieses Stück ist schon offline verfügbar."
-																	}).show();
+												
 											}
 										});
 

@@ -38,29 +38,45 @@ link.close();
 
 addColumn(DB, "pool", "id", "Number");
 addColumn(DB, "pool", "sender", "VARCHAR");
-function stripFilename(url) {
-	if (url) {
-		const ndx = url.lastIndexOf('/');
-		return url.substring(ndx + 1);
+
+
+function stripFilename(originalUrl) {
+	if (originalUrl) {
+		const ndx = originalUrl.lastIndexOf('/');
+		const filename = originalUrl.substring(ndx + 1).replace(/\?assetId=(.*)/g,''); 
+		console.log(filename);
+		return filename;
 	}
+	return null;
 }
 
+const getCachedFile = function(originalUrl) {
+	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,
+			stripFilename(originalUrl));
+	return file.exists ? file : null;
+};
+
+
 function removeDownload(id) {
-	console.log("try to forget download with id " + id);
 	const link = Ti.Database.open(DB);
 	link.execute('UPDATE pool SET state=? WHERE id=?',
 			STATE_ONLINE,id);
 	link.close();
+	
 	const count = Downloader.removeDownloadById(id);
 	Ti.App.fireEvent('renderPool',{});
 }
 
-function setStateToProgress(localfile,id,url) {
+function setStateToProgress(localfile, id, url) {
+	console.log('>>>> setStateToProgress');
+	console.log(id + '   file='+localfile);
 	const link = Ti.Database.open(DB);
 	
 	link.execute('UPDATE pool SET id=?,state=?,localfile=? WHERE url=?',
-			id,STATE_PROGRESS, stripFilename(localfile), url);
+			id, STATE_PROGRESS, stripFilename(localfile), url);
+	console.log("rowsAffected: "+link.rowsAffected);
 	link.close();
+
 }
 
 
@@ -76,7 +92,6 @@ function getStorageStatistics() {
 	        .join(":");
 	}
 	var result =  Downloader.getStorageStatistics();
-	
 	var link = Ti.Database.open(DB);
 	if (link) {
 		var curs;
@@ -90,19 +105,16 @@ function getStorageStatistics() {
 		if  (curs.isValidRow() == true) {
 			result.countlocal = curs.field(0);
 		}
-		
 		curs.close();
 		curs = link.execute('SELECT SUM(duration/1000) AS total FROM pool');
 		if  (curs.isValidRow() == true) {
 			val = curs.field(0);
-			console.log("GESAMT LAUFZEIT\n"+ val/3600 + "  " +toHHMMSS(val));
 			result.durationtotal = toHHMMSS(val);
 		}
 		curs.close();
 		curs = link.execute('SELECT SUM(duration/1000) AS total FROM pool WHERE state=?',STATE_SAVED);
 		if  (curs.isValidRow() == true) {
 			val = curs.field(0);
-			console.log("LOKALE LAUFZEIT\n"+ val/3600+ "  " +toHHMMSS(val));
 			result.durationlocal = toHHMMSS(val);
 		}
 		curs.close();
@@ -115,19 +127,6 @@ function getStorageStatistics() {
 	return result;
 }
 
-function syncWithDownloadManager() {
-	const downloads = Downloader.getSuccessfulDownloads();
-	var link = Ti.Database.open(DB);
-	if (link) {
-		link.execute("BEGIN TRANSACTION");
-		downloads.forEach(function(d){
-			link.execute('UPDATE pool SET state=? WHERE id=?',STATE_SAVED,d.id);
-		});
-		link.execute("COMMIT");
-		link.close();
-	}
-	
-}
 function setStateToOnline(localfile) {
 	const link = Ti.Database.open(DB);
 	if (link) {
@@ -140,10 +139,9 @@ const getPosition = function(url) {
 	var link = Ti.Database.open(DB);
 	var position = 0;
 	if (link) {
-		const cursor = link.execute('SELECT position FROM pool WHERE url="'
-				+ url + '"');
+		const cursor = link.execute('SELECT position FROM pool WHERE url=?',url);
 		if (cursor.isValidRow() == true) {
-			position = cursor.fieldByName('position');
+			position = cursor.field(0);
 			cursor.close();
 		}
 		link.close();
@@ -156,7 +154,7 @@ const setPosition = function(url, position) {
 		return;
 	var link = Ti.Database.open(DB);
 	if (link) {
-		link.execute("UPDATE pool set position=?,faved=? WHERE url=?", position,Math.floor(new Date().getTime()/1000), url);
+		link.execute("UPDATE pool set position=?,faved=? WHERE url=?", position, new Date().getTime(), url);
 		link.close();
 	} else
 		console.log("no link to DB");
@@ -171,50 +169,50 @@ const getAll = function(state, inprogress) {
 	var where = ' WHERE 1=1 ';
 	if (link) {
 		where += ((state == undefined ? '' : 'AND  state=' + parseInt(state)));
-		where += (inprogress == true ? ' AND position>0'
+		if (inprogress != undefined) {
+			where += (inprogress == true ? ' AND position>0'
 				: ' AND (position IS NULL OR position=0)');
-		const sql = 'select * from pool ' + where + ' ORDER BY faved DESC';
-		console.log(sql);
+		}
+		const sql = 'select image,duration,position,title,author,id,url,description,faved,state from pool ' + where + ' ORDER BY faved DESC';	
 		const found = link.execute(sql);
 		while (found.isValidRow() == true) {
-			var image = found.fieldByName('image');
-			var duration = parseInt(found.fieldByName('duration') || 1); // ms.
-			var position = parseInt(found.fieldByName('position') || 0); // ms
-			res
-					.push({
-						title : found.fieldByName('title'),
-						author : found.fieldByName('author'),
+			const duration = parseInt(found.field(1) || 1000*60*60); // ms.
+			const position = parseInt(found.field(2) || 0); // ms
+			const image = found.field(0);
+			res.push({  image : image ? image.replace('jpeg?w=1800', 'jpeg?w=200') : '/images/defaultmage.png',
+						title : found.field(3),
+						author : found.field(4),
 						position : position,
-						id: found.fieldByName('id'),
+						id: found.field(5),
+						url : found.field(6),
+						description : found.field(7),		
+						faved : found.field(8),
+						state : found.field(9),
 						duration : duration,
 						progress : position / duration,
 						durationstring : isNaN(duration) ? "":new Date(duration).toISOString().substr(11, 8),
 						positionstring : isNaN(position) ? "":new Date(position).toISOString().substr(11, 8),
 						duration : duration,
 						position : position,
-						url : found.fieldByName('url'),
-						image : image
-								|| 'https://www.br.de/podcast-hoerspiel-pool-100~_v-img__16__9__m_-4423061158a17f4152aef84861ed0243214ae6e7.jpg?version=4c9dc',
-						description : found.fieldByName('description'),
-						faved : found.fieldByName('faved'),
-						state : found.fieldByName('state'),
+						
 					});
 			found.next();
 		}
 		found.close();
 		link.close();
 	}
-	console.log("getAll_"+ state + '  items='+ res.length + " Duration="+(new Date().getTime()-start));
-	return (state == STATE_SAVED) ? res.filter(function(item) {
-		return isFile(item.url);
-	}) : res;
-
+	return res;
 };
 
 const syncWithRSS = function(onReady) {
+	const now = new Date().getTime()/1000;
+	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC",0.0)<3600) {
+		onReady();
+		return;
+	}
 	const FEEDS = require('model/hoerspielfeeds');
 	var numberOfNewItems = 0;
-	var count=FEEDS.length;
+	var count = FEEDS.length;
 	/* start native HTTPClient: */
 	FEEDS.forEach(function(feed) {
 				var sender = feed.id;
@@ -228,6 +226,7 @@ const syncWithRSS = function(onReady) {
 								},
 								function(_e) {
 									if (!_e.items) return;
+									Ti.App.Properties.setDouble("TIMESTAMP_OF_LAST_SYNC",new Date().getTime()/1000);
 									numberOfNewItems += _e.items.length;
 									console.log(sender+ " DL: " + (new Date().getTime()-start));
 									start=new Date().getTime();
@@ -312,7 +311,7 @@ const isFile = (url) => {
 	;
 };
 
-const getCachedFile = (url) => {
+const File = (url) => {
 	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,
 			stripFilename(url));
 	return file.exists ? file : null;
@@ -328,26 +327,71 @@ Downloader.onDone =function(e){
 };
 
 
-const downloadFile = function(url, title, cb) {
-	const filename = stripFilename(url), file = Ti.Filesystem.getFile(
+const downloadFile = function(originalUrl, title) {
+	const filename = stripFilename(originalUrl), file = Ti.Filesystem.getFile(
 			Ti.Filesystem.externalStorageDirectory, filename);
-	
-	const Request = Downloader.createRequest(url);
+	/*
+	 * Pifall: this url is not equal the url of getDownloads, the manager
+	 * resolves the redirects
+	 */
+	const Request = Downloader.createRequest(originalUrl);
 	Request
 		.setNotificationVisibility(Request.VISIBILITY_VISIBLE)
 		.setDestinationFile(file)
 		.setTitle(title)
 		.setDescription(filename);
-	setStateToProgress(filename,Downloader.enqueue(Request),url);
+	const id = Downloader.enqueue(Request);
+	Downloader.getAllDownloadStates().forEach(function(dl){
+		console.log(dl);
+	});
+	setStateToProgress(filename,id,originalUrl	);
 	return true;
 };
 
-exports.getAll = getAll;
+function syncWithDownloadManager() {
+	console.log(":::::::::::::::::::::::::::::::: syncWithDownloadManager");
+	var start = new Date().getTime();
+	var link = Ti.Database.open(DB);
+	if (link) {
+		link.execute("BEGIN TRANSACTION");
+		Downloader.getAllDownloadStates().forEach(function(dl){
+			console.log(dl);
+			var state = STATE_ONLINE;
+			switch (dl.state) {
+				case Downloader.STATUS_SUCCESSFUL: // 8
+					state = STATE_SAVED;
+				break;
+				case Downloader.STATUS_FAILED: // 16
+					state = STATE_ONLINE;
+				break;	
+				case Downloader.STATUS_PAUSED: //4
+				case Downloader.STATUS_PENDING: // 1
+				case Downloader.STATUS_RUNNING: // 2
+					state = STATE_ONLINE;
+				break;	
+			}
+			link.execute('UPDATE pool SET state=?,position=0 WHERE id=?',state,dl.id);
+			//const found = link.execute('SELECT state from pool WHERE id=?',dl.id) ;
+			 //if (!found.rowCount) Downloader.removeDownloadById(dl.id);
+		});
+		
+		link.execute("COMMIT");
+		link.execute("UPDATE `pool` SET state=?,position=0 WHERE id IS NULL",STATE_ONLINE);
+		link.close();
+		Ti.App.fireEvent('renderPool', {});
+	}
+	console.log(":::::::::Runtime for syncWithDownloadManager: " + (new Date().getTime()-start));
+}
 
+setTimeout(syncWithDownloadManager,1555);
+
+Ti.App.addEventListener('downloadmanager:onComplete', 
+		syncWithDownloadManager);
+
+exports.getAll = getAll;
 exports.setPosition = setPosition;
 exports.getPosition = getPosition;
 exports.removeDownload = removeDownload;
-exports.syncWithDownloadManager = syncWithDownloadManager;
 exports.syncWithRSS = syncWithRSS;
 
 exports.getStorageStatistics = getStorageStatistics;

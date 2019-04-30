@@ -9,7 +9,7 @@ module.exports = (onClick) => {
 		elevation : 20,
 		height : 66,
 		borderRadius : 33,
-		borderWidth:0,
+		borderWidth:1,	
 		backgroundColor : "white"
 	});
 	$.setPlay = () => $.children[0].backgroundImage = PAUSE;

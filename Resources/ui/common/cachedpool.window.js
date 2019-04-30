@@ -1,9 +1,8 @@
 const Permissions = require('vendor/permissions');
 const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
-const TEMPLATES = [ 'pool_used', 'pool_saved' ];
-const HEADERLABELS = [ 'Begonnene Hörspiele',
-
-'Lokal verfügbare, bislang ungehörte Hörspiele' ];
+const TEMPLATES = [ 'pool_progress', 'pool_used', 'pool_saved' ];
+const HEADERLABELS = [ 'Hörspiele im Download', 'Begonnene Hörspiele',
+		'Lokal verfügbare, bislang ungehörte Hörspiele' ];
 const STATHEIGHT = 10;
 const Pool = require("controls/pool");
 
@@ -14,7 +13,6 @@ function getDataItems(state, position, ndx) {
 			duration += ' | gehört: ' + item.positionstring;
 		return {
 			properties : {
-				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
 				searchableText : item.title + item.author + item.description,
 				itemId : JSON.stringify({
 					id : item.id,
@@ -30,7 +28,11 @@ function getDataItems(state, position, ndx) {
 			searchableText : 'title',
 			template : TEMPLATES[ndx],
 			title : {
-				text : item.title
+				text :  item.title
+			},
+			ani: {
+				file:'/images/cup.json',
+				opacity:0
 			},
 			cached : {
 				opacity : item.cached ? 0.5 : 0
@@ -68,7 +70,7 @@ module.exports = function(_tabgroup) {
 	});
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
 	$.statisticView = require('ui/common/statisticview')(STATHEIGHT);
-	const HEIGHT_OF_HANDLER_SHORT=80,HEIGHT_OF_HANDLER_LONG=300;
+	const HEIGHT_OF_HANDLER_SHORT = 80, HEIGHT_OF_HANDLER_LONG = 300;
 	$.swipeHandler = Ti.UI.createView({
 		top : 0,
 		height : HEIGHT_OF_HANDLER_SHORT,
@@ -76,7 +78,7 @@ module.exports = function(_tabgroup) {
 	});
 	$.swipeHandler.addEventListener('swipe', function(e) {
 		if (e.direction == 'down') {
-			$.swipeHandler.height=HEIGHT_OF_HANDLER_LONG;
+			$.swipeHandler.height = HEIGHT_OF_HANDLER_LONG;
 			$.container.animate({
 				top : 400
 			});
@@ -84,7 +86,7 @@ module.exports = function(_tabgroup) {
 			$.container.animate({
 				top : STATHEIGHT
 			});
-			$.swipeHandler.height=HEIGHT_OF_HANDLER_SHORT;
+			$.swipeHandler.height = HEIGHT_OF_HANDLER_SHORT;
 		}
 	});
 	$.add($.statisticView);
@@ -101,6 +103,7 @@ module.exports = function(_tabgroup) {
 		templates : {
 			'pool_saved' : require('TEMPLATES').pool_saved,
 			'pool_used' : require('TEMPLATES').pool_used,
+			'pool_progress' : require('TEMPLATES').pool_progress,
 
 		},
 		defaultItemTemplate : 'pool_saved',
@@ -122,19 +125,21 @@ module.exports = function(_tabgroup) {
 						$.headerView.children[0].text = HEADERLABELS[e.firstVisibleSectionIndex];
 					});
 	$.poolList.addEventListener('itemclick', function(e) {
-		started = true;
-		require("ui/common/podcast.window")(JSON.parse(e.itemId)).open();
-
+		if (e.sectionIndex != 0) {
+			require("ui/common/podcast.window")(JSON.parse(e.itemId),
+					renderSections).open();
+		}
 		// _tabgroup.activity.startActivity(intent);
 
 	});
 	function renderSections() {
 		$.statisticView.renderView();
 		const start = new Date().getTime();
-
-		$.poolList.sections[0].items = getDataItems(STATUS_SAVED, true, 0);
-		$.poolList.sections[1].items = getDataItems(STATUS_SAVED, false, 1);
-		if ($.poolList.sections[1].items.length > 0 || $.poolList.sections[0].items.length > 0)
+		$.poolList.sections[0].items = getDataItems(STATUS_PROGRESS, false, 0);
+		$.poolList.sections[1].items = getDataItems(STATUS_SAVED, true, 1);
+		$.poolList.sections[2].items = getDataItems(STATUS_SAVED, false, 2);
+		if ($.poolList.sections[1].items.length > 0
+				|| $.poolList.sections[0].items.length > 0)
 			$.add($.filterButton);
 		console.log("renderSections: " + (new Date().getTime() - start));
 	}
@@ -151,17 +156,17 @@ module.exports = function(_tabgroup) {
 
 	$.addButton = require('ui/common/addbutton.widget')({
 		onClick : function() {
-			require('ui/common/onlinepool.window')().open();
+			require('ui/common/onlinepool.window')(_tabgroup,renderSections).open();
 
 		}
 	});
 	$.add($.addButton);
 	$.searchBar.addEventListener('change', $.filterButton.onChange);
 
-	//$.addEventListener('focus', renderSections);
-	//$.addEventListener('open',
-	//		require('vendor/requestignorebatteryoptimizations'));
-	Ti.App.addEventListener('download::ready', function() {
+	// $.addEventListener('focus', renderSections);
+	// $.addEventListener('open',
+	// require('vendor/requestignorebatteryoptimizations'));
+	Ti.App.addEventListener('downloadmanager:onComplete', function() {
 		Ti.UI.createNotification({
 			message : "Runterladen war erfolgreich.\n"
 		}).show();

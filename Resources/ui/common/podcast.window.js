@@ -3,6 +3,7 @@ Moment.locale('de');
 const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
 		/ Ti.Platform.displayCaps.logicalDensityFactor;
 const Pool = require("controls/pool");
+const ID3 = require("de.appwerft.mp3agic");
 const Visualizer = require('ti.audiovisualizerview');
 const audioPlayer = Ti.Media.createAudioPlayer({
 	allowBackground : true,
@@ -21,11 +22,12 @@ const visualizerView = Visualizer.createView({
 	}
 });
 
-module.exports = function(opts) {
+module.exports = function(opts,renderParentSections) {
 	var HEIGHT;
 	const start = new Date().getTime();
 	const duration = opts.duration, position = Pool.getPosition(opts.url), url = opts.url, cover = opts.cover, mp3file = Pool
 			.getCachedFile(url);
+	console.log('DURATION='+opts.duration + '   POSITION=' + position);
 	var $ = Ti.UI.createWindow({
 		fullscreen : false,
 		backgroundColor : 'white',
@@ -61,27 +63,32 @@ module.exports = function(opts) {
 		});
 		$.topContainer.add($.thumbView);
 		$.topView.add($.thumbView);
-		const ID3 = require("de.appwerft.mp3agic");
-		if (ID3.getId3v2Tag(mp3file)) {
-			$.thumbView.add(ID3.createAlbumImage({
-				image : mp3file,
-			}));
-		} else console.log("mp3 has no id3v2");
-		;
+		
+
 		$.playcontrolButton = require('ui/common/playbutton.widget')(
 				function() {
 					if (audioPlayer.playing) {
+						$.remove(visualizerView);
 						audioPlayer.pause();
 						$.playcontrolButton.setPause();
 					} else {
+						Ti.App.fireEvent('stopRadio');
 						audioPlayer.url = mp3file.nativePath;
 						audioPlayer.time = position;
 						audioPlayer.start();
 						audioPlayer.time = position;
 						$.playcontrolButton.setPlay();
+						$.add(visualizerView);
 					}
 				});
 		$.topContainer.add($.playcontrolButton);
+		console.log(mp3file);
+		if (mp3file && ID3.getId3v2Tag(mp3file)) {
+			const albumimage = ID3.createAlbumImage({
+				image : mp3file,
+			});
+			albumimage && $.thumbView.add(albumimage);
+		} else console.log("mp3 has no id3v2");
 	}
 
 	$.topView.addEventListener("postlayout", onPostlayout);
@@ -96,11 +103,11 @@ module.exports = function(opts) {
 	$.add($.topContainer);
 
 	$.progressView = Ti.UI.createView({
-		top : SCREENWIDTH - 100,
+		top : 0,
 		left : 0,
-		width : 1,
-		right : 100,
-		backgroundColor : '#88ffffff'
+		height:5,
+		width : (position/duration*100) + '%',
+		backgroundColor : '#225588'
 	});
 
 	$.topContainer.add($.progressView);
@@ -161,16 +168,29 @@ module.exports = function(opts) {
 	$.addEventListener('close', function() {
 		audioPlayer.removeEventListener('progress', onProgress);
 		$.remove(visualizerView);
-		
+		renderParentSections();
 		audioPlayer.stop();
 		audioPlayer.release();
 	});
-	$.add(visualizerView);
+	
 	audioPlayer.addEventListener('complete', function() {
-		Pool.setPosition(url, 0);
-		$ && $.close();
+		const dialog = Ti.UI.createAlertDialog({
+			cancel : 0,
+			buttonNames : [ 'Nein, weiter …', 'Ja, Platz schaffen' ],
+			message : 'Was soll jetzt geschehen - lokal löschen oder zurück zum Start?',
+			title : 'Geschafft.'
+		});
+		dialog.addEventListener('click', function(dialogevent) {
+			Pool.setPosition(url, 0);
+			if (dialogevent.index != dialogevent.source.cancel) {
+				console.log("removeDownload " +$.itemId);
+				Pool.removeDownload($.itemId);
+			}
+			$.close();
+		});
+		dialog.show();
+		//Pool.setPosition(url, 0);
+		//$ && $.close();
 	});
-	console.log("Duration for building player: "
-			+ (new Date().getTime() - start));
 	return $;
 };

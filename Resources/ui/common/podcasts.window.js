@@ -1,7 +1,7 @@
 const FlipModule = require('de.manumaticx.androidflip');
 const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
 		/ Ti.Platform.displayCaps.logicalDensityFactor;
-const stations = [ 'dlf','srf','dlfnova','mdrkultur', 'orf1', 'wdr', 'ndr'];
+const stations = [ 'srf','dlf','dlr','dlfnova','mdrkultur', 'orf1', 'wdr', 'ndr'];
 // https://www1.wdr.de/mediathek/podcast/index.html
 
 module.exports = function(_tabgroup) {

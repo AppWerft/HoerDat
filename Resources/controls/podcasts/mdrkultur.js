@@ -5,17 +5,17 @@ module.exports = function(onload) {
 		onload : function() {
 			var podcasts = [];
 			if (Doc) {
-				Doc.select(".teaser").forEach(function(li) {
+				Doc.select(".innerTeaser").forEach(function(li) {
 					
-					const noscript = li.selectFirst('noscript');
+					var img = li.selectFirst('noscript img');
+					if (!img) return;
 					const headline = li.selectFirst('.headline');
 					
-					if (!!noscript && !!headline) {
-						var img = noscript.getAttribute('src');
-						
+					if (!!img && !!headline) {
+						img=img.getAttribute('src');
 						if (img.substr(0, 4) != 'http')
 							img = 'https://www.mdr.de' + img;
-						console.log(img);
+						
 						podcasts.push({
 							image : img,
 							title : headline	.getText(),
@@ -24,6 +24,8 @@ module.exports = function(onload) {
 					}
 				});
 			}
+			podcasts.pop();
+			podcasts.shift();
 			onload({
 				items : podcasts,
 				template : 'podcastslist_slim'

@@ -8,18 +8,19 @@ var Doc = Soup.createDocument({
 			var podcasts = [];
 			
 			if (Doc) {
-				Doc.select(".podcasts-group").forEach(function(li) {
-					const img = li.selectFirst('noscript');
-					const noscript = li.selectFirst('.text__headline');
+				Doc.select("article").forEach(function(li) {
+					const img = li.selectFirst('noscript img');
+					console.log(img);
 					podcasts.push({
-						image : li.selectFirst('.v-lazy-image').getAttribute('src'),
-						title : 	li.selectFirst('.main-title').getText(),
-						description: li.selectFirst('.podcast-summary').getText()
+						image : img.getAttribute('src'),
+						title : 	li.selectFirst('.text__headline').getText(),
+						
 				});
 					
 				});
 			}
-			
+			podcasts.pop();
+			podcasts.shift();
 			
 			onload({
 				items : podcasts,

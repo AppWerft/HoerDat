@@ -3,7 +3,8 @@ module.exports = function(id) {
 		$.sections[0].items = payload.items.map(function(item){
 			return {
 				properties : {
-					accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+					accessoryType : item.url ?Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE: undefined,
+					itemId : item.url? item.url:null
 					
 				},
 				template : payload.template,
@@ -26,7 +27,10 @@ module.exports = function(id) {
 		sections : [ Ti.UI.createListSection() ]
 	});
 	require('controls/podcasts/'+id)(onLoad);
-
+	$.addEventListener('itemclick',function(e){
+		require('ui/common/podcast.window')(e.itemId).open();
+		
+	});
 	return $;
 
 };

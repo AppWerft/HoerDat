@@ -127,7 +127,7 @@ module.exports = function(_tabgroup) {
 	$.poolList.addEventListener('itemclick', function(e) {
 		if (e.sectionIndex != 0) {
 			const start = new Date().getTime();
-			const win = require("ui/common/podcast.window")(JSON.parse(e.itemId),
+			const win = require("ui/common/hoerspiel.window")(JSON.parse(e.itemId),
 					renderSections);
 			console.log("Runtime Window: " +(new Date().getTime()-start));
 			win.open();

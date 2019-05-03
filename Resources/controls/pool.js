@@ -211,6 +211,7 @@ const getAll = function(state, inprogress) {
 const syncWithRSS = function(onReady) {
 	const now = new Date().getTime() / 1000;
 	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC", 0.0) < 3600) {
+		console.log("we save the world and use the cached version");
 		onReady();
 		return;
 	}
@@ -230,8 +231,10 @@ const syncWithRSS = function(onReady) {
 									userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
 								},
 								function(_e) {
-									if (!_e.items)
+									if (!_e.items){
+										console.log("server not responding");
 										return;
+									}
 									Ti.App.Properties.setDouble(
 											"TIMESTAMP_OF_LAST_SYNC",
 											new Date().getTime() / 1000);

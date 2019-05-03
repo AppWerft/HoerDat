@@ -1,5 +1,8 @@
 const MINILOGO = 24;
-const HEIGHT =150;
+const HEIGHT = 150;
+const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
+		/ Ti.Platform.displayCaps.logicalDensityFactor;
+
 exports.pool_progress = {
 	properties : {
 		height : MINILOGO,
@@ -14,18 +17,11 @@ exports.pool_progress = {
 			width : MINILOGO,
 			height : 'auto'
 		}
-	},/* {
-		type : 'TiAnimation.AnimationView',
-		bindId : 'ani',
-		properties : {
-			contentMode : 0,
-			touchEnabled : false,
-			loop : true,
-			autoStart : true,
-			width : MINILOGO,
-			height : MINILOGO
-		}
-	}, */{
+	},/*
+		 * { type : 'TiAnimation.AnimationView', bindId : 'ani', properties : {
+		 * contentMode : 0, touchEnabled : false, loop : true, autoStart : true,
+		 * width : MINILOGO, height : MINILOGO } },
+		 */{
 		type : 'Ti.UI.Label',
 		bindId : 'title',
 		properties : {
@@ -283,5 +279,88 @@ exports.pool_used = {
 				color : '#888'
 			}
 		}, ]
+	} ]
+};
+
+exports.podcastslist = {
+	properties : {
+		height : Ti.UI.SIZE,
+		backgroundColor : 'white',
+		itemId : ''
+	},
+	childTemplates : [ {
+		type : 'Ti.UI.ImageView',
+		bindId : 'logo',
+		properties : {
+			left : 0,
+			touchEnabled : false,
+			top:0,
+			width : 96,
+			height : 96
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'title',
+		properties : {
+			text : '',
+			color : '#3F79A9',
+			touchEnabled : false,
+			font : {
+				fontSize : 22,
+				fontFamily : 'Rambla-Bold'
+			},
+			left : 110,
+			height : Ti.UI.SIZE,
+			textAlign : 'left',
+			width : Ti.UI.FILL,
+		}
+
+	} ]
+};
+exports.podcastslist_slim = {
+	properties : {
+		height : Ti.UI.SIZE,
+		backgroundColor : 'white',
+		itemId : ''
+	},
+	childTemplates : [ {
+		type : 'Ti.UI.ImageView',
+		bindId : 'logo',
+		properties : {
+			touchEnabled : false,
+			left:0,
+			width : 150,
+			height : 'auto'
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'title',
+		properties : {
+			color : '#3F79A9',
+			touchEnabled : false,
+			font : {
+				fontSize : 22,
+				fontFamily : 'Rambla-Bold'
+			},
+			left : 160,right:20,
+			height : Ti.UI.SIZE,
+			width : Ti.UI.FILL,
+		}
+
+	} ]
+};
+exports.podcastslist_pictonly = {
+	properties : {
+		height : Ti.UI.SIZE
+	},
+	childTemplates : [ {
+		type : 'Ti.UI.ImageView',
+		bindId : 'logo',
+		properties : {
+			touchEnabled : false,
+			top : 0,
+			width : SCREENWIDTH,
+			height : Ti.UI.SIZE
+		}
 	} ]
 };

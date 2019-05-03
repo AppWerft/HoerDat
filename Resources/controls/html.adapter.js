@@ -1,8 +1,5 @@
 const Soup = require("de.appwerft.soup");
 
-const Moment = require('vendor/moment');
-Moment.locale('de');
-
 module.exports = function(args) {
 	if (Ti.App.Properties.hasProperty(args.date)) {
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));

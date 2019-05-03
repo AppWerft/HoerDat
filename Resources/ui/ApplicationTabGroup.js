@@ -29,6 +29,12 @@ module.exports = function() {
 			window : require('ui/common/cachedpool.window')($),
 			ndx : 2
 		}));
+		$.addTab(Ti.UI.createTab({
+			title : 'Podcasts',
+			icon : '/images/podcasts.png',
+			window : require('ui/common/podcasts.window')($),
+			ndx : 3
+		}));
 		$.setActiveTab(Ti.App.Properties.getInt("ACTIVE_TAB",1));
 	require('de.appwerft.watchdog').start({
 		interval : 1000 * 60, // 1 min

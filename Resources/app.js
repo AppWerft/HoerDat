@@ -1,5 +1,5 @@
 "use strict";
-const TiAnimation = require('ti.animation');
+//	const TiAnimation = require('ti.animation');
 
 !function() {
 	Ti.UI.backgroundColor='#225588';

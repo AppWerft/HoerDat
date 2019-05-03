@@ -11,6 +11,7 @@
   <fullscreen>true</fullscreen>
   <navbar-hidden>false</navbar-hidden>
   <analytics>false</analytics>
+  <transpile>false</transpile>
   <property name="ti.android.root.reappears.restart" type="bool">true</property>
   <guid>60873f96-df1e-4789-9333-d75f914064b9</guid>
   <property name="GAPI_test" type="string">AIzaSyAXhOjtVcjr2zmT1CDB-KiTOKCkbqtjFjc</property>

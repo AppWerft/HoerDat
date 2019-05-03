@@ -1,5 +1,4 @@
-
-module.exports = (cb) => {
+module.exports = function(cb) {
 	const $ = Ti.UI.createView({
 		width : 56,
 		bottom : 100,
@@ -11,7 +10,7 @@ module.exports = (cb) => {
 		borderRadius : 28,
 		backgroundColor : "#225588"
 	});
-	$.onChange = (e) => {
+	$.onChange = function(e) {
 		if (e.source.value == "") {
 			cb.onHide();
 			$.animate({
@@ -28,7 +27,7 @@ module.exports = (cb) => {
 		height : 20,
 		backgroundImage : '/images/filter.png'
 	}));
-	$.addEventListener('click', () => {
+	$.addEventListener('click', function() {
 		$.animate({
 			transform : Ti.UI.create2DMatrix({
 				scale : 0.02

@@ -1,7 +1,6 @@
-const PLAY= '/images/_PLAY_.png',PAUSE= '/images/_PAUSE_.png';
+const PLAY = '/images/_PLAY_.png', PAUSE = '/images/_PAUSE_.png';
 
-
-module.exports = (onClick) => {
+module.exports = function(onClick) {
 	const $ = Ti.UI.createView({
 		width : 66,
 		touchFeedback : true,
@@ -9,17 +8,21 @@ module.exports = (onClick) => {
 		elevation : 20,
 		height : 66,
 		borderRadius : 33,
-		borderWidth:1,	
+		borderWidth : 1,
 		backgroundColor : "white"
 	});
-	$.setPlay = () => $.children[0].backgroundImage = PAUSE;
-	$.setPause = () => $.children[0].backgroundImage = PLAY;
-	
+	$.setPlay = function() {
+		$.children[0].backgroundImage = PAUSE;
+	}
+	$.setPause = function() {
+		$.children[0].backgroundImage = PLAY;
+	}
+
 	$.add(Ti.UI.createView({
-		touchEnabled:false,
+		touchEnabled : false,
 		backgroundImage : PLAY
 	}));
-	$.addEventListener('click', () => {
+	$.addEventListener('click', function() {
 		$.animate({
 			transform : Ti.UI.create2DMatrix({
 				scale : 0.02

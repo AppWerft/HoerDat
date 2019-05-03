@@ -57,7 +57,6 @@ module.exports = function(_lcc) {
 		const newitems = getDataItems(STATUS_ONLINE, false, 2);
 		if (newitems&& newitems.lenght != $.poolList.sections[0].items.length) {
 			$.poolList.sections[0].items = newitems;
-			console.log("setSections: " + (new Date().getTime() - start));
 			$.progressBar.height = 0;
 			$.poolList.top=0;
 		}

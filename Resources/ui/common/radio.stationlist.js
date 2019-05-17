@@ -5,7 +5,7 @@ const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
 exports.addTiles = function(PATH,$) {
 	const Radiostations = require('controls/favs').getAll();
 	Radiostations.forEach(function(radio,i){ 
-		if (i<1) {
+		/*if (i<1) {
 			const logo = PATH.replace('%s', radio.logo);
 			console.log(logo);
 			const  shortcut =Ti.UI.createShortcutItem({
@@ -16,7 +16,7 @@ exports.addTiles = function(PATH,$) {
 			});
 			
 			shortcut.show();
-		}
+		}*/
 	});
 
 	function createAndAddTile(station, i) {

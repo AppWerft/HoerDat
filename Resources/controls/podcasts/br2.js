@@ -24,7 +24,7 @@ var Doc = Soup.createDocument({
 			
 			onload({
 				items : podcasts,
-				template : 'podcastslist'
+				template : 'podcastslist',
 			});
 		}
 	});

@@ -13,10 +13,9 @@ module.exports = function(onload) {
 				}
 			
 				podcastlist && podcastlist.forEach(function(li) {
-					
-					var a =  li.select('.podcastinfo a');
+					var aa =  li.select('.podcastinfo a');
 					podcasts.push({
-						url : a ? a[1].getAttribute('href'): null,
+						url : aa ? aa[aa.length-1].getAttribute('href'): null,
 						image : li.selectFirst('.thumbnail img').getAttribute('src'),
 						title : li.selectFirst('.podcastinfo strong').getText()
 					});

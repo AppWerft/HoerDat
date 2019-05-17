@@ -5,15 +5,23 @@ module.exports = function(onload) {
 		onload : function() {
 			var podcasts = [];
 			if (Doc) {
-				Doc.select(".coverList li.item").forEach(function(li) {
+				Doc.select(".coverList li.item").forEach(
+						function(li) {
 
-					podcasts.push({
-						image : li.selectFirst('img').getAttribute('src')
+							podcasts.push({
+								image : li.selectFirst('img').getAttribute(
+										'src'),
+								url : 'https://www.deutschlandfunknova.de'
+										+ li.selectFirst('a').getAttribute(
+												'href').replace(
+												'podcasts/download', 'podcast')
 
-					});
+							});
 
-				});
+						});
 			}
+			// http://www.deutschlandfunknova.de/podcast/eine-stunde-medien
+			console.log(podcasts);
 			onload({
 				items : podcasts,
 				template : 'podcastslist_pictonly'

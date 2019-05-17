@@ -1,10 +1,12 @@
-
+const Permissions = require('vendor/permissions');
+const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
 const TEMPLATES = [ 'pool_online' ];
-const Podcasts = require("controls/podcasts");
+const Pool = require("controls/pool");
 const ProgressBar = require("com.artanisdesign.tismoothprogressbar");
 
-function getDataItems(url) {
-	return Podcasts.getAll(url).map(
+function getDataItems(state, position, ndx) {
+	const allItems=Pool.getAll(state, position);
+	return allItems.map(
 			function(item) {
 				var duration = 'Dauer: ' + item.durationstring;
 				if (item.position)
@@ -46,19 +48,22 @@ function getDataItems(url) {
 					}
 				};
 			});
+	
+	
 };
 
-module.exports = function(url) {
+module.exports = function(_lcc) {
 	function setSections() {
 		$.progressBar.height = 5;
-		$.podcastList.top=5;
+		$.poolList.top=5;
 		const start = new Date().getTime();
-		const newitems = getDataItems(url);
-		if (newitems&& newitems.lenght != $.podcastList.sections[0].items.length) {
+		const newitems = getDataItems(STATUS_ONLINE, false, 2);
+		
+		//if (newitems && newitems.length != $.poolList.sections[0].items.length) {
 			$.poolList.sections[0].items = newitems;
 			$.progressBar.height = 0;
 			$.poolList.top=0;
-		}
+		//} else console.log("was same data length " + newitems.lenght);
 	}
 	const $ = Ti.UI.createView({
 		backgroundImage : '/images/bg.png'
@@ -89,7 +94,7 @@ module.exports = function(url) {
 	$.add($.progressBar);
 	// $.add($.searchBar);
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
-	$.podcastList = Ti.UI.createListView({
+	$.poolList = Ti.UI.createListView({
 		top : 5,
 		caseInsensitiveSearch : true,
 		templates : {
@@ -103,8 +108,48 @@ module.exports = function(url) {
 	// https://github.com/prashantsaini1/scrollable_animation
 	
 	$.progressBar.height = 5;
-	Podcasts.syncWithRSS(setSections);
-	$.add($.podcastList);
+	Pool.syncWithRSS(setSections);
+	$.add($.poolList);
+
+	$.poolList
+			.addEventListener(
+					'itemclick',
+					function(e) {
+						started = true;
+						Permissions
+								.requestPermissions(
+										[ 'WRITE_EXTERNAL_STORAGE' ],
+										function(success) {
+											if (success) {
+												const url = JSON
+														.parse(e.itemId).url, title = JSON
+														.parse(e.itemId).title;
+												if (!url)
+													return;
+												Pool.downloadFile(url,title);
+													setSections();
+													Ti.UI.createNotification(
+																	{
+																		message : "Dieses Stück wird jetzt im Hintergrund runtergeholt und ist alsbald verfügbar.\nFortschritt im Tray verfolgbar"
+																	}).show();
+												
+											}
+										});
+
+					});
+
+	$.filterButton = require('ui/common/filterbutton.widget')({
+		onShow : function() {
+			$.poolList.searchView = $.searchBar;
+			$.searchBar.focus();
+		},
+		onHide : function() {
+			console.log("hide Search");
+		}
+	});
+	$.filterButton.bottom = 26;
+	$.add($.filterButton);
+	$.searchBar.addEventListener('change', $.filterButton.onChange);
 	return $;
 };
 

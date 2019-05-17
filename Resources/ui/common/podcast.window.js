@@ -9,7 +9,7 @@ module.exports = function(url) {
 	});
 	
 	$.addEventListener('open', function(_e) {
-		ABX.title = 'deutschsprachige Podcasts';
+		ABX.title = 'Podcasts';
 		ABX.backgroundColor = "#225588";
 		ABX.subtitle = 'in Arbeit …';
 		ABX.titleFont = "Rambla-Bold";
@@ -27,10 +27,10 @@ module.exports = function(url) {
 			// activity.invalidateOptionsMenu();
 		} else
 			console.log("win has no activity");
-	    
+		setTimeout(function(){$.add(require('ui/common/podcast.list')(url));},200);
 
 	});
-	$.add(require('ui/common/podcast.list')());
+	
 	return $;
 };
 

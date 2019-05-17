@@ -144,7 +144,7 @@ module.exports = function(_tabgroup) {
 			$.add($.filterButton);
 		console.log("renderSections: " + (new Date().getTime() - start));
 	}
-	$.filterButton = require('ui/common/filterbutton.widget')({
+	/*$.filterButton = require('ui/common/filterbutton.widget')({
 		onShow : function() {
 			$.poolList.searchView = $.searchBar;
 			$.searchBar.focus();
@@ -153,7 +153,7 @@ module.exports = function(_tabgroup) {
 			console.log("hide Search");
 			// $.poolList.searchView = null;
 		}
-	});
+	});*/
 
 	$.addButton = require('ui/common/addbutton.widget')({
 		onClick : function() {
@@ -162,7 +162,7 @@ module.exports = function(_tabgroup) {
 		}
 	});
 	$.add($.addButton);
-	$.searchBar.addEventListener('change', $.filterButton.onChange);
+	//$.searchBar.addEventListener('change', $.filterButton.onChange);
 
 	// $.addEventListener('focus', renderSections);
 	// $.addEventListener('open',

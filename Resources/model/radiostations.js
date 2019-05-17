@@ -241,7 +241,7 @@ module.exports = [
 		{
 			logo : 'dlr',
 			color : '#FF6B00',
-			stream : 'http://st02.dlf.de/dlf/02/128/mp3/stream.mp3',
+			stream : 'http://dg-dradio-http-fra-dtag-cdn.cast.addradio.de/dradio/kultur/live/mp3/128/stream.mp3',
 			name : 'DeutschlandRadio Kultur',
 			url : 'https://m.deutschlandfunkkultur.de/dkultur-startseite.1477.de.mhtml',
 			meta : {

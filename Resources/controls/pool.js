@@ -172,8 +172,8 @@ const getAll = function(state, inprogress) {
 			where += (inprogress == true ? ' AND position>0'
 					: ' AND (position IS NULL OR position=0)');
 		}
-		const sql = 'select image,duration,position,title,author,id,url,description,faved,state from pool '
-				+ where + ' ORDER BY faved DESC';
+		const sql = 'select image,duration,position,title,author,id,url,description,faved,state,pubdate from pool '
+				+ where + ' ORDER BY faved DESC, pubdate DESC ';
 		const found = link.execute(sql);
 		while (found.isValidRow() == true) {
 			const duration = parseInt(found.field(1) || 1000 * 60 * 60); // ms.
@@ -210,7 +210,7 @@ const getAll = function(state, inprogress) {
 
 const syncWithRSS = function(onReady) {
 	const now = new Date().getTime() / 1000;
-	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC", 0.0) < 3600) {
+	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC", 0.0) < 36) {
 		console.log("we save the world and use the cached version");
 		onReady();
 		return;
@@ -231,21 +231,21 @@ const syncWithRSS = function(onReady) {
 									userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
 								},
 								function(_e) {
-									if (!_e.items){
+									
+									if (!_e.channel){
 										console.log("server not responding");
+										onReady();
 										return;
 									}
 									Ti.App.Properties.setDouble(
 											"TIMESTAMP_OF_LAST_SYNC",
 											new Date().getTime() / 1000);
-									numberOfNewItems += _e.items.length;
-									console.log(sender + " DL: "
-											+ (new Date().getTime() - start));
+									numberOfNewItems += _e.channel.item.length;
 									start = new Date().getTime();
 									var link = Ti.Database.open(DB);
 									if (link) {
 										link.execute("BEGIN TRANSACTION");
-										_e.items
+										_e.channel.item
 												.forEach(function(item) {
 													insertOrUpdateItem(item,
 															link, feed);
@@ -253,11 +253,11 @@ const syncWithRSS = function(onReady) {
 										link.execute("COMMIT");
 										link.close();
 									}
-									console.log(sender + " DBwork"
-											+ (new Date().getTime() - start));
 									count--;
-									if (count == 0)
+									if (count == 0) {
+										console.log("Count of imported datasets: "+ numberOfNewItems);
 										onReady();
+									}	
 								});
 			});
 };

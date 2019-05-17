@@ -3,7 +3,6 @@ module.exports = function() {
 		fullscreen : false,
 		exitOnClose : true,
 		swipeable : false,
-
 		tabsBackgroundColor : '#1D5987',
 		style : Ti.UI.Android.TABS_STYLE_BOTTOM_NAVIGATION,
 		orientationModes : [ Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT ]
@@ -36,13 +35,7 @@ module.exports = function() {
 			ndx : 3
 		}));
 		$.setActiveTab(Ti.App.Properties.getInt("ACTIVE_TAB",1));
-	require('de.appwerft.watchdog').start({
-		interval : 1000 * 60, // 1 min
-		debug : false,
-		exact : false
-	});
-
-	$.addEventListener('close', function() {
+     	$.addEventListener('close', function() {
 		Ti.App.fireEvent('stopRadio');
 	});
 	
@@ -56,6 +49,8 @@ module.exports = function() {
 	return $;
 };
 /*
+ * 
+ 
  * var intent = Ti.Android.createIntent({ action : Ti.Android.ACTION_MAIN, flags :
  * Ti.Android.FLAG_ACTIVITY_NEW_TASK });
  * intent.addCategory(Ti.Android.CATEGORY_HOME);

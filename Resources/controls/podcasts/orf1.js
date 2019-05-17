@@ -1,27 +1,20 @@
 const Soup = require("de.appwerft.soup");
 module.exports = function(onload) {
 	const URL = "https://oe1.orf.at/podcast";
-	var Doc = Soup.createDocument({
-		url : URL,
-		onload : function() {
-			var podcasts = [];
-			if (Doc) {
-				Doc.select("#list .listItem").forEach(
-						function(li) {
-							podcasts.push({
-								url : li.selectFirst('a').getAttribute('href'),
-								image : 'https://oe1.orf.at'
-										+ li.selectFirst('a img').getAttribute(
-												'src'),
-								title : li.selectFirst('.content h2').getText()
-							});
-						});
-			}
+	const podcasts = [
+			{
+				title : '#doublecheck',
+				url : '',
+				image : 'https://oe1.orf.at/i/intro/13/90/13904e506d058b34d28321b0999855c7ddedcbba.jpg'
+			}, {
+				title : '',
+				url : '',
+				image : ''
+			} ];
 
-			onload({
-				items : podcasts,
-				template : 'podcastslist_slim'
-			});
-		}
+	onload({
+		items : podcasts,
+		template : 'podcastslist'
+
 	});
 };

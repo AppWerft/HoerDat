@@ -79,7 +79,7 @@
     <target device="ipad">false</target>
     <target device="iphone">false</target>
   </deployment-targets>
-  <sdk-version>8.0.1.v20190426162041</sdk-version>
+  <sdk-version>8.0.1.GA</sdk-version>
   <property name="appc-app-id" type="string">5c90a3ece6c9637be49ae7bf</property>
   <plugins/>
 </ti:app>

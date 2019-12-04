@@ -107,30 +107,20 @@ module.exports = function(opts, renderParentSections) {
 				$.progressView = Ti.UI.createView({
 					top : 0,
 					left : 0,
-					height : 5,
+					height : 10,
 					width : (position / duration * 100) + '%',
 					backgroundColor : 'orange'
 				});
 				$.topContainer.add($.progressView);
 				var touchstart = undefined;
 				var pixeldiff = undefined;
-				$.topContainer.addEventListener('touchstart', function(e) {
-					if (e.y < 50)
-						touchstart = e.x;
-				});
-				$.topContainer.addEventListener('touchend', function(e) {
+				$.topContainer.addEventListener('singletap', function(e) {
+					Ti.Media.vibrate();
 					if (e.y < 50) {
-						console.log(pixeldiff);
-						audioPlayer.time = position + pixeldiff / SCREENWIDTH
+						$.progressView.width = (e.x / SCREENWIDTH)*100+'%';
+						audioPlayer.time = e.x / SCREENWIDTH
 								* duration;
-						touchstart = undefined;
-					}
-				});
-				$.topContainer.addEventListener('touchmove', function(e) {
-					if (e.y < 50) {
-						$.progressView.width = (position/duration*SCREENWIDTH+pixeldiff)/SCREENWIDTH*100+'%';
-						pixeldiff = (e.x - touchstart);
-					}
+					}			
 				});
 				$.bottomContainer = Ti.UI.createScrollView({
 					scrollType : 'vertical',
@@ -213,8 +203,8 @@ module.exports = function(opts, renderParentSections) {
 													'click',
 													function(dialogevent) {
 														Pool
-																.setPosition(
-																		url, 0);
+																.resetPosition(
+																		opts.id);
 														if (dialogevent.index != dialogevent.source.cancel) {
 															console
 																	.log("removeDownload "

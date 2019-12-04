@@ -161,6 +161,17 @@ const setPosition = function(id, position) {
 		console.log("no link to DB");
 };
 
+const resetPosition = function(id) {
+	console.log("RESET: " +id);
+	var link = Ti.Database.open(DB);
+	if (link) {
+		link.execute("UPDATE pool set position=0,faved=? WHERE id=?",
+				new Date().getTime(), id);
+		link.close();
+	} else
+		console.log("no link to DB");
+};
+
 const getAll = function(state, inprogress) {
 	const start = new Date().getTime();
 	var res = [];
@@ -408,6 +419,7 @@ Ti.App.addEventListener('downloadmanager:onComplete', syncWithDownloadManager);
 
 exports.getAll = getAll;
 exports.setPosition = setPosition;
+exports.resetPosition = resetPosition;
 exports.getPosition = getPosition;
 exports.removeDownload = removeDownload;
 exports.syncWithRSS = syncWithRSS;

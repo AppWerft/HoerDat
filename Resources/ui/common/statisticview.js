@@ -89,10 +89,7 @@ module.exports = function(H) {
 			$.add(renderValue("Laufzeit, gesamt", stats.durationtotal,'#444'));
 			$.add(renderValue("Laufzeit, lokal", stats.durationlocal,'#444'));
 			$.add(renderValue("davon schon gehört", stats.progresslocal,'#444'));
-			
-
 		}
-
 	};
 	return $;
 };

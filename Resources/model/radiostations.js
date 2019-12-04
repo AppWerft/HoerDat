@@ -1,7 +1,7 @@
 module.exports = [
 		{
 			logo : 'swr2',
-			stream : 'http://dg-swr-http-fra-dtag-cdn.cast.addradio.de/swr/swr2/live/mp3/256/stream.mp3',
+			stream : 'http://swr-swr2-live.cast.addradio.de/swr/swr2/live/mp3/256/stream.mp3',
 			name : "SWR 2",
 			color : '#00BAE5',
 			meta : {
@@ -198,7 +198,7 @@ module.exports = [
 		{
 			logo : 'radiofip',
 			name : "FIP radio",
-			stream : 'http://chai5she.cdn.dvmr.fr/fip-midfi.mp3',
+			stream : 'http://icecast.radiofrance.fr/fip-midfi.mp3',
 			color : '#EB2A86',
 			meta : {
 				type : 'FIP',
@@ -224,7 +224,7 @@ module.exports = [
 		{
 			logo : 'francemusique',
 			name : "France Music",
-			stream : 'http://direct.franceculture.fr/live/franceculture-midfi.mp3',
+			stream : 'http://icecast.radiofrance.fr/francemusique-midfi.mp3',
 			color : '#AF2A2D',
 			meta : {
 				type : 'FRANCE',
@@ -234,14 +234,13 @@ module.exports = [
 		{
 			logo : 'franceculture',
 			name : "France Culture",
-			stream : 'http://chai5she.cdn.dvmr.fr/franceculture-midfi.mp3',
+			stream : 'http://icecast.radiofrance.fr/franceculture-midfi.mp3',
 			color : '#79278B',
-
 		},
 		{
 			logo : 'dlr',
 			color : '#FF6B00',
-			stream : 'http://dg-dradio-http-fra-dtag-cdn.cast.addradio.de/dradio/kultur/live/mp3/128/stream.mp3',
+			stream : 'http://dradio-edge-1093.dus-dtag.cdn.addradio.net/dradio/kultur/live/mp3/128/stream.mp3',
 			name : 'DeutschlandRadio Kultur',
 			url : 'https://m.deutschlandfunkkultur.de/dkultur-startseite.1477.de.mhtml',
 			meta : {
@@ -298,5 +297,12 @@ module.exports = [
 			color : '#413474',
 			stream : 'https://rb-bremenzwei-live.sslcast.addradio.de/rb/bremenzwei/live/mp3/128/stream.mp3',
 			charset : 'latin-1'
+		},
+		{
+			logo : 'lr3',
+			name : 'LatvijasRadio3',
+			color : '#000',
+			stream : 'http://lr3mp0.latvijasradio.lv:8004/',
+			
 		}
 ];

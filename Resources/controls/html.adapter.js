@@ -1,30 +1,26 @@
 const Soup = require("de.appwerft.soup");
 const Moment = require("vendor/moment");
-	
+
 module.exports = function(args) {
-	if (Ti.App.Properties.hasProperty(args.date)) {
+	/*if (Ti.App.Properties.hasProperty(args.date)) {
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
 		return;
-	}
-	if (Ti.Network.online == false)  {
+	}*/
+	if (Ti.Network.online == false) {
 		args.onload([]);
 		return;
 	};
 	var sendungen = [];
 	var Doc = Soup.createDocument({
-		url : 'http://s507870211.online.de/index.php?aktion=suche&dat='
-				+ args.date,
+		url : 'http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date,
 		onload : function() {
 			if (Doc) {
-				Doc.select("table").forEach(
-						function(table) {
-							if (!table.hasClassName("mit")
-									&& !table.hasClassName("form")) {
-								sendungen.push(getSendung(table.getChild(1)));
-							}
-						});
-				Ti.App.Properties.setString(args.date, JSON
-						.stringify(sendungen));
+				Doc.select("table").forEach(function(table) {
+					if (!table.hasClassName("mit") && !table.hasClassName("form")) {
+						sendungen.push(getSendung(table.getChild(1)));
+					}
+				});
+				Ti.App.Properties.setString(args.date, JSON.stringify(sendungen));
 				args.onload(sendungen);
 			}
 		}
@@ -46,17 +42,14 @@ function getSendung(item) {
 			var tdright = tr.getChild(1);
 		if (tdleft.hasClassName("right") && len > 1) {
 			var key = tdleft.getText();
-
-			// console.log(value.toString());
 			switch (key) {
 			case 'Sendetermine:':
-				var html = tdright.getHtml().split('<br>')[0];
-				sendung.stationlogo = '/images/mini/'
-						+ html.split(' - ')[0].toLowerCase()//
-						.replace(/\s/g, '')//
-						.replace(/ö/g, 'oe')//
-						.replace(/,/g, '')//
-						.replace(/\-/g, '') + '.png';
+				const html = tdright.getHtml().split('<br>')[0].replace(/\(angekündigte Länge: ([0-9:]+)\)/,"");
+				sendung.stationlogo = '/images/mini/' + html.split(' - ')[0].toLowerCase()//
+				.replace(/\s/g, '')//
+				.replace(/ö/g, 'oe')//
+				.replace(/,/g, '')//
+				.replace(/\-/g, '') + '.png';
 				sendung.start = getTime(html.split(' - ')[1]).start.toISOString();
 				sendung.meta = getTime(html.split(' - ')[1]).meta;
 
@@ -72,8 +65,7 @@ function getSendung(item) {
 				var res = /^[A-Za-z]+/.exec(tdright.getHtml());
 
 				if (res && res instanceof Array)
-					sendung.prodlogo = '/images/mini/'
-							+ res[res.length - 1].toLowerCase() + '.png';
+					sendung.prodlogo = '/images/mini/' + res[res.length - 1].toLowerCase() + '.png';
 
 				break;
 			case 'Komponist(en):':
@@ -94,30 +86,40 @@ function getSendung(item) {
 			sendung.title = tdleft.getChild(0).getText().trim();
 		}
 	});
-	// console.log(sendung);
 	return sendung;
 }
 
 function getTime(foo) {
-
-	const regex = /^([\S]+),\s([\d]+)\.\s([\S]+)\s([\d]+)\s([\d]+):([\d]+)([\,\s]*)(.*)/, match = regex
-			.exec(foo);
-
-	if (match) {
-		const dddd = match[1], D = match[2], MMM = match[3].replace('Mär',
-				'Mrz').replace("Feb", "Febr"), YYYY = match[4], H = match[5], m = match[6], meta = match[8]
-				.replace(/[\s\s]+/, ' ');
-		const PATTERN = "YYYY-MMM-D H:m";
-		const date = Moment(YYYY + '-' + MMM + '-' + D + ' ' + H + ':' + m,
-				PATTERN);
-
-		return ({
-			meta : meta,
-			start : date
-		});
-	} else
+	if (!foo)
 		return {
 			meta : "",
 			start : Moment()
 		};
+	const regex = /^([\S]+),\s([\d]+)\.\s([\S]+)\s([\d]+)\s([\d]+):([\d]+)([\,\s]*)(.*)/,
+	    match = regex.exec(foo);
+	if (match) {
+		const dddd = match[1],
+		    D = match[2],
+		    MMM = match[3]//
+		.replace('Mär', 'Mrz')//
+		.replace("Feb", "Febr")//
+		.replace("Dez", "Dec"),
+		    YYYY = match[4],
+		    H = match[5],
+		    m = match[6],
+		    meta = match[8].replace(/[\s\s]+/, ' ');
+		const PATTERN = "YYYY-MMM-D H:m";
+		const foo = YYYY + ' ' + MMM + ' ' + D + ' ' + H + ':' + m + ':00 UT';
+		const date = Moment(foo);
+		return ( {
+			meta : meta,
+			start : date
+		});
+	} else {
+		console.log("no date match");
+		return {
+			meta : "",
+			start : Moment()
+		};
+	}
 }

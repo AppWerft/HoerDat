@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.appwerft.hoerdat" 
-	android:versionCode="413" android:versionName="4.1.3">
+	android:versionCode="452" android:versionName="4.5.2">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="28"/>
 	<application android:debuggable="false" 
 	   	    android:usesCleartextTraffic="true"
@@ -61,10 +61,5 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 	<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-	<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-	<uses-permission android:name="android.permission.BLUETOOTH" />
-  	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-  	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-	
+		
 </manifest>

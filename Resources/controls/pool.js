@@ -1,5 +1,7 @@
 const DB = 'Pool4';
-const STATE_ONLINE = 0, STATE_PROGRESS = 1, STATE_SAVED = 2;
+const STATE_ONLINE = 0,
+    STATE_PROGRESS = 1,
+    STATE_SAVED = 2;
 const Downloader = require("de.appwerft.downloadmanager");
 const Moment = require('vendor/moment');
 
@@ -12,18 +14,19 @@ const addColumn = function(dbname, tblName, newFieldName, colSpec) {
 			fieldExists = true;
 		}
 		resultSet.next();
-	} // end while
+	}// end while
 	if (!fieldExists) {
 		// field does not exist, so add it
-		db.execute('ALTER TABLE ' + tblName + ' ADD COLUMN ' + newFieldName
-				+ ' ' + colSpec);
+		db.execute('ALTER TABLE ' + tblName + ' ADD COLUMN ' + newFieldName + ' ' + colSpec);
 	}
 	db.close();
 };
 function hmsToSecondsOnly(str) {
 	str = str.replace(/:$/, '');
 	str = str.replace(/^:/, '');
-	var p = str.split(':'), s = 0, m = 1;
+	var p = str.split(':'),
+	    s = 0,
+	    m = 1;
 	while (p.length > 0) {
 		s += m * parseInt(p.pop(), 10);
 		m *= 60;
@@ -32,8 +35,7 @@ function hmsToSecondsOnly(str) {
 }
 
 var link = Ti.Database.open(DB);
-link
-		.execute('CREATE TABLE IF NOT EXISTS "pool" ("title" VARCHAR, "author" VARCHAR, "keywords" VARCHAR,"weblink" VARCHAR, "description" VARCHAR, "pubdate" VARCHAR,"depubdate" VARCHAR, "duration" INTEGER,"image" VARCHARs,"position" INTEGER,"url" VARCHAR, "state" INTEGER,"faved" INTEGER, localfile STRING);');
+link.execute('CREATE TABLE IF NOT EXISTS "pool" ("title" VARCHAR, "author" VARCHAR, "keywords" VARCHAR,"weblink" VARCHAR, "description" VARCHAR, "pubdate" VARCHAR,"depubdate" VARCHAR, "duration" INTEGER,"image" VARCHARs,"position" INTEGER,"url" VARCHAR, "state" INTEGER,"faved" INTEGER, localfile STRING);');
 
 link.close();
 
@@ -43,8 +45,7 @@ addColumn(DB, "pool", "sender", "VARCHAR");
 function stripFilename(originalUrl) {
 	if (originalUrl) {
 		const ndx = originalUrl.lastIndexOf('/');
-		const filename = originalUrl.substring(ndx + 1).replace(
-				/\?assetId=(.*)/g, '');
+		const filename = originalUrl.substring(ndx + 1).replace(/\?assetId=(.*)/g, '');
 		console.log(filename);
 		return filename;
 	}
@@ -52,8 +53,7 @@ function stripFilename(originalUrl) {
 }
 
 const getCachedFile = function(originalUrl) {
-	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,
-			stripFilename(originalUrl));
+	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, stripFilename(originalUrl));
 	return file.exists ? file : null;
 };
 
@@ -68,26 +68,27 @@ function removeDownload(id) {
 
 function setStateToProgress(localfile, id, url) {
 	const link = Ti.Database.open(DB);
-	link.execute('UPDATE pool SET id=?,state=?,localfile=? WHERE url=?', id,
-			STATE_PROGRESS, stripFilename(localfile), url);
+	link.execute('UPDATE pool SET id=?,state=?,localfile=? WHERE url=?', id, STATE_PROGRESS, stripFilename(localfile), url);
 	console.log("rowsAffected: " + link.rowsAffected);
 	link.close();
 }
 
 function getStorageStatistics() {
-	var toHHMMSS = function(secs) {
+	const toHHMMSS = function(secs) {
+		return Moment.unix(secs).format('DDD:hh:mm:ss');
+		/*
 		var sec_num = parseInt(secs, 10)
 		var hours = Math.floor(sec_num / 3600);
 		var minutes = Math.floor(sec_num / 60) % 60
 		var seconds = sec_num % 60
-		return [ hours, minutes, seconds ].map(function(v) {
+		return [hours, minutes, seconds].map(function(v) {
 			v < 10 ? "0" + v : v
 		}).filter(function(v, i) {
 			v !== "00" || i > 0
-		}).join(":");
+		}).join(":");*/
 	}
 	var result = Downloader.getStorageStatistics();
-	var link = Ti.Database.open(DB);
+	const link = Ti.Database.open(DB);
 	if (link) {
 		var curs;
 		var val;
@@ -96,8 +97,7 @@ function getStorageStatistics() {
 			result.counttotal = curs.field(0);
 		}
 		curs.close();
-		curs = link.execute('SELECT count(*) AS total FROM pool WHERE state=?',
-				STATE_SAVED);
+		curs = link.execute('SELECT count(*) AS total FROM pool WHERE state=?', STATE_SAVED);
 		if (curs.isValidRow() == true) {
 			result.countlocal = curs.field(0);
 		}
@@ -106,33 +106,32 @@ function getStorageStatistics() {
 		if (curs.isValidRow() == true) {
 			val = curs.field(0);
 			result.durationtotal = toHHMMSS(val);
-		}
+		} else
+			console.log("wrong request 'SELECT SUM(duration/1000) AS total FROM pool'");
 		curs.close();
-		curs = link.execute(
-				'SELECT SUM(duration/1000) AS total FROM pool WHERE state=?',
-				STATE_SAVED);
+		curs = link.execute('SELECT SUM(duration/1000) AS total FROM pool WHERE state=?', STATE_SAVED);
 		if (curs.isValidRow() == true) {
 			val = curs.field(0);
 			result.durationlocal = toHHMMSS(val);
-		}
+		} else
+			console.log("wrong request " + "SELECT SUM(duration/1000) AS total FROM pool WHERE state=" + STATE_SAVED);
 		curs.close();
-		curs = link.execute(
-				'SELECT SUM(position/1000) AS total FROM pool WHERE state=?',
-				STATE_SAVED);
+		curs = link.execute('SELECT SUM(position/1000) AS total FROM pool WHERE state=?', STATE_SAVED);
 		if (curs.isValidRow() == true) {
 			result.progresslocal = toHHMMSS(curs.field(0));
 		}
 		curs.close();
 		link.close();
-	}
+		console.log(result);
+	} else
+		console.log("annot open DB " + DB);
 	return result;
 }
 
 function setStateToOnline(localfile) {
 	const link = Ti.Database.open(DB);
 	if (link) {
-		link.execute('UPDATE pool SET state=? WHERE localfile=?', STATE_ONLINE,
-				stripFilename(localfile));
+		link.execute('UPDATE pool SET state=? WHERE localfile=?', STATE_ONLINE, stripFilename(localfile));
 		link.close();
 	}
 }
@@ -154,19 +153,17 @@ const getPosition = function(id) {
 const setPosition = function(id, position) {
 	var link = Ti.Database.open(DB);
 	if (link) {
-		link.execute("UPDATE pool set position=?,faved=? WHERE id=?", position,
-				new Date().getTime(), id);
+		link.execute("UPDATE pool set position=?,faved=? WHERE id=?", position, new Date().getTime(), id);
 		link.close();
 	} else
 		console.log("no link to DB");
 };
 
 const resetPosition = function(id) {
-	console.log("RESET: " +id);
+	console.log("RESET: " + id);
 	var link = Ti.Database.open(DB);
 	if (link) {
-		link.execute("UPDATE pool set position=0,faved=? WHERE id=?",
-				new Date().getTime(), id);
+		link.execute("UPDATE pool set position=0,faved=? WHERE id=?", new Date().getTime(), id);
 		link.close();
 	} else
 		console.log("no link to DB");
@@ -180,19 +177,18 @@ const getAll = function(state, inprogress) {
 	if (link) {
 		where += ((state == undefined ? '' : 'AND  state=' + parseInt(state)));
 		if (inprogress != undefined) {
-			where += (inprogress == true ? ' AND position>0'
-					: ' AND (position IS NULL OR position=0)');
+			where += (inprogress == true ? ' AND position>0' : ' AND (position IS NULL OR position=0)');
 		}
-		const sql = 'select image,duration,position,title,author,id,url,description,faved,state,pubdate from pool '
-				+ where + ' ORDER BY faved DESC, pubdate DESC ';
+		const sql = 'select image,duration,position,title,author,id,url,description,faved,state,pubdate from pool ' + where + ' ORDER BY faved DESC, pubdate DESC ';
 		const found = link.execute(sql);
 		while (found.isValidRow() == true) {
-			const duration = parseInt(found.field(1) || 1000 * 60 * 60); // ms.
-			const position = parseInt(found.field(2) || 0); // ms
+			const duration = parseInt(found.field(1) || 1000 * 60 * 60);
+			// ms.
+			const position = parseInt(found.field(2) || 0);
+			// ms
 			const image = found.field(0);
 			res.push({
-				image : image ? image.replace('jpeg?w=1800', 'jpeg?w=200')
-						: '/images/defaultmage.png',
+				image : image ? image.replace('jpeg?w=1800', 'jpeg?w=200') : '/images/defaultmage.png',
 				title : found.field(3),
 				author : found.field(4),
 				position : position,
@@ -203,10 +199,8 @@ const getAll = function(state, inprogress) {
 				state : found.field(9),
 				duration : duration,
 				progress : position / duration,
-				durationstring : isNaN(duration) ? "" : new Date(duration)
-						.toISOString().substr(11, 8),
-				positionstring : isNaN(position) ? "" : new Date(position)
-						.toISOString().substr(11, 8),
+				durationstring : isNaN(duration) ? "" : new Date(duration).toISOString().substr(11, 8),
+				positionstring : isNaN(position) ? "" : new Date(position).toISOString().substr(11, 8),
 				duration : duration,
 				position : position,
 
@@ -221,7 +215,7 @@ const getAll = function(state, inprogress) {
 
 const syncWithRSS = function(onReady) {
 	const now = new Date().getTime() / 1000;
-	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC", 0.0) < 36) {
+	if (now - Ti.App.Properties.getDouble("TIMESTAMP_OF_LAST_SYNC", 0.0) < 3600*24) {
 		console.log("we save the world and use the cached version");
 		onReady();
 		return;
@@ -230,56 +224,49 @@ const syncWithRSS = function(onReady) {
 	var numberOfNewItems = 0;
 	var count = FEEDS.length;
 	/* start native HTTPClient: */
-	FEEDS
-			.forEach(function(feed) {
-				var sender = feed.id;
-				var start = new Date().getTime();
-				require("de.appwerft.podcast")
-						.loadPodcast(
-								{
-									url : feed.url,
-									timeout : 10000,
-									userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
-								},
-								function(_e) {
-									
-									if (!_e.channel){
-										console.log("server not responding");
-										onReady();
-										return;
-									}
-									Ti.App.Properties.setDouble(
-											"TIMESTAMP_OF_LAST_SYNC",
-											new Date().getTime() / 1000);
-									numberOfNewItems += _e.channel.item.length;
-									start = new Date().getTime();
-									var link = Ti.Database.open(DB);
-									if (link) {
-										link.execute("BEGIN TRANSACTION");
-										_e.channel.item
-												.forEach(function(item) {
-													insertOrUpdateItem(item,
-															link, feed);
-												});
-										link.execute("COMMIT");
-										link.close();
-									}
-									count--;
-									if (count == 0) {
-										console.log("Count of imported datasets: "+ numberOfNewItems);
-										onReady();
-									}	
-								});
-			});
+	FEEDS.forEach(function(feed) {
+		var sender = feed.id;
+		var start = new Date().getTime();
+		require("de.appwerft.podcast").loadPodcast({
+			url : feed.url,
+			timeout : 10000,
+			userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:46.0) Gecko/20100101 Firefox/46.0"
+		}, function(_e) {
+
+			if (!_e.channel) {
+				console.log("server not responding");
+				onReady();
+				return;
+			}
+			Ti.App.Properties.setDouble("TIMESTAMP_OF_LAST_SYNC", new Date().getTime() / 1000);
+			numberOfNewItems += _e.channel.item.length;
+			start = new Date().getTime();
+			var link = Ti.Database.open(DB);
+			if (link) {
+				link.execute("BEGIN TRANSACTION");
+				_e.channel.item.forEach(function(item) {
+					insertOrUpdateItem(item, link, feed);
+				});
+				link.execute("COMMIT");
+				link.close();
+			}
+			count--;
+			if (count == 0) {
+				console.log("Count of imported datasets: " + numberOfNewItems);
+				onReady();
+			}
+		});
+	});
 };
 
 function insertOrUpdateItem(_item, _link, _feed) {
-	var title, author;
+	var title,
+	    author;
 	var m;
-	if (m = _item.title.match(/^(.*?):\s(.*)/)) {
+	if ( m = _item.title.match(/^(.*?):\s(.*)/)) {
 		title = m[2];
 		author = m[1];
-	} else if (m = _item.title.match(/(.*?)\svon\s(.*)/)) {
+	} else if ( m = _item.title.match(/(.*?)\svon\s(.*)/)) {
 		title = m[1];
 		author = m[2];
 	} else
@@ -317,34 +304,22 @@ function insertOrUpdateItem(_item, _link, _feed) {
 	const found = _link.execute('select * from pool  where url=?', item.url);
 	if (found.isValidRow()) {
 		found.close();
-		_link
-				.execute(
-						"update pool set description=?,image=?,duration=?,author=?, title=? where url=?",
-						item.description, item.image, item.duration,
-						item.author, item.title, item.url);
+		_link.execute("update pool set description=?,image=?,duration=?,author=?, title=? where url=?", item.description, item.image, item.duration, item.author, item.title, item.url);
 
 	} else {
-		_link
-				.execute(
-						"insert into pool (author, weblink,title,description,image,url,duration,faved,state,pubdate) values (?,?,?,?,?,?,?,?,?,?)",
-						item.author, item.weblink, item.title,
-						item.description, item.image, item.url, item.duration,
-						Math.round(new Date().getTime() / 1000), 0,
-						item.pubDate);
+		_link.execute("insert into pool (author, weblink,title,description,image,url,duration,faved,state,pubdate) values (?,?,?,?,?,?,?,?,?,?)", item.author, item.weblink, item.title, item.description, item.image, item.url, item.duration, Math.round(new Date().getTime() / 1000), 0, item.pubDate);
 	}
 
 }
 
 const isFile = function(url) {
 	const filename = url.substring(url.lastIndexOf('/') + 1);
-	return Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,
-			filename).exists();
+	return Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, filename).exists();
 	;
 };
 
 const File = function(url) {
-	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,
-			stripFilename(url));
+	const file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, stripFilename(url));
 	return file.exists ? file : null;
 };
 
@@ -358,15 +333,14 @@ Downloader.onDone = function(e) {
 };
 
 const downloadFile = function(originalUrl, title) {
-	const filename = stripFilename(originalUrl), file = Ti.Filesystem.getFile(
-			Ti.Filesystem.externalStorageDirectory, filename);
+	const filename = stripFilename(originalUrl),
+	    file = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory, filename);
 	/*
 	 * Pifall: this url is not equal the url of getDownloads, the manager
 	 * resolves the redirects
 	 */
 	const Request = Downloader.createRequest(originalUrl);
-	Request.setNotificationVisibility(Request.VISIBILITY_VISIBLE)
-			.setDestinationFile(file).setTitle(title).setDescription(filename);
+	Request.setNotificationVisibility(Request.VISIBILITY_VISIBLE).setDestinationFile(file).setTitle(title).setDescription(filename);
 	const id = Downloader.enqueue(Request);
 	Downloader.getAllDownloadStates().forEach(function(dl) {
 		console.log(dl);
@@ -385,15 +359,20 @@ function syncWithDownloadManager() {
 			console.log(dl);
 			var state = STATE_ONLINE;
 			switch (dl.state) {
-			case Downloader.STATUS_SUCCESSFUL: // 8
+			case Downloader.STATUS_SUCCESSFUL:
+				// 8
 				state = STATE_SAVED;
 				break;
-			case Downloader.STATUS_FAILED: // 16
+			case Downloader.STATUS_FAILED:
+				// 16
 				state = STATE_ONLINE;
 				break;
-			case Downloader.STATUS_PAUSED: // 4
-			case Downloader.STATUS_PENDING: // 1
-			case Downloader.STATUS_RUNNING: // 2
+			case Downloader.STATUS_PAUSED:
+			// 4
+			case Downloader.STATUS_PENDING:
+			// 1
+			case Downloader.STATUS_RUNNING:
+				// 2
 				state = STATE_ONLINE;
 				break;
 			}
@@ -404,13 +383,11 @@ function syncWithDownloadManager() {
 		});
 
 		link.execute("COMMIT");
-		link.execute("UPDATE `pool` SET state=?,position=0 WHERE id IS NULL",
-				STATE_ONLINE);
+		link.execute("UPDATE `pool` SET state=?,position=0 WHERE id IS NULL", STATE_ONLINE);
 		link.close();
 		Ti.App.fireEvent('renderPool', {});
 	}
-	console.log(":::::::::Runtime for syncWithDownloadManager: "
-			+ (new Date().getTime() - start));
+	console.log(":::::::::Runtime for syncWithDownloadManager: " + (new Date().getTime() - start));
 }
 
 setTimeout(syncWithDownloadManager, 1555);

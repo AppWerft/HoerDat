@@ -3,9 +3,9 @@ const Moment = require("vendor/moment");
 
 module.exports = function(args) {
 	/*if (Ti.App.Properties.hasProperty(args.date)) {
-		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
-		return;
-	}*/
+	 args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
+	 return;
+	 }*/
 	if (Ti.Network.online == false) {
 		args.onload([]);
 		return;
@@ -17,7 +17,8 @@ module.exports = function(args) {
 			if (Doc) {
 				Doc.select("table").forEach(function(table) {
 					if (!table.hasClassName("mit") && !table.hasClassName("form")) {
-						sendungen.push(getSendung(table.getChild(1)));
+						const sendung = getSendung(table.getChild(1));
+						sendung && sendungen.push(sendung);
 					}
 				});
 				Ti.App.Properties.setString(args.date, JSON.stringify(sendungen));
@@ -29,6 +30,24 @@ module.exports = function(args) {
 	return;
 
 };
+function getMitwirkende(td) {
+	var mitwirkende = [];
+	const table = td.getChild(0);
+	if (!table) return mitwirkende;
+	const tbody = table.getChild(0);
+	if (!tbody) return mitwirkende;
+	tbody.getChildren().forEach(function(tr) {
+		var person = {};
+		tr.getChildren().forEach(function(td) {
+			if (td.hasClassName("rol"))
+				person.rol = td.getText();
+			if (td.hasClassName("mit"))
+				person.mit = td.getText();
+		});
+		mitwirkende.push(person);
+	});
+	return mitwirkende;
+}
 
 function getSendung(item) {
 	var sendung = {};
@@ -44,7 +63,7 @@ function getSendung(item) {
 			var key = tdleft.getText();
 			switch (key) {
 			case 'Sendetermine:':
-				const html = tdright.getHtml().split('<br>')[0].replace(/\(angekündigte Länge: ([0-9:]+)\)/,"");
+				const html = tdright.getHtml().split('<br>')[0].replace(/\(angekündigte Länge: ([0-9:]+)\)/, "");
 				sendung.stationlogo = '/images/mini/' + html.split(' - ')[0].toLowerCase()//
 				.replace(/\s/g, '')//
 				.replace(/ö/g, 'oe')//
@@ -78,7 +97,7 @@ function getSendung(item) {
 				sendung.uebersetzer = tdright.getHtml().replace(/<br>/, '\n');
 				break;
 			case 'Mitwirkende:':
-				sendung.mitwirkende = tdright.toString();
+				sendung.mitwirkende = getMitwirkende(tdright);
 				break;
 			}
 

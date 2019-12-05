@@ -38,20 +38,41 @@ module.exports = function() {
 	 ndx : 3
 	 }));*/
 	$.setActiveTab(Ti.App.Properties.getInt("ACTIVE_TAB", 1));
-	
+
 	$.addEventListener('close', function() {
 		Ti.App.fireEvent('stopRadio');
 	});
 
-	$.getTabs().forEach(function(_tab,_index) {
+	$.getTabs().forEach(function(_tab, _index) {
+		var sc = Ti.UI.createShortcutItem({
+			id : 'shortcut::' + _index,
+			title : _tab.title,
+			icon : _tab.icon,
+			description : _tab.title,
+		});
+		//		sc.pin();
+		if (Ti.App.Properties.getInt("ACTIVE_TAB", 1) == _index) {
+			sc.show();
+		}
 		_tab.addEventListener('selected', function(_e) {
 			Ti.App.Properties.setInt('ACTIVE_TAB', $.getActiveTab().ndx);
 			Ti.App.fireEvent('app:tabchanged', {
-					hasDrawer : $.getActiveTab().hasDrawer
-				});
+				hasDrawer : $.getActiveTab().hasDrawer
+			});
+			var tab = $.getActiveTab();
+			var sc = Ti.UI.createShortcutItem({
+				id : 'shortcut::' + tab.ndx,
+				title : tab.title,
+				description : tab.title,
+			});
+			//sc.show();
 		});
 	});
-
+	Ti.App.addEventListener('shortcutitemclick', function(e) {
+		console.log('#########');
+		console.log(e);
+		$.setActiveTab(1);
+	});
 	return $;
 };
 /*

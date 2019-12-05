@@ -71,28 +71,7 @@ module.exports = function(_tabgroup) {
 	 });
 	 $.searchBar.addEventListener('cancel', $.searchBar.blur);*/
 	$.statisticView = require('ui/common/statisticview')(STATHEIGHT);
-	const HEIGHT_OF_HANDLER_SHORT = 80,
-	    HEIGHT_OF_HANDLER_LONG = 300;
-	$.swipeHandler = Ti.UI.createView({
-		top : 0,
-		height : HEIGHT_OF_HANDLER_SHORT,
-		zIndex : 999
-	});
-	/*$.swipeHandler.addEventListener('swipe', function(e) {
-		if (e.direction == 'down') {
-			$.swipeHandler.height = HEIGHT_OF_HANDLER_LONG;
-			$.container.animate({
-				top : 400
-			});
-		} else {
-			$.container.animate({
-				top : STATHEIGHT
-			});
-			$.swipeHandler.height = HEIGHT_OF_HANDLER_SHORT;
-		}
-	});*/
-	//$.add($.statisticView);
-	$.add($.swipeHandler);
+
 	$.container = Ti.UI.createView({
 		backgroundColor : 'white'
 	});
@@ -104,8 +83,7 @@ module.exports = function(_tabgroup) {
 		$.drawer.toggleLeft();
 	});
 	$.add($.drawer);
-	//$.add($.container);
-	// {"files":10,"externalTotal":5951,"externalFree":2319,"bytesconsumed":486}
+
 	$.poolList = Ti.UI.createListView({
 		top : 0,
 		caseInsensitiveSearch : true,

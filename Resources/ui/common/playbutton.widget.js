@@ -13,10 +13,10 @@ module.exports = function(onClick) {
 	});
 	$.setPlay = function() {
 		$.children[0].backgroundImage = PAUSE;
-	}
+	};
 	$.setPause = function() {
 		$.children[0].backgroundImage = PLAY;
-	}
+	};
 
 	$.add(Ti.UI.createView({
 		touchEnabled : false,

@@ -25,14 +25,11 @@ module.exports = function(_tabgroup, renderParentSections) {
 					$.close();
 				};
 			};
-
-			// activity.actionBar.displayHomeAsUp = true;
-			// activity.invalidateOptionsMenu();
 		} else
 			console.log("win has no activity");
 		setTimeout(function() {
 			$.add(require('ui/common/onlinepool.list')());
-		}, 50);
+		}, 100);
 	});
 	
 	return $;

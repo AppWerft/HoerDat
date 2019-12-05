@@ -1,70 +1,74 @@
 const Permissions = require('vendor/permissions');
-const STATUS_ONLINE = 0, STATUS_PROGRESS = 1, STATUS_SAVED = 2;
-const TEMPLATES = [ 'pool_online' ];
+const STATUS_ONLINE = 0,
+    STATUS_PROGRESS = 1,
+    STATUS_SAVED = 2;
+const TEMPLATES = ['pool_online'];
 const Pool = require("controls/pool");
 const ProgressBar = require("com.artanisdesign.tismoothprogressbar");
 
 function getDataItems(state, position, ndx) {
-	const allItems=Pool.getAll(state, position);
-	return allItems.map(
-			function(item) {
-				var duration = 'Dauer: ' + item.durationstring;
-				if (item.position)
-					duration += ' | gehört: ' + item.positionstring;
-				return {
-					properties : {
-						accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
-						searchableText : item.title + item.author
-								+ item.description,
-						itemId : JSON.stringify({
-							url : item.url,
-							title : item.title,
-							cover : item.image,
-							position : item.position,
-							description : item.description,
-							duration : item.duration
-						})
-					},
-					searchableText : 'title',
-					template : TEMPLATES[ndx],
-					title : {
-						text : item.title
-					},
-					cached : {
-						opacity : item.cached ? 0.5 : 0
-					},
-					author : {
-						text : item.author,
-						height : item.author ? 20 : 0
-					},
-					description : {
-						text : item.description ? item.description : ""
-					},
-					logo : {
-						image : item.image 
-					},
-					duration : {
-						text : duration
-					}
-				};
-			});
-	
-	
+	const allItems = Pool.getAll(state, position);
+	return allItems.map(function(item) {
+		var duration = 'Dauer: ' + item.durationstring;
+		if (item.position)
+			duration += ' | gehört: ' + item.positionstring;
+		return {
+			properties : {
+				accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+				searchableText : item.title + item.author + item.description,
+				itemId : JSON.stringify({
+					url : item.url,
+					title : item.title,
+					cover : item.image,
+					position : item.position,
+					description : item.description,
+					duration : item.duration
+				})
+			},
+			searchableText : 'title',
+			template : TEMPLATES[ndx],
+			title : {
+				text : item.title
+			},
+			cached : {
+				opacity : item.cached ? 0.5 : 0
+			},
+			author : {
+				text : item.author,
+				height : item.author ? 20 : 0
+			},
+			description : {
+				text : item.description ? item.description : ""
+			},
+			logo : {
+				image : item.image
+			},
+			duration : {
+				text : duration
+			}
+		};
+	});
+
 };
 
 module.exports = function(_lcc) {
+	function getCountOfItems() {
+		return $.poolList.sections[0].items.length;
+	}
+
 	function setSections() {
 		$.progressBar.height = 5;
-		$.poolList.top=5;
+		$.poolList.top = 5;
 		const start = new Date().getTime();
 		const newitems = getDataItems(STATUS_ONLINE, false, 2);
-		
-		//if (newitems && newitems.length != $.poolList.sections[0].items.length) {
+		if (newitems && newitems.length != getCountOfItems()) {
 			$.poolList.sections[0].items = newitems;
-			$.progressBar.height = 0;
-			$.poolList.top=0;
-		//} else console.log("was same data length " + newitems.lenght);
+		}
+		$.progressBar.height = 0;
+		$.poolList.top = 0;
+		console.log("was same data length " + newitems.length);
 	}
+
 	const $ = Ti.UI.createView({
 		backgroundImage : '/images/bg.png'
 	});
@@ -96,47 +100,49 @@ module.exports = function(_lcc) {
 	$.searchBar.addEventListener('cancel', $.searchBar.blur);
 	$.poolList = Ti.UI.createListView({
 		top : 5,
+		fastScroll :true,
+		refreshControl : Ti.UI.createRefreshControl({
+			tintColor : '#225588'
+		}),
 		caseInsensitiveSearch : true,
 		templates : {
 			'pool_online' : require('TEMPLATES').pool_online,
 		},
 		defaultItemTemplate : 'pool_online',
-		sections : [ Ti.UI.createListSection() ]
+		sections : [Ti.UI.createListSection()]
 	});
-
+	$.poolList.refreshControl.addEventListener('refreshstart', function() {
+		Pool.syncWithRSS(setSections);
+		setTimeout(function() {
+			$.poolList.refreshControl.endRefreshing();
+			
+		}, 2000);
+	});
 	setSections();
 	// https://github.com/prashantsaini1/scrollable_animation
-	
+
 	$.progressBar.height = 5;
 	Pool.syncWithRSS(setSections);
 	$.add($.poolList);
 
-	$.poolList
-			.addEventListener(
-					'itemclick',
-					function(e) {
-						started = true;
-						Permissions
-								.requestPermissions(
-										[ 'WRITE_EXTERNAL_STORAGE' ],
-										function(success) {
-											if (success) {
-												const url = JSON
-														.parse(e.itemId).url, title = JSON
-														.parse(e.itemId).title;
-												if (!url)
-													return;
-												Pool.downloadFile(url,title);
-													setSections();
-													Ti.UI.createNotification(
-																	{
-																		message : "Dieses Stück wird jetzt im Hintergrund runtergeholt und ist alsbald verfügbar.\nFortschritt im Tray verfolgbar"
-																	}).show();
-												
-											}
-										});
+	$.poolList.addEventListener('itemclick', function(e) {
+		started = true;
+		Permissions.requestPermissions(['WRITE_EXTERNAL_STORAGE'], function(success) {
+			if (success) {
+				const url = JSON.parse(e.itemId).url,
+				    title = JSON.parse(e.itemId).title;
+				if (!url)
+					return;
+				Pool.downloadFile(url, title);
+				setSections();
+				Ti.UI.createNotification({
+					message : "Dieses Stück wird jetzt im Hintergrund runtergeholt und ist alsbald verfügbar.\nFortschritt im Tray verfolgbar"
+				}).show();
 
-					});
+			}
+		});
+
+	});
 
 	$.filterButton = require('ui/common/filterbutton.widget')({
 		onShow : function() {

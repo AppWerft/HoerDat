@@ -14,7 +14,7 @@ var wasLastPingSuccessful = false;
 var audioSessionId;
 
 function LOG() {
-	console.log('🛠AAS: ' + arguments[0]);
+	//console.log('🛠AAS: ' + arguments[0]);
 }
 
 function requestOnlinestate(_cb) {
@@ -60,9 +60,8 @@ var callbackFn;
 
 function onPlayerChange(_e) {
 	var status = _e.status;
-	// LOG(status + ' ' + PLAYING + ' ' + JSON.stringify(currentStation.id));
 	if (status == PLAYING)
-		Favs.increment(currentStation.id);
+		Favs.increment(currentStation.station);
 	if (!Ti.Network.online) {
 		// status = STATUS[OFFLINE];
 		Ti.UI.createNotification({
@@ -133,6 +132,7 @@ StreamingPlayer.addEventListener('metadata', onMetaData);
 StreamingPlayer.addEventListener('change', onPlayerChange);
 
 var currentStation = {};
+
 exports.init = function(lifecycleContainer, icon) {
 	Notification = AudioNotification.createNotification({
 		lifecycleContainer : lifecycleContainer,
@@ -143,9 +143,10 @@ exports.init = function(lifecycleContainer, icon) {
 exports.play = function(station, _callbackFn) {
 	LOG(station);
 	currentStation.title = station.title;
-	currentStation.id = station.id;
+	currentStation.station = station.station;
 	currentStation.url = station.url;
 	currentStation.largeIcon = station.logo;
+	console.log(currentStation)
 	callbackFn = _callbackFn;
 	if (currentStation.url != undefined
 			&& typeof currentStation.url == 'string') {

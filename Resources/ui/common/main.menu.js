@@ -1,36 +1,34 @@
 var ABX = require('com.alcoapps.actionbarextras');
 
 /* this module will called from _e.source on open event */
-module.exports = function() {
-	const lifecyclecontainer = arguments[0].source;
-	if (!lifecyclecontainer)
+module.exports = function(e) {
+	const $ = e.source;
+	if (!$)
 		return;
-	const activity = lifecyclecontainer.activity;
+	const activity = $.activity;
 	if (activity) {
-		const actionBar = activity.actionBar;
-		if (actionBar) {
-			Ti.App.addEventListener('app:tabchanged', function(payload){
-				actionBar.displayHomeAsUp = payload.hasDrawer;
-			});
-			actionBar.onHomeIconItemSelected = function() {
-				Ti.App.fireEvent("app:toggleleft",{});
+		$.actionBar = activity.actionBar;
+		if ($.actionBar) {
+			$.actionBar.displayHomeAsUp = true;
+			$.actionBar.onHomeIconItemSelected = function() {
+				const activeTab = $.getActiveTab();
+				activeTab.window.children[0].toggleLeft();
 			};
-		}
+		} else
+			console.log("no ACTIONBAR!!!")
 		activity.onCreateOptionsMenu = function(_menu) {
-			/*const menuItem = _menu.menu.add({
-			 title : 'Audio',
-			 icon : Ti.App.Android.R.drawable.ic_action_audio,
-			 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-			 });
-			 menuItem && menuItem.addEventListener("click", function(_e) {
-			 require('ui/common/audioselector.widget')();
-			 });*/
+			const menuItem = _menu.menu.add({
+				title : 'Einstellungen',
+				icon : Ti.App.Android.R.drawable.ic_action_settings,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+			}).addEventListener("click", () => {require('ui/common/settings.window')().open();});
 		};
 		activity.invalidateOptionsMenu();
-	}
+	} else
+		console.log("no ACTIVITY !!");
 	ABX.title = 'HörDat';
 	ABX.subtitle = 'Dein Hörspielkalender';
 	ABX.titleFont = "Rambla-Bold";
-	ABX.subtitleColor = "#ccc";
+	ABX.subtitleColor = "#ddd";
 	ABX.backgroundColor = "#225588";
 };

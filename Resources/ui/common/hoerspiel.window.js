@@ -3,21 +3,38 @@ Moment.locale('de');
 const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
 const Pool = require("controls/pool");
 const ID3 = require("de.appwerft.mp3agic");
-const visualizerView = require('ui/common/visualizer.widget')();
-var audioPlayer = Ti.Media.createAudioPlayer({
-	allowBackground : true,
-	audioFocus : true
-});
+var start = new Date().getTime();
+function Log(foo) {
+	//console.log((new Date().getTime() - start) + ' ' + foo);
+	start = new Date().getTime();
+}
 
 module.exports = function(opts, renderParentSections) {
+	
+	function startAudioPlayer() {
+		Ti.App.fireEvent('stopRadio');
+		$.audioPlayer.url = mp3file.nativePath;
+		$.audioPlayer.time = Pool.getPosition(opts.id);
+		$.audioPlayer.start();
+		$.audioPlayer.itemId = $.itemId;
+		$.playcontrolButton && $.playcontrolButton.setPlay();
+		$ && $.add($.visualizerView);
+	}
+
+	function onProgress(e) {
+		const progress = e.progress / duration;
+		progressViews.setProgress(progress);
+		Pool.setPosition(opts.id, progress * duration);
+	}
+
 	var HEIGHT;
-	const start = new Date().getTime();
 	const duration = opts.duration,
-	    position = Pool.getPosition(opts.id),
+	    progress = Pool.getPosition(opts.id),
 	    url = opts.url,
 	    cover = opts.cover,
 	    mp3file = Pool.getCachedFile(url);
-	const $ = Ti.UI.createWindow({
+	Log("get data from pool");
+	var $ = Ti.UI.createWindow({
 		fullscreen : false,
 		backgroundColor : '#225588',
 		itemId : opts.id,
@@ -26,8 +43,18 @@ module.exports = function(opts, renderParentSections) {
 			subtitle : opts.title
 		}
 	});
-
+	Log("createWindow");
+	$.visualizerView = require('ui/common/visualizer.widget')();
+	Log("visualizerView created");
+	$.audioPlayer = Ti.Media.createAudioPlayer({
+		allowBackground : true,
+		audioFocus : true
+	});
+	Log("createAudioPlayer");
+	const progressViews = require('ui/common/progressviews.widget').createProgressViews(duration);
+	Log("createProgressView");
 	setTimeout(function() {
+		Log("Start timeout");
 		$.topContainer = Ti.UI.createView({
 			top : 0,
 			height : SCREENWIDTH
@@ -40,15 +67,12 @@ module.exports = function(opts, renderParentSections) {
 			image : cover
 		});
 		$.topContainer.add($.topView);
-		$.progressLabel = Ti.UI.createLabel({
-			text : '00:00',
-			bottom : 5,
-			left : 5,
-			font : {
-				fontSize : 32
-			}
-		});
+		Log("topContainer added");
+		$.topContainer.add(progressViews.getLabelView());
+		$.topContainer.add(progressViews.getBarView());
+		Log("Progress added");
 		function onPostlayout(e) {
+			Log("onPostlayout");
 			$.topView.removeEventListener("postlayout", onPostlayout);
 			HEIGHT = e.source.size.height;
 			$.topContainer.height = HEIGHT;
@@ -60,126 +84,69 @@ module.exports = function(opts, renderParentSections) {
 				height : 100
 			});
 			$.topContainer.add($.thumbView);
-
-			$.topConatiner.add($.progressLabel);
-
+			Log("thunbView added");
 			$.playcontrolButton = require('ui/common/playbutton.widget')(function() {
-				if (audioPlayer.playing) {
-					$.remove(visualizerView);
-					audioPlayer.pause();
+				if ($.audioPlayer.playing) {
+					$.remove($.visualizerView);
+					$.audioPlayer.pause();
 					$.playcontrolButton.setPause();
 				} else {
-					Ti.App.fireEvent('stopRadio');
-					audioPlayer.url = mp3file.nativePath;
-					audioPlayer.time = Pool.getPosition(opts.id);
-					audioPlayer.start();
-					audioPlayer.itemId = $.itemId;
-					$.playcontrolButton.setPlay();
-					$.add(visualizerView);
+					startAudioPlayer();
 				}
 			});
+			Log("PlaycontrolButton created");
 			$.topContainer.add($.playcontrolButton);
-			if (mp3file && ID3.getId3v2Tag(mp3file)) {
-				const albumimage = ID3.createAlbumImage({
-					image : mp3file,
-				});
-				albumimage && $.thumbView.add(albumimage);
-			} else
-				console.log("mp3 has no id3v2");
+			Log("PlaycontrolButton added");
+			progressViews.setProgress(progress / duration);
+			startAudioPlayer();
+			Log("Player startet");
+			setTimeout(function() {
+				if (mp3file && ID3.getId3v2Tag(mp3file)) {
+					const albumimage = ID3.createAlbumImage({
+						image : mp3file,
+					});
+					albumimage && $.thumbView.add(albumimage);
+				} else
+					console.log("mp3 has no id3v2");
+			}, 500);
 		}
-
-
 		$.topView.addEventListener("postlayout", onPostlayout);
-		function onProgress(e) {
-			$.progressView.width = e.progress / duration * 100 + '%';
-			Pool.setPosition(opts.id, e.progress);
-		}
-
-
-		audioPlayer.removeEventListener('progress', onProgress);
-		audioPlayer.addEventListener('progress', onProgress);
+		$.audioPlayer.removeEventListener('progress', onProgress);
+		$.audioPlayer.addEventListener('progress', onProgress);
 		$.add($.topContainer);
-
-		$.progressView = Ti.UI.createView({
-			top : 0,
-			left : 0,
-			height : 10,
-			width : (position / duration * 100) + '%',
-			backgroundColor : 'orange'
-		});
-		$.topContainer.add($.progressView);
-
 		$.topContainer.addEventListener('singletap', function(e) {
 			Ti.Media.vibrate([10]);
 			if (e.y < 50) {
-				$.progressView.width = (e.x / SCREENWIDTH) * 100 + '%';
-				audioPlayer.time = e.x / SCREENWIDTH * duration;
+				const progress = e.x / SCREENWIDTH;
+				progressViews.setProgress(progress);
+				$.audioPlayer.time = progress * duration;
+				Pool.setPosition($.itemId, progress * duration);
 			}
 		});
-		$.bottomContainer = Ti.UI.createScrollView({
-			scrollType : 'vertical',
-			layout : 'vertical',
-			backgroundColor : 'white',
-			top : SCREENWIDTH
-
-		});
-		$.bottomContainer.add(Ti.UI.createLabel({
-			text : opts.title,
-			left : 10,
-			right : 10,
-			top : 10,
-			color : '#225588',
-			width : Ti.UI.FILL,
-			height : Ti.UI.SIZE,
-			font : {
-				fontSize : 24,
-				fontWeight : 'bold',
-				fontFamily : 'Rambla-Bold'
-			}
-
-		}));
-		if (opts.author && opts.author.length) {
-			$.bottomContainer.add(Ti.UI.createLabel({
-				text : opts.author,
-				left : 10,
-				right : 10,
-				top : 5,
-				color : '#444',
-				width : Ti.UI.FILL,
-				height : Ti.UI.SIZE,
-				font : {
-					fontSize : 18,
-					fontWeight : 'bold',
-					fontFamily : 'Rambla-Bold'
-				}
-
-			}));
-		}
-		$.bottomContainer.add(Ti.UI.createLabel({
-			text : opts.description + "\n\n\n	",
-			left : 10,
-			right : 10,
-			font : {
-				fontSize : 18,
-				fontFamily : 'Rambla'
-			},
-			top : 5,
-			color : 'black',
-			width : Ti.UI.FILL,
-			height : Ti.UI.SIZE
-		}));
+		$.bottomContainer = require('ui/common/hoerspiel.bottomcontainer.widget')(opts);
 		$.add($.bottomContainer);
+		Log("bottomContainer added");
 		$.addEventListener('close', function() {
-			audioPlayer.removeEventListener('progress', onProgress);
-			$.remove(visualizerView);
+			Log("Start closing");
+			$.visualizerView = null;
+			$.audioPlayer.removeEventListener('progress', onProgress);
+			$.audioPlayer.removeEventListener('complete', onComplete);
+			Log("listener removed");
+			$.removeAllChildren();
+			Log("removeAllChildren");
+			$.audioPlayer.stop();
+			$.audioPlayer.release();
+			$.audioPlayer = null;
+			Log("audio killed");
 			renderParentSections();
-			audioPlayer.stop();
-			audioPlayer.release();
+			Log("parent refreshed");
+			$=null;
 		});
-		audioPlayer.addEventListener('complete', function() {
+		const onComplete = function() {
 			require('ui/common/audiodialog.widget')($);
-		});
-	}, 250);
+		};
+		$.audioPlayer.addEventListener('complete', onComplete);
+	}, 300);
 	$.addEventListener('open', require('ui/common/podcast.menu'));
 	return $;
 };

@@ -71,6 +71,7 @@
         <module platform="android">de.appwerft.a2dp</module>
         <module platform="android">de.appwerft.downloadmanager</module>
         <module platform="android">com.artanisdesign.tismoothprogressbar</module>
+        <module platform="android">bencoding.alarmmanager</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

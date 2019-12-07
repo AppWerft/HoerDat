@@ -2,10 +2,10 @@ const Soup = require("de.appwerft.soup");
 const Moment = require("vendor/moment");
 
 module.exports = function(args) {
-	/*if (Ti.App.Properties.hasProperty(args.date)) {
-	 args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
-	 return;
-	 }*/
+	if (Ti.App.Properties.hasProperty(args.date)) {
+		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
+		return;
+	}
 	if (Ti.Network.online == false) {
 		args.onload([]);
 		return;
@@ -14,8 +14,10 @@ module.exports = function(args) {
 	var Doc = Soup.createDocument({
 		url : 'http://s507870211.online.de/index.php?aktion=suche&dat=' + args.date,
 		onload : function() {
-			if (Doc) {
-				Doc.select("table").forEach(function(table) {
+			if (!!Doc) {
+				const tables = Doc.select("table");
+				if (!tables) return;
+				tables.forEach(function(table) {
 					if (!table.hasClassName("mit") && !table.hasClassName("form")) {
 						const sendung = getSendung(table.getChild(1));
 						sendung && sendungen.push(sendung);
@@ -26,16 +28,16 @@ module.exports = function(args) {
 			}
 		}
 	});
-
 	return;
-
 };
 function getMitwirkende(td) {
 	var mitwirkende = [];
 	const table = td.getChild(0);
-	if (!table) return mitwirkende;
+	if (!table)
+		return mitwirkende;
 	const tbody = table.getChild(0);
-	if (!tbody) return mitwirkende;
+	if (!tbody)
+		return mitwirkende;
 	tbody.getChildren().forEach(function(tr) {
 		var person = {};
 		tr.getChildren().forEach(function(td) {
@@ -71,7 +73,7 @@ function getSendung(item) {
 				.replace(/\-/g, '') + '.png';
 				sendung.start = getTime(html.split(' - ')[1]).start.toISOString();
 				sendung.meta = getTime(html.split(' - ')[1]).meta;
-
+				sendung.sender = html.split(' - ')[0];
 				break;
 			case 'Autor(en):':
 				sendung.autor = tdright.getHtml().replace(/<br>/, '\n');

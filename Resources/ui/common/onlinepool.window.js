@@ -12,9 +12,9 @@ module.exports = function(_tabgroup, renderParentSections) {
 	});
 	$.addEventListener('close', renderParentSections);
 	$.addEventListener('open', function(_e) {
-		ABX.title = 'ARD - Hörspiele';
+		ABX.title = 'Hörspiele';
 		ABX.backgroundColor = "#225588";
-		ABX.subtitle = 'Runderladerampe';
+		ABX.subtitle = 'Runderlader';
 		ABX.titleFont = "Rambla-Bold";
 		ABX.subtitleColor = "#ccc";
 		const activity = $.activity;
@@ -31,8 +31,7 @@ module.exports = function(_tabgroup, renderParentSections) {
 			$.add(require('ui/common/onlinepool.list')());
 		}, 100);
 	});
-	
-	return $;
+		return $;
 };
 
 // https://github.com/kgividen/TiCircularSliderBtnWidget

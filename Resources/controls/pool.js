@@ -46,7 +46,6 @@ function stripFilename(originalUrl) {
 	if (originalUrl) {
 		const ndx = originalUrl.lastIndexOf('/');
 		const filename = originalUrl.substring(ndx + 1).replace(/\?assetId=(.*)/g, '');
-		console.log(filename);
 		return filename;
 	}
 	return null;
@@ -69,7 +68,6 @@ function removeDownload(id) {
 function setStateToProgress(localfile, id, url) {
 	const link = Ti.Database.open(DB);
 	link.execute('UPDATE pool SET id=?,state=?,localfile=? WHERE url=?', id, STATE_PROGRESS, stripFilename(localfile), url);
-	console.log("rowsAffected: " + link.rowsAffected);
 	link.close();
 }
 
@@ -122,9 +120,8 @@ function getStorageStatistics() {
 		}
 		curs.close();
 		link.close();
-		console.log(result);
 	} else
-		console.log("annot open DB " + DB);
+		console.log("cannot open DB " + DB);
 	return result;
 }
 
@@ -160,7 +157,6 @@ const setPosition = function(id, position) {
 };
 
 const resetPosition = function(id) {
-	console.log("RESET: " + id);
 	var link = Ti.Database.open(DB);
 	if (link) {
 		link.execute("UPDATE pool set position=0,faved=? WHERE id=?", new Date().getTime(), id);
@@ -328,7 +324,7 @@ Downloader.onComplete = function(e) {
 	Ti.App.fireEvent('renderPool', {});
 };
 Downloader.onDone = function(e) {
-	console.log(e);
+	
 	Ti.App.fireEvent('renderPool', {});
 };
 
@@ -350,13 +346,11 @@ const downloadFile = function(originalUrl, title) {
 };
 
 function syncWithDownloadManager() {
-	console.log(":::::::::::::::::::::::::::::::: syncWithDownloadManager");
 	var start = new Date().getTime();
 	var link = Ti.Database.open(DB);
 	if (link) {
 		link.execute("BEGIN TRANSACTION");
 		Downloader.getAllDownloadStates().forEach(function(dl) {
-			console.log(dl);
 			var state = STATE_ONLINE;
 			switch (dl.state) {
 			case Downloader.STATUS_SUCCESSFUL:
@@ -387,7 +381,6 @@ function syncWithDownloadManager() {
 		link.close();
 		Ti.App.fireEvent('renderPool', {});
 	}
-	console.log(":::::::::Runtime for syncWithDownloadManager: " + (new Date().getTime() - start));
 }
 
 setTimeout(syncWithDownloadManager, 1555);

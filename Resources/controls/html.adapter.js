@@ -66,6 +66,8 @@ function getSendung(item) {
 			switch (key) {
 			case 'Sendetermine:':
 				const html = tdright.getHtml().split('<br>')[0].replace(/\(angekündigte Länge: ([0-9:]+)\)/, "");
+				sendung.station = html.split(' - ')[0].toLowerCase();
+				console.log(sendung.station);
 				sendung.stationlogo = '/images/mini/' + html.split(' - ')[0].toLowerCase()//
 				.replace(/\s/g, '')//
 				.replace(/ö/g, 'oe')//

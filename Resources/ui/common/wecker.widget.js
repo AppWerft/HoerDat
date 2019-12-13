@@ -11,10 +11,11 @@ module.exports = function(item) {
 			status : status,
 			image : '/images/wecker_' + ( status ? 'active' : 'passiv') + '.png',
 			opacity : status ? 0.7 : 0.2,
-			bottom : 5,
-			left : 5,
-			width : 60,
-			height : 'auto'
+			top: 5,
+			
+			left : 10,
+			width : 50,
+			height : 25
 
 		});
 	} else

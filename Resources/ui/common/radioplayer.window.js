@@ -59,12 +59,13 @@ module.exports = function(_tabgroup, station, renderParentSections) {
 	// // START /////
 	var $ = Ti.UI.createWindow({
 		backgroundImage : '/images/bg.png',
+		//exitOnClose : !renderParentSections
 
 	});
 	$.addEventListener('close', function() {
 		stopPlayer();
 		$.removeAllChildren();
-		renderParentSections();
+		renderParentSections && renderParentSections();
 		$ = null;
 	});
 	$.addEventListener('open', _e => {
@@ -77,13 +78,13 @@ module.exports = function(_tabgroup, station, renderParentSections) {
 		if (activity != undefined && activity.actionBar != undefined) {
 			activity.onCreateOptionsMenu = _menu => {
 				activity.actionBar.displayHomeAsUp = true;
-				/*_menu.menu.add({
+				_menu.menu.add({
 					title : 'Record',
-					icon : Ti.App.Android.R.drawable.ic_action_download,
+					icon : Ti.App.Android.R.drawable.ic_action_record,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 					}).addEventListener("click", () => {
 						alert("Hier startet bald die Möglichkeit " + station.name + " live mitzuschneiden");
-					});*/
+					});
 				activity.invalidateOptionsMenu();
 
 				activity.actionBar.onHomeIconItemSelected = () => {

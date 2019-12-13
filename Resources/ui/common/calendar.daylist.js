@@ -42,11 +42,10 @@ module.exports = function(offs) {
 	}, Math.abs(offs) * Math.random() * 5000);
 
 	self.list.addEventListener('click', function(_e) {
-		var item = _e.rowData.itemId;
 		if (_e.source.status != undefined) {
 			_e.source.toggleStatus();
 		} else
-			require('ui/common/sendung.window')(item).open();
+			require('ui/common/sendung.window')(_e.rowData.itemId).open();
 	});
 
 	var tag = '';

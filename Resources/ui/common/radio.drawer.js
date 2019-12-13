@@ -8,6 +8,7 @@ module.exports = (PATH, updateStationMenu) => {
 		headerTitle : 'Verfügbare Radiostationen'
 	});
 	const onClick = (e) => {
+	    Ti.Media.vibrate();
 		const itemId = e.row.itemId;
 		if (e.row.children[0].value)
 			Favs.enable(itemId);
@@ -18,7 +19,6 @@ module.exports = (PATH, updateStationMenu) => {
 	$.addEventListener('click', onClick);
 	$.updateContent = () => {
 		$.data = Radiostations.map(require('ui/common/radio.drawer.row'));
-		console.log("radioDrawer updated");
 	};
 	return $;
 };

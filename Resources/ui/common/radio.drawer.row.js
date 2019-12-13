@@ -14,13 +14,15 @@ module.exports =  (station,i) => {
 			itemId : station.station
 		}));
 		$.add(Ti.UI.createView({
-			left : 5,
+			left : 7,
 			width : 45,
 			height : 45,
 			backgroundImage : '/images/mini/'+ station.station+ '.png',
 		}));
 		$.add(Ti.UI.createLabel({
 			left : 60,
+			right: 70,
+			textAlign:'left',
 			color : '#333',
 			font : {
 				fontFamily : 'Rambla',

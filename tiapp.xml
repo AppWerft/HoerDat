@@ -72,6 +72,8 @@
         <module platform="android">de.appwerft.downloadmanager</module>
         <module platform="android">com.artanisdesign.tismoothprogressbar</module>
         <module platform="android">bencoding.alarmmanager</module>
+        <module platform="android">ti.immersivemode</module>
+        <module platform="android">ti.ringtonemanager</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

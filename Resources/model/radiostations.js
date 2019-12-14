@@ -1,57 +1,35 @@
 module.exports = [{
-    station : 'radioermitage',
-    stream : 'http://91.190.117.131:8000/live',
-    name : "Радио Эрмитаж",
-    color : '#F1352F',
-    textcolor : "white",
+    station : 'dlr',
+    color : '#FF6B00',
+    textcolor : '#ffffff',
+    stream : 'http://dradio-edge-1093.dus-dtag.cdn.addradio.net/dradio/kultur/live/mp3/128/stream.mp3',
+    name : 'DLF Kultur',
+    url : 'https://m.deutschlandfunkkultur.de/dkultur-startseite.1477.de.mhtml',
     meta : {
-
+        type : "DLFXML",
+        live : 'https://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=3'
     }
 }, {
-    station : 'srf3',
-    stream : 'http://stream.srg-ssr.ch/m/drs3/mp3_128',
-    name : "Radio SRF3 ",
-    color : '#000',
-    textcolor : "white",
+    station : 'dlf',
+    stream : 'http://st01.dlf.de/dlf/01/128/mp3/stream.mp3',
+    name : 'Deutschlandfunk Köln',
+    color : '#0075BD',
+    textcolor : '#ffffff',
     meta : {
-
-    }
-},{
-    station : 'ars',
-    stream : 'http://mp3.rtvslo.si:80/ars',
-    name : "Radio Slovenija Ars",
-    color : '#8A5AA3',
-    web:'https://ars.rtvslo.si/',
-    textcolor : "white",
-    meta : {
-
-    }
-},  {
-    station : 'classicpraha',
-    stream : 'http://icecast8.play.cz/classic128.mp3',
-    name : "Classic Praha",
-    color : '#ffffff',
-    web:'http://www.classicpraha.cz/',
-    meta : {
-
+        type : "DLFXML",
+        live : 'https://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=4'
     }
 }, {
-    station : 'ceskyrozhlas',
-    stream : 'http://icecast1.play.cz/crojazz128.mp3',
-    name : "Český rozhlas",
-    color : '#3F91AB',
-    textcolor : '#fff',
+    station : 'orfoe1',
+    name : "Radio Österreich 1",
+    stream : 'http://mp3stream3.apasf.apa.at:8000',
+    color : '#B73924',
+    textcolor : '#ffffff',
     meta : {
-
-    }
-}, {
-    station : 'lrtklasika',
-    stream : 'http://lrt-cast.lrt.lt:8000/lrt_klasika',
-    name : "LRT klasika",
-    color : '#6D4385',
-    textcolor : '#fff',
-    meta : {
-
+        type : 'OE',
+        radiotext : true,
+        highlights : 'https://audioapi.orf.at/oe1/api/json/current/highlights',
+        current : 'https://audioapi.orf.at/oe1/api/json/current/live'
     }
 }, {
     station : 'swr2',
@@ -119,18 +97,6 @@ module.exports = [{
         type : 'PLAIN',
         radiotext : true,
         live : 'https://www.wdr.de/radio/radiotext/streamtitle_1live.txt'
-    }
-}, {
-    station : 'orfoe1',
-    name : "Radio Österreich 1",
-    stream : 'http://mp3stream3.apasf.apa.at:8000',
-    color : '#B73924',
-    textcolor : '#ffffff',
-    meta : {
-        type : 'OE',
-        radiotext : true,
-        highlights : 'https://audioapi.orf.at/oe1/api/json/current/highlights',
-        current : 'https://audioapi.orf.at/oe1/api/json/current/live'
     }
 }, {
     station : 'srf2',
@@ -272,27 +238,6 @@ module.exports = [{
         live : 'https://www.francemusique.fr/livemeta/pull/407'
     }
 }, {
-    station : 'dlr',
-    color : '#FF6B00',
-    textcolor : '#ffffff',
-    stream : 'http://dradio-edge-1093.dus-dtag.cdn.addradio.net/dradio/kultur/live/mp3/128/stream.mp3',
-    name : 'DLF Kultur',
-    url : 'https://m.deutschlandfunkkultur.de/dkultur-startseite.1477.de.mhtml',
-    meta : {
-        type : "DLFXML",
-        live : 'https://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=3'
-    }
-}, {
-    station : 'dlf',
-    stream : 'http://st01.dlf.de/dlf/01/128/mp3/stream.mp3',
-    name : 'Deutschlandfunk Köln',
-    color : '#0075BD',
-    textcolor : '#ffffff',
-    meta : {
-        type : "DLFXML",
-        live : 'https://srv.deutschlandradio.de/aodpreviewdata.1915.de.rpc?drbm:station_id=4'
-    }
-}, {
     station : 'hlr',
     name : 'Hamburger Lokalradio',
     color : '#D5DCB7',
@@ -333,7 +278,7 @@ module.exports = [{
     name : 'Latvijas Radio3',
     color : '#C29A00',
     textcolor : '#ffffff',
-    web :'https://klasika.lsm.lv/lv/lr3/',
+    web : 'https://klasika.lsm.lv/lv/lr3/',
     stream : 'http://lr3mp0.latvijasradio.lv:8004/',
 
 }, {
@@ -353,4 +298,59 @@ module.exports = [{
     meta : {
     }
 
+}, {
+    station : 'radioermitage',
+    stream : 'http://91.190.117.131:8000/live',
+    name : "Радио Эрмитаж",
+    color : '#F1352F',
+    textcolor : "white",
+    meta : {
+
+    }
+}, {
+    station : 'srf3',
+    stream : 'http://stream.srg-ssr.ch/m/drs3/mp3_128',
+    name : "Radio SRF3 ",
+    color : '#000',
+    textcolor : "white",
+    meta : {
+
+    }
+}, {
+    station : 'ars',
+    stream : 'http://mp3.rtvslo.si:80/ars',
+    name : "Radio Slovenija Ars",
+    color : '#8A5AA3',
+    web : 'https://ars.rtvslo.si/',
+    textcolor : "white",
+    meta : {
+
+    }
+}, {
+    station : 'classicpraha',
+    stream : 'http://icecast8.play.cz/classic128.mp3',
+    name : "Classic Praha",
+    color : '#ffffff',
+    web : 'http://www.classicpraha.cz/',
+    meta : {
+
+    }
+}, {
+    station : 'ceskyrozhlas',
+    stream : 'http://icecast1.play.cz/crojazz128.mp3',
+    name : "Český rozhlas",
+    color : '#3F91AB',
+    textcolor : '#fff',
+    meta : {
+
+    }
+}, {
+    station : 'lrtklasika',
+    stream : 'http://lrt-cast.lrt.lt:8000/lrt_klasika',
+    name : "LRT klasika",
+    color : '#6D4385',
+    textcolor : '#fff',
+    meta : {
+
+    }
 }];

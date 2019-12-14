@@ -1,19 +1,41 @@
-const DEPOT = "SETTINGS";
-const DEFAULTS = {
-	PLAYERSTOPSPINCH : true,
-	PLAYERSTOPSDBLCLICK : true
+const DEPOT = "SETTINGS11";
 
+const DEFAULTS = {
+    CALENDAR_SOUND : true,
+    CALENDAR_VIBRATION : true,
+    CALENDAR_BEFORE : 15,
+    CALENDAR_AFTER : 5,
+    RADIO_SWIPE : true,
+    RADIO_DBLCLICK : false,
+    RADIO_VIS : true,
+    HOERSPIEL_VIS :true,
+    HOERSPIEL_REMOVE : false,
+    RADIO_BEFORE: 15,
+    RADIO_AFTER : 5,
+    CALENDAR_RINGTONE: ""
 };
+
 if (!Ti.App.Properties.hasProperty(DEPOT))
-	Ti.App.Properties.setString(DEPOT, JSON.stringify(DEFAULTS));
+    Ti.App.Properties.setString(DEPOT, JSON.stringify(DEFAULTS));
 
 exports.set = (k,v) => {
-	var Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
-	Depot[k] = v;
-	Ti.App.Properties.setString(DEPOT, JSON.stringify(Depot));
+    var Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
+    Depot[k] = v;
+    Ti.App.Properties.setString(DEPOT, JSON.stringify(Depot));
 };
 exports.get = k => {
-	var Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
-	return DEPOT[k];
+    var Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
+    console.log("get " + k);
+    console.log(Depot);
+    return Depot[k];
 };
 
+exports.styles = {
+    left : 10,
+    right : 70,
+    font : {
+        fontSize : 18,
+        fontWeight : 'bold',
+    },
+    color : '#555',
+};

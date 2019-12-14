@@ -61,7 +61,7 @@ function addField(table, name, type) {
 }
 
 const getByName = function(station) {
-    var bar= getAll().filter(function(s) {
+    var bar = getAll().filter(function(s) {
         return s.station == station ? true : false;
     });
     return bar ? bar[0] : null;
@@ -78,9 +78,10 @@ const getAll = function() {
     /* enrichment with data from DB */
     while (favs.isValidRow()) {
         radiostations.forEach(function(s) {
+            const enabled = favs.fieldByName('enabled');
             if (s.station == favs.fieldByName('station')) {
                 s.total = parseInt(favs.fieldByName('total'));
-                s.enabled = favs.fieldByName('enabled');
+                s.enabled = (enabled == undefined || enabled == true) ? true : false;
                 s.runtime = favs.fieldByName('runtime');
                 s.runtimeS = new Date(s.runtime).getUTCDate();
                 if (!s.textcolor)
@@ -115,7 +116,7 @@ const increment = function(station) {
 };
 const getAllEnabled = function() {
     return getAll().filter(function(s) {
-        return s.enabled!=undefined ? true : false;
+        return s.enabled;
     });
 };
 
@@ -144,11 +145,14 @@ const enable = function(station) {
     const link = Ti.Database.open(DB);
     console.log("enable " + station);
     const res = link.execute('SELECT station FROM fav WHERE station=?;', station);
-    if (!res.rowCount)
+    if (!res.rowCount) {
+        console.log("station new added into db");
         link.execute('INSERT INTO fav (station,runtime,total) VALUES (?,0,0);', station);
-    res.close();
-    link.execute('UPDATE fav SET enabled=1 WHERE station=?;', station);
+        res.close();
+    }
+    link.execute('UPDATE fav SET enabled=1 WHERE station=?', station);
     link.close();
+    console.log(getByName(station));
 };
 
 exports.getByName = getByName;

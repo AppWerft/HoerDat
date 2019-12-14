@@ -17,6 +17,45 @@
      limitations under the License.
 -->
 
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+        <style name="Theme.Hoerdat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+                <item name="android:windowTranslucentNavigation">true</item>
+     <!--           <item name="colorPrimary">#225588</item> -->
+      <!--          <item name="colorPrimaryDark">#113344</item> -->
+                <item name="android:textColorPrimary">#444444</item>
+                <item name="android:statusBarColor">#113355</item>
+
+
+		<item name="colorPrimaryDark">#ff0000</item>
+    		<item name="colorAccent">#225588</item>
+    		<item name="colorControlNormal">#0000ff</item>
+                
+                <item name="colorControlActivated">#225588</item>
+                
+        </style>
+
+        <style name="Theme.Tabgroup" parent="@style/Theme.AppCompat">
+
+                <item name="android:textColorPrimary">#ffffff</item>
+                <item name="android:statusBarColor">#113355</item>
+
+
+		<item name="colorPrimaryDark">#225500</item>
+    		<item name="colorAccent">#225588</item>
+    		<item name="colorControlNormal">#225588</item>
+                
+                <item name="colorControlActivated">#225588</item>
+                
+        </style>
+
+
+</resources>
+
+
+
+
 <resources>
 	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat">
 		

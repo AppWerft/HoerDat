@@ -17,7 +17,6 @@ module.exports = function() {
         backgroundColor : 'white'
     });
     $.content.sections[0].add(require('ui/settings/calendar.sound')());
-    $.content.sections[0].add(require('ui/settings/calendar.soundselector')());
     $.content.sections[0].add(require('ui/settings/calendar.vibration')());
     $.content.sections[0].add(require('ui/settings/calendar.before')());
     $.content.sections[0].add(require('ui/settings/calendar.after')());

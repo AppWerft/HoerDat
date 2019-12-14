@@ -1,11 +1,11 @@
 const Favs = require('controls/favs');
 
 module.exports = (PATH, updateStationMenu) => {
-	const Radiostations = Favs.getAll();
+	var Radiostations = Favs.getAll();
 	
 	const $ = Ti.UI.createTableView({
 		backgroundColor : '#efff',
-		headerTitle : 'Verfügbare Radiostationen'
+		 headerView : require("ui/common/headerview.widget")('Ausgewählte Radiostationen')
 	});
 	const onClick = (e) => {
 	    Ti.Media.vibrate();
@@ -14,11 +14,12 @@ module.exports = (PATH, updateStationMenu) => {
 			Favs.enable(itemId);
 		else
 			Favs.disable(itemId);
-		updateStationMenu();
+		updateStationMenu && updateStationMenu();
 	};
 	$.addEventListener('click', onClick);
 	$.updateContent = () => {
-		$.data = Radiostations.map(require('ui/common/radio.drawer.row'));
+	    console.log("radioDrawer::updateConent");
+		$.data = Favs.getAll().map(require('ui/common/radio.drawer.row'));
 	};
 	return $;
 };

@@ -6,11 +6,13 @@ link.execute('CREATE TABLE IF NOT EXISTS "alarms" ("start" NUMBER, "meta" VARCHA
 const p = link.execute("SELECT * FROM 'alarms' LIMIT 0,1 ; ");
 link.close();
 
+const Settings = require('controls/settings');
+
 const AM = require('bencoding.alarmmanager');
 AM.enableLogging();
 
 const alarmManager = AM.createAlarmManager();
-const TIME_BEFORE = 15*60, TIME_AFTER=30*60;
+const CALENDAR_BEFORE = Settings.get("CALENDAR_BEFORE"),TIME_AFTER= Settings.get("CALENDAR_AFTER");
 
 
 const getCode = foo => parseInt(Ti.Utils.md5HexDigest(foo).replace(/[\D]/g, '').substr(0, 10));
@@ -25,11 +27,9 @@ const addAlarm = meta => {
     link.execute("INSERT INTO alarms VALUES (?,?,?,?,?)", //
     sendung.start, meta, 1, requestCode, Ti.Utils.md5HexDigest(meta));
     link.close();
-    const start = Moment(sendung.start).unix();
-    const now = Moment().unix();
-    var diff = start - now;
-    if (diff > TIME_BEFORE)
-        diff -= (TIME_BEFORE);
+    var diff = Moment(sendung.start).unix() - Moment().unix();
+    if (diff > CALENDAR_BEFORE)
+        diff -= (CALENDAR_BEFORE);
     // 15 min before
 
     const alarmopts = {
@@ -38,21 +38,21 @@ const addAlarm = meta => {
         now : Moment(sendung.start).format('hh:mm'),
         requestCode : requestCode,
         icon : Ti.App.Android.R.drawable.wecker_active,
-        playSound : true,
+        playSound : Settings.get("CALENDAR_SOUND"),
         priority : AM.PRIORITY_HIGH,
         visibility : AM.PUBLIC,
         importance : AM.NOTIFICATION_IMPORTANCE_HIGHT,
         badegeIconType : AM.BADGE_ICON_LARGE,
         sound : Ti.App.Android.R.raw.kkj,
         largeIcon : sendung.stationlogo, //Ti.App.Android.R.drawable.wecker_active,//
-        when : TIME_BEFORE, // 15 min davor
+        when : CALENDAR_BEFORE, // 15 min davor
         vibrate : true,
         group : requestCode,
         ongoing : true,
         showLights : true,
        
         timeoutAfter : diff + TIME_AFTER, // 30 min
-        second : 5,//diff,
+        second : diff,
         autoCancel : false,
         onlyAlertOnce : false
        

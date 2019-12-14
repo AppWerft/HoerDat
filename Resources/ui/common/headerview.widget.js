@@ -1,4 +1,4 @@
-module.exports = function createHeaderView(label) {
+module.exports = function(label) {
 	const header = Ti.UI.createView({
 		height : 25,
 		top : 0,

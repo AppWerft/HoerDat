@@ -8,6 +8,7 @@ module.exports = function(_e) {
 	АктйонБар.backgroundColor = "#225588";
 	АктйонБар.titleFont = "Rambla-Bold";
 	АктйонБар.subtitleColor = "#ccc";
+	require('ti.immersivemode').hideSystemUI();
 	var activity = _e.source.getActivity();
 	if (activity != undefined && activity.actionBar != undefined) {
 		activity.onCreateOptionsMenu = function(_menue) {

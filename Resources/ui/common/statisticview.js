@@ -18,7 +18,7 @@ module.exports = function(H) {
 			color : color,
 			font : {
 				fontFamily : 'Rambla-Bold',
-				fontSize : 22
+				fontSize : 16
 			}
 		}));
 		strip.add(Ti.UI.createLabel({
@@ -26,9 +26,9 @@ module.exports = function(H) {
 			color : '#333',
 			font : {
 				fontFamily : 'Rambla',
-				fontSize : 18
+				fontSize : 16
 			},
-			right : 10
+			right : 5
 		}));
 		return strip;
 	}

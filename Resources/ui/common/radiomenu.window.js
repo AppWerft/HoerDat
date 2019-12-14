@@ -2,7 +2,8 @@ const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayC
 const Permissions = require('vendor/permissions');
 
 const PATH = '/images/stationlogos3/%s.png';
-;
+const radioDrawer = require('ui/common/radio.drawer');
+
 const STATIONCHOOSER = 0,
     PLAYER = 1;
 
@@ -26,18 +27,15 @@ module.exports = function(_tabgroup) {
 		// getting View
 		$.radioTilesMenuView = radioTilesMenu.getView();
 		radioTilesMenu.updateRadioStationTiles();
-
+		
 		$.DrawerLayout = Ti.UI.Android.createDrawerLayout({
-			leftView : require('ui/common/radio.drawer')(PATH, function() {
-				radioTilesMenu.updateRadioStationTiles();
+			leftView : radioDrawer(PATH, function() {
+			  	radioTilesMenu.updateRadioStationTiles();
 			}),
 			centerView : $.radioTilesMenuView
 		});
 		$.add($.DrawerLayout);
 		$.DrawerLayout.addEventListener('change',e => {
-			console.log(e.drawer);
-			console.log(e.state);
-
 		});
 		$.DrawerLayout.addEventListener('open', $.DrawerLayout.leftView.updateContent);
 

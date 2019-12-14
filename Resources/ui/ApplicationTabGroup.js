@@ -1,5 +1,7 @@
 const tabData = require('model/tabgroup');
 const RadioPlayer = require("ui/common/radioplayer.window");
+const onOpen = require('ui/main.menu');  
+  
 module.exports = function() {
     const $ = Ti.UI.createTabGroup({
         fullscreen : false,
@@ -11,7 +13,8 @@ module.exports = function() {
         sustainedPerformanceMode : true,
         tabsBackgroundSelectedColor : '#883377aa',
         style : Ti.UI.Android.TABS_STYLE_BOTTOM_NAVIGATION,
-        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
+        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
+        theme: 'Theme.Tabgroup'
     });
     function playRadio(intent) {
          if (intent && intent.action == 'START_RADIO') {
@@ -25,7 +28,7 @@ module.exports = function() {
         Ti.App.fireEvent('stopRadio');
     });
     $.addEventListener('open', function(open) {
-        require('ui/common/main.menu')(open);
+        onOpen(open);
     });
     // $.addEventListener('focus', require('ui/common/tabgroup.onfocus'));
     $.open();
@@ -38,17 +41,14 @@ module.exports = function() {
             window : require(d.window)($)
         }));
     });
-    const OnIntent= require('ui/onintent');
-   // Ti.Android.currentActivity.addEventListener('newintent',OnIntent);
-   // $.addEventListener('open',OnIntent);
-    
+   
     Ti.Android.currentActivity.addEventListener('newintent', function(e) {
         console.log(">>> from notification on running app");
         playRadio(e.intent);
     });
     $.addEventListener('open', function(e) {
         console.log(">>> from notification on sleeping app ");
-        playRadio(Ti.Android.currentActivity.getIntent());
+        if (e.source.activity) playRadio(Ti.Android.currentActivity.getIntent());
     });
  
     /* Restoring latest state */

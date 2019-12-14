@@ -13,7 +13,7 @@ module.exports = [{
 	
 	swipable:false
 },  {
-	title : 'Hörspiele (DACH)',
+	title : 'Hörspiele',
 	icon : '/images/3.png',
 	hasDrawer : true,
 	window : 'ui/common/cachedpool.window',

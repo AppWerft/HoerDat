@@ -53,14 +53,10 @@ module.exports = function(_tabgroup, station, renderParentSections) {
 		}
 
 	}
-
 	var started = false;
-
 	// // START /////
 	var $ = Ti.UI.createWindow({
 		backgroundImage : '/images/bg.png',
-		//exitOnClose : !renderParentSections
-
 	});
 	$.addEventListener('close', function() {
 		stopPlayer();
@@ -74,6 +70,7 @@ module.exports = function(_tabgroup, station, renderParentSections) {
 		ABX.subtitle = station.name;
 		ABX.titleFont = "Rambla-Bold";
 		ABX.subtitleColor = "#fff";
+		require('ti.immersivemode').hideSystemUI();
 		const activity = $.activity;
 		if (activity != undefined && activity.actionBar != undefined) {
 			activity.onCreateOptionsMenu = _menu => {
@@ -100,7 +97,6 @@ module.exports = function(_tabgroup, station, renderParentSections) {
 		PlayerView && $.add(PlayerView.getView());
 		Permissions.requestPermissions(['READ_PHONE_STATE', 'RECORD_AUDIO'], onPermission);
 	});
-
 	return $;
 };
 

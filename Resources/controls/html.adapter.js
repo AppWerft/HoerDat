@@ -2,10 +2,10 @@ const Soup = require("de.appwerft.soup");
 const Moment = require("vendor/moment");
 
 module.exports = function(args) {
-	if (Ti.App.Properties.hasProperty(args.date)) {
+	/*if (Ti.App.Properties.hasProperty(args.date)) {
 		args.onload(JSON.parse(Ti.App.Properties.getString(args.date)));
 		return;
-	}
+	}*/
 	if (Ti.Network.online == false) {
 		args.onload([]);
 		return;
@@ -67,7 +67,6 @@ function getSendung(item) {
 			case 'Sendetermine:':
 				const html = tdright.getHtml().split('<br>')[0].replace(/\(angekündigte Länge: ([0-9:]+)\)/, "");
 				sendung.station = html.split(' - ')[0].toLowerCase();
-				console.log(sendung.station);
 				sendung.stationlogo = '/images/mini/' + html.split(' - ')[0].toLowerCase()//
 				.replace(/\s/g, '')//
 				.replace(/ö/g, 'oe')//
@@ -132,7 +131,7 @@ function getTime(foo) {
 		    m = match[6],
 		    meta = match[8].replace(/[\s\s]+/, ' ');
 		const PATTERN = "YYYY-MMM-D H:m";
-		const foo = YYYY + ' ' + MMM + ' ' + D + ' ' + H + ':' + m + ':00 UT';
+		const foo = YYYY + ' ' + MMM + ' ' + D + ' ' + H + ':' + m + ':00';
 		const date = Moment(foo);
 		return ( {
 			meta : meta,

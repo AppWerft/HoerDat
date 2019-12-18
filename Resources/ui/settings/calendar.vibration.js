@@ -2,7 +2,7 @@ const Settings = require('controls/settings');
 
 module.exports = function() {
     const $ = Ti.UI.createTableViewRow({
-        height : 70
+        height : 55
     });
     $.add(Ti.UI.createLabel(Settings.styles));
     $.children[0].text = "Notifikation mit Vibration";

@@ -1,0 +1,291 @@
+{
+  "freeradioapp": {
+    "-lastupdate": "2018-03-01T16:55:00.6875000+02:00",
+    "-xmlns:gml": "http://www.opengis.net/gml",
+    "stationlist": {
+      "station": [
+        {
+          "-lastupdate": "2018-03-01T16:55:00.6875000+02:00",
+          "-id": "2",
+          "name": "bermuda.funk",
+          "city": "Mannheim",
+          "xmluri": "http://bermudafunk.org/fileadmin/station.xml",
+          "frequency": [
+            "105,4",
+            "89,6"
+          ],
+          "gml:Point": { "gml:pos": "49.49539 8.47386" },
+          "streamurl": "http://streaming.fueralle.org:8000/bermudafunk_high"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "3",
+          "name": "Freies Radio für Stuttgart",
+          "city": "Stuttgart",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_2_station.xml",
+          "frequency": "99,2",
+          "gml:Point": { "gml:pos": "48.789925 9.199612" },
+          "streamurl": "http://streaming.fueralle.org:8000/frs-hi.mp3"
+        },
+        {
+          "-lastupdate": "2018-01-04T17:38:00.6875000+02:00",
+          "-id": "4",
+          "name": "Radio Dreyeckland",
+          "city": "Freiburg",
+          "xmluri": "https://rdl.de/rdl-frnapp.xml",
+          "frequency": "102,3",
+          "gml:Point": { "gml:pos": "47.992961 7.840556" },
+          "streamurl": "http://www.rdl.de:8000/rdl"
+        },
+        {
+          "-lastupdate": "2017-12-18T02:16:00.6875000+02:00",
+          "-id": "6",
+          "name": "Lora München",
+          "city": "München",
+          "xmluri": "http://live.lora924.de:8000/fr-app/LoraMuenchenStationData.xml",
+          "frequency": "92,4",
+          "gml:Point": { "gml:pos": "48.137375 11.553813" },
+          "streamurl": "http://live.lora924.de:8000/loramp3.mp3"
+        },
+        {
+          "-lastupdate": "2017-12-12T17:08:00.6875000+02:00",
+          "-id": "7",
+          "name": "Radio FREI",
+          "city": "Erfurt",
+          "xmluri": "http://www.radiofrei.de/radiofrei.xml",
+          "frequency": "96,2",
+          "gml:Point": { "gml:pos": "50.980043 11.032032" },
+          "streamurl": "http://streaming.fueralle.org:8000/Radio-F.R.E.I"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "8",
+          "name": "Radio Flora",
+          "city": "Hannover",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_7_station.xml",
+          "gml:Point": { "gml:pos": "52.376224 9.709933" },
+          "streamurl": "http://88.198.12.12:8000/live.mp3"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "9",
+          "name": "Punksender",
+          "city": "KC6ln",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_8_station.xml",
+          "gml:Point": { "gml:pos": "50.943719 6.954345" },
+          "streamurl": "http://83.125.45.214:8000/punk"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "10",
+          "name": "LOHRO",
+          "city": "Rostock",
+          "xmluri": "http://files.lohro.de/lohro-v3.xml",
+          "frequency": "90,2",
+          "gml:Point": { "gml:pos": "54.091266 12.123069" },
+          "streamurl": "http://stream.lohro.de:8000/lohro.mp3"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "14",
+          "name": "Radio Unerhört Marburg",
+          "city": "Marburg",
+          "xmluri": "http://www.radio-rum.de/station-v3.xml",
+          "frequency": "90,1",
+          "gml:Point": { "gml:pos": "50.816122 8.778467" },
+          "streamurl": "http://stream.radio-rum.de:8000/rum.mp3"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "12",
+          "name": "Radio Słubfurt",
+          "city": "Slubice",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_11_station.xml",
+          "gml:Point": { "gml:pos": "52.330644 14.55182" },
+          "streamurl": "http://streaming.fueralle.org:8000/slubfurt"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "15",
+          "name": "Freies Sender Kombinat - FSK",
+          "city": "Hamburg",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_14_station.xml",
+          "frequency": "93,0",
+          "gml:Point": { "gml:pos": "53.566654 9.957312" },
+          "streamurl": "http://stream.fsk-hh.org:8000/fsk.mp3"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "16",
+          "name": "Wüste Welle",
+          "city": "Tübingen",
+          "xmluri": "http://www.wueste-welle.de/frapp/wuestewelle.xml",
+          "frequency": "96,6",
+          "gml:Point": { "gml:pos": "48.499639 9.064391" },
+          "streamurl": "http://livestream.wueste-welle.de:8000/mp3"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "17",
+          "name": "Querfunk",
+          "city": "Karlsruhe",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_16_station.xml",
+          "frequency": "104,8",
+          "gml:Point": { "gml:pos": "49.006997 8.407303" },
+          "streamurl": "http://mp3.querfunk.de/qfhi"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "20",
+          "name": "Radio ARA",
+          "city": "Luxembourg",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_19_station.xml",
+          "frequency": [
+            "102.9",
+            "105.2"
+          ],
+          "gml:Point": { "gml:pos": "49.600536 6.137609" },
+          "streamurl": "http://stream.ara.lu/stream.mp3"
+        },
+        {
+          "-lastupdate": "2017-11-20T00:01:00.6875000+02:00",
+          "-id": "21",
+          "name": "Pi-Radio",
+          "city": "Berlin",
+          "xmluri": "http://piradio.de/agenda/freefm.xml",
+          "frequency": [
+            "88,4",
+            "90,7"
+          ],
+          "gml:Point": { "gml:pos": "52.530787 13.407485" },
+          "streamurl": "http://ice.rosebud-media.de:8000/88vier"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "23",
+          "name": "Radio Blau",
+          "city": "Leipzig",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_22_station.xml",
+          "frequency": [
+            "99,2",
+            "94,4",
+            "89,2"
+          ],
+          "gml:Point": { "gml:pos": "51.329449 12.370279" },
+          "streamurl": "http://radioblau.hoerradar.de/radioblau"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "24",
+          "name": "Freies Radio Freudenstadt",
+          "city": "Freudenstadt",
+          "xmluri": "http://radio-fds.de/fileadmin/inhalt/freies_radio_freudenstadt_station-v3.xml",
+          "frequency": [
+            "100,0",
+            "104,1"
+          ],
+          "gml:Point": { "gml:pos": "48.46676 8.41039" },
+          "streamurl": "http://85.25.176.186:9140/listen.pls"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "26",
+          "name": "coloRadio",
+          "city": "Dresden",
+          "xmluri": "http://coloradio.org/olaf/station.xml",
+          "frequency": [
+            "98,4",
+            "99,3"
+          ],
+          "gml:Point": { "gml:pos": "51.068961 13.749668" },
+          "streamurl": "http://streaming.fueralle.org:8000/coloradio_160.mp3"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "27",
+          "name": "Freies Radio Wiesental",
+          "city": "Schopfheim",
+          "xmluri": "http://freies-radio-wiesental.de/radioapp/station.xml",
+          "frequency": "104,5",
+          "gml:Point": { "gml:pos": "47.650923 7.823826" },
+          "streamurl": "http://88.99.63.244:8000/stream"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "28",
+          "name": "Radio Corax",
+          "city": "Halle",
+          "xmluri": "https://radioco.radiocorax.de/station-data",
+          "frequency": "95,9",
+          "gml:Point": { "gml:pos": "51.48768 11.970599" },
+          "streamurl": "http://streaming.fueralle.org:8000/corax.mp3"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "29",
+          "name": "RundFunk Meissner",
+          "city": "Eschwege",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_28_station.xml",
+          "frequency": [
+            "96,5",
+            "99,4",
+            "99,7",
+            "102,6"
+          ],
+          "gml:Point": { "gml:pos": "51.189719 10.058632" },
+          "streamurl": "http://s8.pop-stream.de:8650/listen.pls"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "30",
+          "name": "Radio T",
+          "city": "Chemnitz",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_29_station.xml",
+          "frequency": "102,7",
+          "gml:Point": { "gml:pos": "50.840148 12.924567" },
+          "streamurl": "http://streaming.fueralle.org:8000/radiot.mp3"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "31",
+          "name": "Radio free FM",
+          "city": "Ulm",
+          "xmluri": "http://app.freefm.de/station.xml",
+          "frequency": "102,6",
+          "gml:Point": { "gml:pos": "48.400566 9.991118" },
+          "streamurl": "http://stream.freefm.de:8100/"
+        },
+        {
+          "-lastupdate": "2018-03-01T12:55:00.6875000+02:00",
+          "-id": "32",
+          "name": "Freies Radio Kassel",
+          "city": "Kassel",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_31_station.xml",
+          "frequency": "105,8",
+          "gml:Point": { "gml:pos": "51.314154 9.493415" },
+          "streamurl": "http://85.214.67.121:8000/listen.pls?sid=1"
+        },
+        {
+          "-lastupdate": "2016-11-20T12:55:00.6875000+02:00",
+          "-id": "33",
+          "name": "Radio Z",
+          "city": "Nürnberg",
+          "xmluri": "http://www.oput.info/clients/__freefm/data/28_09_16_32_station.xml",
+          "frequency": "95,8",
+          "gml:Point": { "gml:pos": "49.439352 11.080326" },
+          "streamurl": "http://snd.radio-z.net:8000/Radio-Z"
+        },
+        {
+          "-lastupdate": "2017-11-15T12:55:00.6875000+02:00",
+          "-id": "34",
+          "name": "Radio StHörfunk",
+          "city": "Schwäbisch Hall",
+          "xmluri": "http://daten.sthoerfunk.de/radioautomation.php?abfrage=app&version=1&format=xml",
+          "frequency": "97,5",
+          "gml:Point": { "gml:pos": "49.11158 9.73603" },
+          "streamurl": "http://stream.sthoerfunk.de:7000/sthoerfunk.mp3"
+        }
+      ]
+    }
+  }
+}

@@ -35,9 +35,10 @@ const addAlarm = meta => {
     const alarmopts = {
         contentText : sendung.title || 'Titel der Sendung',
         contentTitle : sendung.sender + "  "+Moment(sendung.start).format('hh:mm') + ' Uhr',
-        now : Moment(sendung.start).format('hh:mm'),
+        now : Moment(sendung.start).format('HH:mm'),
         requestCode : requestCode,
         icon : Ti.App.Android.R.drawable.wecker_active,
+        ringtone : Settings.CALENDAR_RINGTONE,
         playSound : Settings.get("CALENDAR_SOUND"),
         priority : AM.PRIORITY_HIGH,
         visibility : AM.PUBLIC,

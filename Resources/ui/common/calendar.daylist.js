@@ -25,13 +25,13 @@ module.exports = function(offs) {
 	});
 	self.add(self.list);
 	self.add(self.tag);
-	setTimeout(function() {
+	setTimeout(() => {
 		const date = (require('vendor/moment'))().add(offs, 'd').format('YYYY-MM-DD');
-
 		require('controls/html.adapter')({
 			date : date,
-			onload : function(list) {
+			onload : function(_list) {
 				data = [];
+				list = _list;
 				list.forEach(function(item) {
 					const row = Row(item);
 					data.push(row);
@@ -41,7 +41,7 @@ module.exports = function(offs) {
 		});
 	}, Math.abs(offs) * Math.random() * 5000);
 
-	self.list.addEventListener('click', function(_e) {
+	self.list.addEventListener('click', _e => {
 		if (_e.source.status != undefined) {
 			_e.source.toggleStatus();
 		} else

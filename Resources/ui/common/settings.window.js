@@ -5,6 +5,8 @@ const PATH = '/images/stationlogos3/%s.png';
 module.exports = function() {
     var $ = Ti.UI.createWindow({
         backgroundImage : '/images/bg.png',
+        separatorStyle : Ti.UI.TABLE_VIEW_SEPARATOR_STYLE_SINGLE_LINE,
+        separatorColor : 'gray'
     });
     $.content = Ti.UI.createTableView({
         sections : [Ti.UI.createTableViewSection({

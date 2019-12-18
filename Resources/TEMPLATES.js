@@ -1,7 +1,35 @@
 const MINILOGO = 24;
 const HEIGHT = 150;
-const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth
-		/ Ti.Platform.displayCaps.logicalDensityFactor;
+const SCREENWIDTH = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
+
+exports.freiradio = {
+    properties : {
+        height : 45,
+        backgroundColor : 'white',
+    },
+    childTemplates : [ 
+    {
+        type : 'Ti.UI.View',
+        bindId : 'icon',
+        properties : {
+            left : 5,
+            touchEnabled : false,
+            width : 40,
+            height: 40
+        }
+    },{
+        type : 'Ti.UI.Label',
+        bindId : 'name',
+        properties : {
+            left : 55,right:25,
+            touchEnabled : false,
+            width : Ti.UI.FILL,
+            textAlign : 'left',
+            color: '#333',
+            font: {fontFamily:'Rambla',fontSize:16, fontWeight:'bold'}
+        }
+    }]
+};
 
 exports.pool_progress = {
 	properties : {
@@ -441,6 +469,7 @@ exports.podcastslist_slim = {
 
 	} ]
 };
+
 exports.podcastslist_pictonly = {
 	properties : {
 		height : Ti.UI.SIZE

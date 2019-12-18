@@ -24,9 +24,7 @@ exports.set = (k,v) => {
     Ti.App.Properties.setString(DEPOT, JSON.stringify(Depot));
 };
 exports.get = k => {
-    var Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
-    console.log("get " + k);
-    console.log(Depot);
+    const Depot = JSON.parse(Ti.App.Properties.getString(DEPOT, '{}'));
     return Depot[k];
 };
 

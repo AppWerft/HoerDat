@@ -23,7 +23,8 @@ module.exports = function() {
                 RadioPlayer($, sender, null).open();
             } else console.log("Extradata are missing");
         }
-    }
+    }    
+    console.log("Tabgroup created");
     $.addEventListener('close', function() {
         Ti.App.fireEvent('stopRadio');
     });
@@ -32,7 +33,7 @@ module.exports = function() {
     });
     // $.addEventListener('focus', require('ui/common/tabgroup.onfocus'));
     $.open();
-
+    console.log("Tabgroup opened");
     /* Filling tabgroup with tabs */
     tabData.forEach( d => {
         $.addTab(Ti.UI.createTab({
@@ -41,7 +42,7 @@ module.exports = function() {
             window : require(d.window)($)
         }));
     });
-   
+    console.log("Tabgroup filled");
     Ti.Android.currentActivity.addEventListener('newintent', function(e) {
         console.log(">>> from notification on running app");
         playRadio(e.intent);

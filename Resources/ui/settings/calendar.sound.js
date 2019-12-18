@@ -1,15 +1,16 @@
-const Settings = require('controls/settings');
-const RTM = require("ti.ringtonemanager");
+const Settings = require('controls/settings'),
+    RTM = require("ti.ringtonemanager"),
+    MIN = 55,
+    MAX = 90;
 
 module.exports = function() {
     const $ = Ti.UI.createTableViewRow({
-        height : 90
+        height : MIN
     });
     var count = 0;
     const labelView = Ti.UI.createLabel(Settings.styles)
     labelView.top = 15;
     $.add(labelView);
-
     $.children[0].text = "Benachrichtigung mit Geräusch";
     const switchView = Ti.UI.createSwitch({
         right : 10,
@@ -22,21 +23,26 @@ module.exports = function() {
         right : 5,
         opacity : 0.1
     });
-    setTimeout(function() {
-        const selectedUri = Settings.get("CALENDAR_RINGTONE");
-        var selectedIndex = -1;
+    const selectedUri = Settings.get("CALENDAR_RINGTONE");
+    var selectedIndex = -1;
+    const renderRow = (Ringtone, ndx) => {
+        if (selectedUri == Ringtone.getUri())
+            selectedIndex = ndx;
+        return Ti.UI.createPickerRow({
+            title : Ringtone.getTitle(),
+            ringtone : Ringtone
+        });
+    }
+    setTimeout(() => {
         pickerView.opacity = 1;
-        pickerView.add(RTM.getAllRingtones(RTM.TYPE_NOTIFICATION).map(function(Ringtone, ndx) {
-            if (selectedUri == Ringtone.getUri())
-                selectedIndex = ndx;
-            return Ti.UI.createPickerRow({
-                title : Ringtone.getTitle(),
-                uri : Ringtone.getUri(),
-                ringtone : Ringtone
-            });
-        }));
+        RTM.getAllRingtones(RTM.TYPE_NOTIFICATION, function(res) {
+            pickerView.add(res.ringtones.map((ringtone,ndx) => {
+                return renderRow(ringtone, ndx);
+            }));
+        });
         pickerView.setSelectedRow(0, selectedIndex);
-    }, 800);
+        $.height = Settings.get("CALENDAR_RINGTONE") ? MAX : MIN;
+    }, 500);
     $.add(pickerView);
 
     pickerView.addEventListener("change", e => {
@@ -49,6 +55,7 @@ module.exports = function() {
     });
     switchView.addEventListener("change", e => {
         Settings.set("CALENDAR_SOUND", e.value);
+        $.height = e.value ? MAX : MIN;
     });
     return $;
 };

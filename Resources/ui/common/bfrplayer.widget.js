@@ -4,15 +4,17 @@ const PATH = '/images/stationlogos3/%s.png';
 const Permissions = require('vendor/permissions');
 
 var $ = function(station) {
+   
 	var backgroundImage =  station.image;
 	this.view = Ti.UI.createView({
 		backgroundColor : 'transparent'
 	});
-	this.view.add(Ti.UI.createView({
+	this.view.add(Ti.UI.createImageView({
 		width : SCREENWIDTH,
 		height : SCREENWIDTH,
 		top : 0,
-		backgroundImage : backgroundImage
+		defaultImage: '/images/bfr/bfr.png',
+		image : backgroundImage
 	}));
 	this.radiotextView = Ti.UI.createView({
 		height : 40,
@@ -32,7 +34,16 @@ var $ = function(station) {
 		left : 10,
 		right : 10
 	}));
-	
+	this.Progress = require('ui/common/bfr.progress.widget').create(station.duration);
+	const onTap = () => {
+	    this.view.add(this.Progress.view);
+	    this.view.removeEventListener("singletap",onTap);
+	    setTimeout(() => {
+	        this.view.remove(this.Progress.view);
+	        this.view.addEventListener("singletap",onTap);
+	    },7000);
+	}
+	this.view.addEventListener("singletap",onTap);
 	this.view.add(this.radiotextView);
 	//playerView.children[0].addEventListener('click', stopPlayer);
 	return this;
@@ -40,6 +51,9 @@ var $ = function(station) {
 
 $.prototype.getView = function() {
 	return this.view;
+};
+$.prototype.setProgress = function(p) {
+  this.Progress.setProgress(p);  
 };
 $.prototype.addVisualization = function() {
 	var v = VisualizerModule.createView({

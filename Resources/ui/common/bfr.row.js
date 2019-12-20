@@ -1,11 +1,11 @@
-module.exports = function(item) {
+function shorten(str, maxLen, separator = ' ') {
+  if (str.length <= maxLen) return str;
+  var res = str.substr(0, str.lastIndexOf(separator, maxLen));
+  if (res.length < str.length) res += ' …';
+  return res;
+}
 
-    item.radio = item['frn:radio']//
-    .toLowerCase().replace(/\W/g,'');
-    console.log(item.radio);
-    item.image = '/images/bfr/' + item.radio + '.png';
-    item.url = item.enclosure.url;
-    item.length = item.enclosure.length;
+module.exports = function(item) {
     const $ = Ti.UI.createTableViewRow({
         height : Ti.UI.SIZE,
         backgroundColor : 'white',
@@ -15,6 +15,7 @@ module.exports = function(item) {
         top : 10,
         left : 5,
         width : 60,
+        defaultImage : '/images/bfr/bfr.png',
         height : 'auto',
         image : item.image
     }));
@@ -37,13 +38,15 @@ module.exports = function(item) {
             fontFamily : 'Rambla',
             fontWeight : 'bold'
         },
-        text : item['title']
+        text : item.title
     }));
     $.children[1].add(Ti.UI.createLabel({
         top : 0,
         color : '#333',
         touchEnabled : false,
-        text : item.description,
+        textAlign : 'left',
+         width : Ti.UI.FILL,
+        text : shorten(item.description,360,' '),
         font : {
             fontSize : 16,
             fontFamily : 'Rambla'
@@ -61,15 +64,15 @@ module.exports = function(item) {
             fontFamily : 'Rambla'
         },
     }));
-    $.add(Ti.UI.createLabel({
-        bottom : 2,
-        left : 15,
-        color : '#333',
+    item.duration && $.add(Ti.UI.createLabel({
+        bottom : 5,
+        left : 10,
+        color : '#225588',
         width : Ti.UI.FILL,
-        text : "Dauer:\n" + item['frn:laenge'],
+        text : "Dauer:\n" + item.duration,
         textAlign : 'left',
         font : {
-            fontSize : 14,
+            fontSize : 12,
             fontFamily : 'Rambla'
         },
     }));

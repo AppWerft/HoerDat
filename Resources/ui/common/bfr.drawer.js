@@ -1,9 +1,9 @@
 const Wecker = require('controls/alarms'),
     Moment = require("vendor/moment"),
-    Adapter = require('controls/bfr.adapter');
+    Adapter = require('controls/bfr.adapter'),
+    Subwindow = require('ui/common/bfrsub.window');
 
-module.exports = function(toggleDrawer,startSearch,startFilter) {
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+module.exports = function(_tabgroup) {
     const $ = Ti.UI.createView({
         layout : 'vertical',
         height : Ti.UI.FILL
@@ -18,10 +18,6 @@ module.exports = function(toggleDrawer,startSearch,startFilter) {
         color : '#fff',
         hintText : "Suche …"
     }));
-    $.searchRow.children[0].addEventListener("submit", e => {
-        toggleDrawer && toggleDrawer();
-        startSearch && startSearch(e.source.value);
-    });
     $.add($.searchRow);
     $.add(require("ui/common/headerview.widget")('Sendungen der Radiostationen'));
     $.radioList = Ti.UI.createListView({
@@ -43,14 +39,29 @@ module.exports = function(toggleDrawer,startSearch,startFilter) {
                 name : {
                     text : item.name
                 },
-                icon: {backgroundImage: item.icon}
+                
+                icon: {image: item.icon}
             };
          });
     });
     $.radioList.addEventListener("itemclick",e => {
-         toggleDrawer && toggleDrawer();
-         console.log(e.itemId);
-         startFilter && startFilter(JSON.parse(e.itemId).id);
+       //  toggleDrawer && toggleDrawer();
+         Subwindow({
+             id : JSON.parse(e.itemId).id,
+             title : 'Freie Radios',
+             subtitle : JSON.parse(e.itemId).name
+             },
+             Adapter.getFilteredList);
+        
+        // startFilter && startFilter(JSON.parse(e.itemId).id);
+    });
+    $.searchRow.children[0].addEventListener("submit", e => {
+        Subwindow(
+             {
+             id : e.source.value,
+             title : 'Freie Radios',
+             subtitle : "Suche nach "+e.source.value
+             },Adapter.getSearchList);
     });
     return $;
 };

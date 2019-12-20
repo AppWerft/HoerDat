@@ -36,7 +36,7 @@ module.exports = function(cb) {
 			autoreverse : false,
 			repeat : 0
 		});
-		cb.onShow();
+		cb && cb.onShow();
 	});
 	return $;
 };

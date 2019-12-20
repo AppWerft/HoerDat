@@ -9,13 +9,14 @@ exports.freiradio = {
     },
     childTemplates : [ 
     {
-        type : 'Ti.UI.View',
+        type : 'Ti.UI.ImageView',
         bindId : 'icon',
         properties : {
             left : 5,
+            defaultImage : '/images/bfr/bfr.png',
             touchEnabled : false,
-            width : 40,
-            height: 40
+            width : 42,
+            height: 42
         }
     },{
         type : 'Ti.UI.Label',

@@ -23,13 +23,17 @@ var shouldPlay = null;
 var shouldStopp = false;
 // true or false
 
-const STOPPED = 0,
-    BUFFERING = 1,
-    PLAYING = 2,
-    STREAMERROR = 3,
-    TIMEOUT = 4,
+const STOPPED = 5,
+    STOPPING = 6,
+    WAITING_FOR_DATA = 7,
+    WAITING_FOR_QUEUE = 8,
+    BUFFERING = 0,
+    INITIALIZED = 1,
+    PAUSED = 2,
+    PLAYING = 3,
+    STARTING = 4,
     OFFLINE = 5,
-    STATUS = ['STOPPED', 'BUFFERING', 'PLAYING', 'STREAMERROR', 'TIMEOUT', 'OFFLINE'];
+    STATUS = ['BUFFERING', 'INITIALIZED', 'PAUSED', 'PLAYING', 'STARTING', 'STOPPED', 'STOPPING', 'WAITING_FOR_DATA', 'WAITING_FOR_QUEUE', 'STREAMERROR', 'TIMEOUT', 'OFFLINE'];
 
 /*
  * is callback function with payload: String message Integer status ['STOPPED',
@@ -37,44 +41,37 @@ const STOPPED = 0,
  */
 var callbackFn;
 function onPlayerComplete() {
+    currentStation.onCompleted && currentStation.onCompleted();
     Notification && Notification.stop();
 }
 
+function onProgress(_e) {
+
+    currentStation.onProgress && _e && currentStation.onProgress(_e.progress);
+
+}
+
 function onPlayerChange(_e) {
-    var status = _e.status;
+    var status = _e.state;
     Ti.UI.createNotification({
-            message : _e.description,
-            duration : 200
-        }).show();
+        message : _e.description,
+        duration : 200
+    }).show();
     if (status == PLAYING)
         Favs.increment(currentStation.station);
     if (!Ti.Network.online) {
         // status = STATUS[OFFLINE];
-        Ti.UI.createNotification({
-            message : "Probleme mit der Internetverbindung",
-            duration : 200
-        }).show();
+        /*      Ti.UI.createNotification({
+         message : "Probleme mit der Internetverbindung",
+         duration : 200
+         }).show();*/
     }
+    currentStation.onChanged && currentStation.onChanged(_e.state);
     if (status == currentStatus)
         return;
     currentStatus = status;
     LOG("Status –––>" + STATUS[status]);
-    switch (status) {
-    case BUFFERING:
-        break;
-    case PLAYING:
-        break;
-    case STOPPED:
-        /*
-         * if (!shouldStopp) { Player.stop(); Notification.stop(); }
-         * shouldStopp = false; if (callbackFn && typeof callbackFn ==
-         * 'function') callbackFn({ status : 'STOPPED', });
-         */
-        break;
-    case STREAMERROR:
 
-        break;
-    }
     ;
 }
 
@@ -87,6 +84,7 @@ Player.addEventListener('ready', function(_e) {
 
 Player.addEventListener('change', onPlayerChange);
 Player.addEventListener('complete', onPlayerComplete);
+Player.addEventListener('progress', onProgress);
 
 var currentStation = {};
 
@@ -97,9 +95,10 @@ exports.init = function(lifecycleContainer, icon) {
     });
 };
 
-exports.play = function(station) {
-    LOG("PLAY==========");
-    LOG(station);
+exports.play = function(station, onChanged, onCompleted, onProgress) {
+    currentStation.onChanged = onChanged;
+    currentStation.onCompleted = onCompleted;
+    currentStation.onProgress = onProgress;
     currentStation.title = station.title;
     currentStation.station = station.station;
     currentStation.url = station.url;
@@ -126,7 +125,7 @@ exports.play = function(station) {
             Player.start();
         }
     } else
-        LOG("something wrong");
+        LOG("something wrong with URL " + currentStation.url);
 };
 
 function stopStream() {
